@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: SalesForce Partner Soap Interface
+Bundle-SymbolicName: com.sforce.soap.partner
+Bundle-Version: 1.0.0
+Bundle-Vendor: SFORCE
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: javax.xml.rpc;bundle-version="1.1.0";visibility:=reexport,
+ javax.wsdl;bundle-version="1.5.1";visibility:=reexport,
+ javax.xml.soap;bundle-version="1.2.0";visibility:=reexport,
+ org.apache.commons.logging;bundle-version="1.0.4";visibility:=reexport,
+ org.apache.commons.discovery;bundle-version="0.2.0";visibility:=reexport,
+ org.apache.axis;bundle-version="1.4.0";visibility:=reexport,
+ org.apache.log4j;bundle-version="1.2.13";visibility:=reexport,
+ javax.activation;bundle-version="1.1.0",
+ javax.mail;bundle-version="1.4.0"
+Export-Package: com.sforce.soap.partner,
+ com.sforce.soap.partner.fault,
+ com.sforce.soap.partner.sobject
