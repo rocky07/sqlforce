@@ -1,0 +1,34 @@
+#labels Featured
+#Jython Integration
+
+= SQLForce.py -- a Jython module for SQLForce =
+
+As of the 0.9.3 distribution, SQLForce includes a Jython module (SQLForce.py)
+Using it is easy:
+  * Add sqlforce.jar to your java CLASSPATH
+  * Import the SQLForce module
+
+
+= Example: Select Rows =
+
+{{{
+import SQLForce
+
+session = SQLForce.Session()
+session.connect( "PRODUCTION", "gsmithfarmer@mail.com", "***", "securityToken" )
+
+for c in session.select("SELECT LastName, FirstName, MailingCountry FROM Contact"):
+    print c
+}}}
+
+= Example: Selects Rows with a Callback =
+{{{
+def callback(s):
+    print s
+session.select2( "SELECT count() FROM Contact", callback )
+}}}
+
+= Example: Update Records =
+{{{
+session.runCommands("UPDATE Contact SET title='CEO' WHERE LastName='Smith'")
+}}}
