@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Infix
+Bundle-SymbolicName: com.aslan.parser.infix;singleton:=true
+Bundle-Version: 1.0.0
+Export-Package: com.aslan.parser.infix
+Require-Bundle: org.junit;resolution:=optional
+Bundle-Vendor: Aslan Technologies
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
