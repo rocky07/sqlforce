@@ -1,8 +1,9 @@
 #labels Featured
 = What's New =
 
+6-Feb-10
+  * Add support for Salesforce connection profiles. See
+
 2-Feb-10
   * Update Jython module (I use this every week...more examples posted next weekend).
   * Fix NPE bug in Python module that occurred when a SELECT statement did not end in a semicolon.
-
-
