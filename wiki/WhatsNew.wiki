@@ -2,7 +2,7 @@
 = What's New =
 
 6-Feb-10
-  * Add support for Salesforce connection profiles. See
+  * Add support for Salesforce connection profiles. See [SalesForceConnectionProfileRegistry]
 
 2-Feb-10
   * Update Jython module (I use this every week...more examples posted next weekend).
