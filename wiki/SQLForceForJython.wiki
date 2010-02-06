@@ -3,11 +3,27 @@
 
 = SQLForce.py -- a Jython module for SQLForce =
 
-As of the 0.9.3 distribution, SQLForce includes a Jython module (SQLForce.py)
+SQLForce includes a Jython module (SQLForce.py) that brings every SQLForce capability into  Jython.
 Using it is easy:
   * Add sqlforce.jar to your java CLASSPATH
   * Import the SQLForce module
 
+= Connecting to Salesforce =
+There are two ways to connect to Salesforce using jython. You can connect using complete
+credential information:
+{{{
+import SQLForce
+
+session = SQLForce.Session()
+session.connect( "PRODUCTION", "gsmithfarmer@mail.com", "***", "securityToken" )
+}}}
+or you can connect using a registered profile.
+{{{
+import SQLForce
+
+session = SQLForce.Session("profileName")
+}}}
+See the SalesforceConnectionProfileRegistry page for instructions on setting up connection profiles.
 
 = Example: Select Rows =
 
