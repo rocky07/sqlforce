@@ -8,7 +8,7 @@ to Salesforce using:
 {{{
 CONNECT PROFILE profileName
 }}}
-or if you are using SQLForce vi the jython module:
+or if you are using SQLForce via the jython module:
 {{{
 import SQLForce
 
