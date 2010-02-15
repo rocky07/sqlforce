@@ -34,3 +34,6 @@ The arguments to the _sesion.insert()_ method are:
 The _session.insert()_ method returns a list of the Salesforce Ids created for the inserted rows.
   * The number of records Ids returned will always be the same as the number of rows provided in the original call.
   * If one or more rows fails to insert then its corresponding records Id will be set to _None_.
+
+=See Also=
+  * SalesforceConnectionProfileRegistry
