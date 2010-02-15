@@ -37,3 +37,4 @@ The _session.insert()_ method returns a list of the Salesforce Ids created for t
 
 =See Also=
   * SalesforceConnectionProfileRegistry
+  * SQLForceForJython
