@@ -1,3 +1,4 @@
+#labels Featured
 #Tutorial on how to use the SQLForce Jython insert() method.
 
 = How to Use the SQLForce.insert() Jython method =
