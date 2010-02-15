@@ -1,6 +1,11 @@
 #labels Featured
 = What's New =
 
+15-Feb-10
+  * Extend UPDATE command syntax to support efficient updates where Salesforce IDs are known.
+  * Add convenience methods (insert(), update(), delete()) to SQLForce.py.
+  * Add ability to fetch Salesforce IDs of newly inserted rows.
+
 6-Feb-10
   * Add support for Salesforce connection profiles. See SalesforceConnectionProfileRegistry
 
