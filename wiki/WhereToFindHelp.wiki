@@ -1,0 +1,15 @@
+#labels Featured
+#Other sites where you can find help.
+
+= Other SQLForce Information Sites =
+
+The blog, [http://gsmithfarmer.blogspot.com/ The Programming Farmer], contains lots of examples of how to use the Jython SQLForce module. When I encounter a Salesforce problem that is easily solved with Jython I generally post the solution with commentary on this site.
+
+Other useful sources:
+  * [http://developer.force.com/codeshare/apex/ProjectPage?id=a0630000005SmxQAAS Salesforce Developer Site]
+  * [http://www.jython.org/ Jython]
+  * [http://www.python.org/ Python]
+  * [mailto:gsmithfarmer@gmail.com The SQLForce Author]
+
+
+=
