@@ -1,5 +1,8 @@
 #labels Featured
 = What's New =
+20-Feb-10
+  * Support return multi-line column data in the Jython module.
+  * Add the SELECTX command -- return return of a SELECT statement as simple XML.
 
 15-Feb-10
   * Extend UPDATE command syntax to support efficient updates where Salesforce IDs are known.
