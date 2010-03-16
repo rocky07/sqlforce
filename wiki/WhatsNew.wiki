@@ -1,5 +1,8 @@
 #labels Featured
 = What's New =
+16-Mar-10
+  * Add Jython support for selecting classes with attributes with a select statement. See [Jython_Select_Tutorial].
+
 20-Feb-10
   * Support return multi-line column data in the Jython module.
   * Add the SELECTX command -- return return of a SELECT statement as simple XML.
