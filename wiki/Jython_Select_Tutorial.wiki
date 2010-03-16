@@ -1,4 +1,4 @@
-#labels jython,python,force,salesforce
+#labels Featured
 #Jython SELECT Tutorial
 
 = Jython SELECT Tutorial=
@@ -43,4 +43,3 @@ def callback( row ):
 
 session.selectRecords2("SELECT id, FirstName, LastName FROM Contact LIMIT 3", callback )
 }}}
-
