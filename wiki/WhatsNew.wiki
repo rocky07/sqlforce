@@ -1,5 +1,8 @@
 #labels Featured
 = What's New =
+24-Mar-10
+  * Upgrade to use Version 18.0 (Spring 10) version of the Salesforce protocol (the partner wsdl).
+
 16-Mar-10
   * Add Jython support for selecting classes with attributes with a select statement. See [Jython_Select_Tutorial].
 
