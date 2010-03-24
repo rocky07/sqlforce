@@ -406,15 +406,15 @@ public class PartnerSamples {
         try {
             DescribeGlobalResult describeGlobalResult = binding
                     .describeGlobal();
-            if (!(describeGlobalResult == null)) {
-                String[] types = describeGlobalResult.getTypes();
-                if (!(types == null)) {
-                    for (int i = 0; i < types.length; i++) {
-                        System.out.println(types[i]);
-                    }
-                    getUserInput("\nDescribe global was successful.\n\nHit the enter key to conutinue....");
-                }
-            }
+//            if (!(describeGlobalResult == null)) {
+//                String[] types = describeGlobalResult.getTypes();
+//                if (!(types == null)) {
+//                    for (int i = 0; i < types.length; i++) {
+//                        System.out.println(types[i]);
+//                    }
+//                    getUserInput("\nDescribe global was successful.\n\nHit the enter key to conutinue....");
+//                }
+//            }
         } catch (ApiFault af) {
             System.out
                     .println("\nFailed to return types, error message was: \n"
