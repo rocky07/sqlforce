@@ -1,17 +1,23 @@
-#Mon Sep 21 10:04:49 CDT 2009
+#Wed Mar 24 08:10:27 CDT 2010
 eclipse.preferences.version=1
 encoding//src/com/sforce/soap/partner/AllowFieldTruncationHeader.java=UTF-8
 encoding//src/com/sforce/soap/partner/AssignmentRuleHeader.java=UTF-8
 encoding//src/com/sforce/soap/partner/CallOptions.java=UTF-8
 encoding//src/com/sforce/soap/partner/ChildRelationship.java=UTF-8
+encoding//src/com/sforce/soap/partner/DataCategory.java=UTF-8
+encoding//src/com/sforce/soap/partner/DataCategoryGroupSobjectTypePair.java=UTF-8
 encoding//src/com/sforce/soap/partner/DebugLevel.java=UTF-8
 encoding//src/com/sforce/soap/partner/DebuggingHeader.java=UTF-8
 encoding//src/com/sforce/soap/partner/DebuggingInfo.java=UTF-8
 encoding//src/com/sforce/soap/partner/DeleteResult.java=UTF-8
 encoding//src/com/sforce/soap/partner/DeletedRecord.java=UTF-8
+encoding//src/com/sforce/soap/partner/DescribeDataCategoryGroupResult.java=UTF-8
+encoding//src/com/sforce/soap/partner/DescribeDataCategoryGroupStructureResult.java=UTF-8
+encoding//src/com/sforce/soap/partner/DescribeDataCategoryGroupStructures.java=UTF-8
 encoding//src/com/sforce/soap/partner/DescribeGlobal.java=UTF-8
 encoding//src/com/sforce/soap/partner/DescribeGlobalResponse.java=UTF-8
 encoding//src/com/sforce/soap/partner/DescribeGlobalResult.java=UTF-8
+encoding//src/com/sforce/soap/partner/DescribeGlobalSObjectResult.java=UTF-8
 encoding//src/com/sforce/soap/partner/DescribeLayout.java=UTF-8
 encoding//src/com/sforce/soap/partner/DescribeLayoutButton.java=UTF-8
 encoding//src/com/sforce/soap/partner/DescribeLayoutComponent.java=UTF-8
@@ -31,6 +37,7 @@ encoding//src/com/sforce/soap/partner/DescribeSoftphoneLayoutItem.java=UTF-8
 encoding//src/com/sforce/soap/partner/DescribeSoftphoneLayoutResponse.java=UTF-8
 encoding//src/com/sforce/soap/partner/DescribeSoftphoneLayoutResult.java=UTF-8
 encoding//src/com/sforce/soap/partner/DescribeSoftphoneLayoutSection.java=UTF-8
+encoding//src/com/sforce/soap/partner/DescribeSoftphoneScreenPopOption.java=UTF-8
 encoding//src/com/sforce/soap/partner/DescribeTab.java=UTF-8
 encoding//src/com/sforce/soap/partner/DescribeTabSetResult.java=UTF-8
 encoding//src/com/sforce/soap/partner/DescribeTabs.java=UTF-8

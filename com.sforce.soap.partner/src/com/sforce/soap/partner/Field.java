@@ -30,15 +30,15 @@ public class Field  implements java.io.Serializable {
 
     private java.lang.Boolean dependentPicklist;
 
-    private java.lang.Boolean deprecated;
-
-    private java.lang.Boolean deprecatedAndHidden;
+    private boolean deprecatedAndHidden;
 
     private int digits;
 
     private java.lang.Boolean externalId;
 
     private boolean filterable;
+
+    private boolean groupable;
 
     private java.lang.Boolean htmlFormatted;
 
@@ -99,11 +99,11 @@ public class Field  implements java.io.Serializable {
            java.lang.String defaultValueFormula,
            boolean defaultedOnCreate,
            java.lang.Boolean dependentPicklist,
-           java.lang.Boolean deprecated,
-           java.lang.Boolean deprecatedAndHidden,
+           boolean deprecatedAndHidden,
            int digits,
            java.lang.Boolean externalId,
            boolean filterable,
+           boolean groupable,
            java.lang.Boolean htmlFormatted,
            boolean idLookup,
            java.lang.String inlineHelpText,
@@ -137,11 +137,11 @@ public class Field  implements java.io.Serializable {
            this.defaultValueFormula = defaultValueFormula;
            this.defaultedOnCreate = defaultedOnCreate;
            this.dependentPicklist = dependentPicklist;
-           this.deprecated = deprecated;
            this.deprecatedAndHidden = deprecatedAndHidden;
            this.digits = digits;
            this.externalId = externalId;
            this.filterable = filterable;
+           this.groupable = groupable;
            this.htmlFormatted = htmlFormatted;
            this.idLookup = idLookup;
            this.inlineHelpText = inlineHelpText;
@@ -388,31 +388,11 @@ public class Field  implements java.io.Serializable {
 
 
     /**
-     * Gets the deprecated value for this Field.
-     * 
-     * @return deprecated
-     */
-    public java.lang.Boolean getDeprecated() {
-        return deprecated;
-    }
-
-
-    /**
-     * Sets the deprecated value for this Field.
-     * 
-     * @param deprecated
-     */
-    public void setDeprecated(java.lang.Boolean deprecated) {
-        this.deprecated = deprecated;
-    }
-
-
-    /**
      * Gets the deprecatedAndHidden value for this Field.
      * 
      * @return deprecatedAndHidden
      */
-    public java.lang.Boolean getDeprecatedAndHidden() {
+    public boolean isDeprecatedAndHidden() {
         return deprecatedAndHidden;
     }
 
@@ -422,7 +402,7 @@ public class Field  implements java.io.Serializable {
      * 
      * @param deprecatedAndHidden
      */
-    public void setDeprecatedAndHidden(java.lang.Boolean deprecatedAndHidden) {
+    public void setDeprecatedAndHidden(boolean deprecatedAndHidden) {
         this.deprecatedAndHidden = deprecatedAndHidden;
     }
 
@@ -484,6 +464,26 @@ public class Field  implements java.io.Serializable {
      */
     public void setFilterable(boolean filterable) {
         this.filterable = filterable;
+    }
+
+
+    /**
+     * Gets the groupable value for this Field.
+     * 
+     * @return groupable
+     */
+    public boolean isGroupable() {
+        return groupable;
+    }
+
+
+    /**
+     * Sets the groupable value for this Field.
+     * 
+     * @param groupable
+     */
+    public void setGroupable(boolean groupable) {
+        this.groupable = groupable;
     }
 
 
@@ -973,17 +973,13 @@ public class Field  implements java.io.Serializable {
             ((this.dependentPicklist==null && other.getDependentPicklist()==null) || 
              (this.dependentPicklist!=null &&
               this.dependentPicklist.equals(other.getDependentPicklist()))) &&
-            ((this.deprecated==null && other.getDeprecated()==null) || 
-             (this.deprecated!=null &&
-              this.deprecated.equals(other.getDeprecated()))) &&
-            ((this.deprecatedAndHidden==null && other.getDeprecatedAndHidden()==null) || 
-             (this.deprecatedAndHidden!=null &&
-              this.deprecatedAndHidden.equals(other.getDeprecatedAndHidden()))) &&
+            this.deprecatedAndHidden == other.isDeprecatedAndHidden() &&
             this.digits == other.getDigits() &&
             ((this.externalId==null && other.getExternalId()==null) || 
              (this.externalId!=null &&
               this.externalId.equals(other.getExternalId()))) &&
             this.filterable == other.isFilterable() &&
+            this.groupable == other.isGroupable() &&
             ((this.htmlFormatted==null && other.getHtmlFormatted()==null) || 
              (this.htmlFormatted!=null &&
               this.htmlFormatted.equals(other.getHtmlFormatted()))) &&
@@ -1062,17 +1058,13 @@ public class Field  implements java.io.Serializable {
         if (getDependentPicklist() != null) {
             _hashCode += getDependentPicklist().hashCode();
         }
-        if (getDeprecated() != null) {
-            _hashCode += getDeprecated().hashCode();
-        }
-        if (getDeprecatedAndHidden() != null) {
-            _hashCode += getDeprecatedAndHidden().hashCode();
-        }
+        _hashCode += (isDeprecatedAndHidden() ? Boolean.TRUE : Boolean.FALSE).hashCode();
         _hashCode += getDigits();
         if (getExternalId() != null) {
             _hashCode += getExternalId().hashCode();
         }
         _hashCode += (isFilterable() ? Boolean.TRUE : Boolean.FALSE).hashCode();
+        _hashCode += (isGroupable() ? Boolean.TRUE : Boolean.FALSE).hashCode();
         if (getHtmlFormatted() != null) {
             _hashCode += getHtmlFormatted().hashCode();
         }
@@ -1218,17 +1210,9 @@ public class Field  implements java.io.Serializable {
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("deprecated");
-        elemField.setXmlName(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "deprecated"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("deprecatedAndHidden");
         elemField.setXmlName(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "deprecatedAndHidden"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setMinOccurs(0);
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
@@ -1247,6 +1231,12 @@ public class Field  implements java.io.Serializable {
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("filterable");
         elemField.setXmlName(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "filterable"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("groupable");
+        elemField.setXmlName(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "groupable"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);

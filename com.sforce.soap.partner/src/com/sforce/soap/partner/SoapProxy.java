@@ -68,6 +68,18 @@ public class SoapProxy implements com.sforce.soap.partner.Soap {
     return soap.describeGlobal();
   }
   
+  public com.sforce.soap.partner.DescribeDataCategoryGroupResult[] describeDataCategoryGroups(java.lang.String[] sObjectType) throws java.rmi.RemoteException, com.sforce.soap.partner.fault.InvalidSObjectFault, com.sforce.soap.partner.fault.UnexpectedErrorFault{
+    if (soap == null)
+      _initSoapProxy();
+    return soap.describeDataCategoryGroups(sObjectType);
+  }
+  
+  public com.sforce.soap.partner.DescribeDataCategoryGroupStructureResult[] describeDataCategoryGroupStructures(com.sforce.soap.partner.DataCategoryGroupSobjectTypePair[] pairs, boolean topCategoriesOnly) throws java.rmi.RemoteException, com.sforce.soap.partner.fault.InvalidSObjectFault, com.sforce.soap.partner.fault.UnexpectedErrorFault{
+    if (soap == null)
+      _initSoapProxy();
+    return soap.describeDataCategoryGroupStructures(pairs, topCategoriesOnly);
+  }
+  
   public com.sforce.soap.partner.DescribeLayoutResult describeLayout(java.lang.String sObjectType, java.lang.String[] recordTypeIds) throws java.rmi.RemoteException, com.sforce.soap.partner.fault.InvalidSObjectFault, com.sforce.soap.partner.fault.InvalidIdFault, com.sforce.soap.partner.fault.UnexpectedErrorFault{
     if (soap == null)
       _initSoapProxy();

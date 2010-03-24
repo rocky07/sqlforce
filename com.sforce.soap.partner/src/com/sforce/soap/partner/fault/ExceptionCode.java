@@ -78,6 +78,7 @@ public class ExceptionCode implements java.io.Serializable {
     public static final java.lang.String _NO_SOFTPHONE_LAYOUT = "NO_SOFTPHONE_LAYOUT";
     public static final java.lang.String _NUMBER_OUTSIDE_VALID_RANGE = "NUMBER_OUTSIDE_VALID_RANGE";
     public static final java.lang.String _OPERATION_TOO_LARGE = "OPERATION_TOO_LARGE";
+    public static final java.lang.String _ORG_IN_MAINTENANCE = "ORG_IN_MAINTENANCE";
     public static final java.lang.String _ORG_LOCKED = "ORG_LOCKED";
     public static final java.lang.String _ORG_NOT_OWNED_BY_INSTANCE = "ORG_NOT_OWNED_BY_INSTANCE";
     public static final java.lang.String _PASSWORD_LOCKOUT = "PASSWORD_LOCKOUT";
@@ -154,6 +155,7 @@ public class ExceptionCode implements java.io.Serializable {
     public static final ExceptionCode NO_SOFTPHONE_LAYOUT = new ExceptionCode(_NO_SOFTPHONE_LAYOUT);
     public static final ExceptionCode NUMBER_OUTSIDE_VALID_RANGE = new ExceptionCode(_NUMBER_OUTSIDE_VALID_RANGE);
     public static final ExceptionCode OPERATION_TOO_LARGE = new ExceptionCode(_OPERATION_TOO_LARGE);
+    public static final ExceptionCode ORG_IN_MAINTENANCE = new ExceptionCode(_ORG_IN_MAINTENANCE);
     public static final ExceptionCode ORG_LOCKED = new ExceptionCode(_ORG_LOCKED);
     public static final ExceptionCode ORG_NOT_OWNED_BY_INSTANCE = new ExceptionCode(_ORG_NOT_OWNED_BY_INSTANCE);
     public static final ExceptionCode PASSWORD_LOCKOUT = new ExceptionCode(_PASSWORD_LOCKOUT);
