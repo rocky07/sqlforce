@@ -1,5 +1,9 @@
 #labels Featured
 = What's New =
+
+03-Apr-10
+  * Fixed date time parsers and made them generous wrt syntax (almost correct date or dateTime values will be patched on the fly to meet SOQL syntax requirements).
+
 24-Mar-10
   * Upgrade to use Version 18.0 (Spring 10) version of the Salesforce protocol (the partner wsdl).
 
