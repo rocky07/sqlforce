@@ -1,0 +1,25 @@
+INSERT INTO table (col1 [,col2]*) VALUES (v1 [,v2]*) [,(v3[,v4]*)]*;
+INSERT INTO table (col1, [,col2]*) SELECT v1 [,v2]* FROM ...;
+
+Insert new records in a SalesForce table.
+
+table        -- update records in this table
+col          -- name of column to populate
+VALUES       -- keyword used when new rows are specified as part of the statement.
+SELECT       -- keyword used when new row data comes from a SELECT statement.
+
+After the INSERT completes the following variables will be set:
+
+ROW_COUNT       -- number of rows that were inserted.
+ROW_ERROR_COUNT -- number of rows that failed to insert (example: permission error).
+
+Examples:
+
+  INSERT INTO Contact(LastName,FirstName) VALUES( 'Smith', 'Josiah');
+  
+  INSERT INTO Contact(LastName,FirstName) VALUES( 'Smith', 'Josiah'), ('Smith', 'Sarah');
+  
+  INSERT INTO Contact(LastName,FirstName) SELECT nameA, NameB FROM AnotherTable;
+  
+  
+Note: The INSERT statement DOES NOT support SQLForce environment variable substitution.

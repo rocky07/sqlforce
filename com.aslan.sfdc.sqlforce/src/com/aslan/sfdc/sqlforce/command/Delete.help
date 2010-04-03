@@ -1,0 +1,13 @@
+DELETE FROM table WHERE predicate;
+
+Delete records from a SalesForce table.
+
+table        -- delete records from this table
+predicate    -- anything supported by SOQL
+
+After the DELETE completes the following variables will be set:
+
+ROW_COUNT       -- number of rows that were deleted.
+ROW_ERROR_COUNT -- number of records that failed to delete (example: permission error).
+
+

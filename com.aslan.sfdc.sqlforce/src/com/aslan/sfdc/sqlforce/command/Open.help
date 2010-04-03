@@ -1,0 +1,11 @@
+OPEN filename
+
+Open a file and cause the SQLForce commands in the file to be processed. Once the commands in the file
+are exhausted, control returns to the original input stream.
+
+filename     -- any filename -- no quotes are required (even if the file has spaces). 
+
+
+Examples:
+  OPEN c:\tmp\foo.txt
+  

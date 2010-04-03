@@ -1,0 +1,51 @@
+/**
+ * This code was originally generated using ${link com.aslan.sfdc.partner.record.SObjectRecordCodeGenerator}.
+ * Be careful if you decide to modify it by hand.
+ */
+package com.aslan.sfdc.partner.record;
+
+import java.util.Calendar;
+
+import com.sforce.soap.partner.sobject.SObject;
+
+/**
+ * Access to a SalesForce ${SObjectType} Object using the SFDC Partner interface.
+ * 
+ * @author SObjectRecordCodeGenerator
+ *
+ */
+public class  ${ClassName}  extends AbstractSObjectRecord {
+	
+	
+	public static final String SOBJECT_NAME = "${SObjectType}";
+	
+	//
+	// Constants for all fields in a ${SObjectType}.
+	// Use these constants when forming a SFDC query in Java to
+	// avoid typing mistakes.
+	//
+${FieldConstants}
+	
+	public ${ClassName}() {
+		this( (SObject) null);
+	}
+	
+	public ${ClassName}(SObject sObject ) {
+		super(sObject);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.certara.sfdc.partner.record.AbstractRecord#getSObjectName()
+	 */
+	public String getSObjectName() {
+		return SOBJECT_NAME;
+	}
+
+	//
+	// Lots and lots of type safe wrappers for ${SObjectType} parameters.
+	//
+	
+${SettersAndGetters}
+	
+}

@@ -1,0 +1,27 @@
+SELECT col1 [,col2]* FROM table [WHERE predicate] [ORDER BY..] [[OUTPUT|APPEND] "filename"];
+SELECT DISTINCT col1 [,col2]* FROM table [WHERE predicate] [ORDER BY..];
+SELECT col1 [,col2]* FROM table [WHERE predicate] UNION SELECT col1 ...;
+
+Select records from SalesForce writing them to stdout or to a specified file.
+
+table        -- select records from this table
+col          -- name of column to fetch
+DISTINCT     -- only return 1 instance of each unique row.
+UNION        -- join two or more queries to form a single output set.
+OUTPUT        -- write results to a file replacing the existing contents.
+APPEND       -- append results to a file (create if necessary)
+
+Example: Find all unique titles used by Contacts
+
+  SELECT DISTINCT title FROM Contact;
+  
+Example: Find all unique country names used in Contact records.
+
+  SELECT DISTINCT MailingCountry FROM Contact
+  UNION SELECT OtherCountry FROM Contact;
+  
+Example: Write the results of a query to a file
+
+  SELECT LastName, FirstName, Email FROM Contact ORDER BY LastName ASC
+     OUTPUT "${user.home}/ContactList.txt";
+     

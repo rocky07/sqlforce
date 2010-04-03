@@ -1,0 +1,12 @@
+Describe sobject
+
+Describe the columns in any sobject (Contact, Account, etc.). Columns are displayed in alphabetical order.
+
+sobject     -- any sobject defined in SalesForce.
+
+This command simply provides a quick way to look up a column name in a SalesForce table.
+
+Examples:
+  DESCRIBE Contact
+  DESCRIBE Account
+  

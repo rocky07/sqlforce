@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>SQLForce Use Case: Normalize Country Names</title>
+</head>
+<body>
+<H1>SQLForce Use Case: Normalize Country Names</H1>
+<p>
+Our SalesForce instance had countries spelled many different ways. For example, <I>United States</I> was entered as:
+<ul>
+<li>United States</li>
+<li>USA</li>
+<li>U.S.A.</li>
+<li>United States of America</li>
+<li>US</li>
+</ul>
+In short, it was a nightmare to find all records for a particular country.
+</p>
+<p>
+There were two steps to this project:
+<ul><li>Find all unique spellings of countries</li>
+<li>Change all misspelled countries to a normalized name.</li></ul>
+</p>
+<h2>Find All Unique Spellings of Countries</h2>
+<p>The first step was easy. Use the SQLForce ANSI like <I>SELECT DISTINCT</I> and <I>UNION</I>
+operations to find all distinct country names in a single query.</p>
+<pre style='margin-left:.5in'>
+SELECT DISTINCT MailingCountry FROM Contact 
+	WHERE MailingCountry!=null
+	
+UNION SELECT OtherCountry FROM Contact 
+	WHERE OtherCountry!=null
+	
+UNION SELECT ShippingCountry FROM Account
+	WHERE ShippingCountry!=null
+	
+UNION SELECT BillingCountry FROM Account
+	WHERE BillingCountry!=null
+;
+</pre>
+<h2>Fix All Misspelled Countries</h2>
+<p>We had a lot of countries to correct so we wanted an approach where we only had to write the SQL once. We used
+SQLForce environment variables and SQL parameter substitution to make this happen. Here's the SQLForce</p>
+<pre style='margin-left:.5in'>
+##
+## CORRECT_NAME is the normalized name of a country
+## INVALID_NAMES list the known misspellings of the country.
+##
+SET CORRECT_NAME=United States
+SET INVALID_NAMES='US', 'United States of America', 'United State of America', 'USA', 'U.S.A.'
+
+UPDATE Contact SET MailingCountry='$CORRECT_NAME'
+WHERE MailingCountry IN ($INVALID_NAMES);
+
+UPDATE Contact SET OtherCountry='$CORRECT_NAME'
+WHERE OtherCountry IN ($INVALID_NAMES);
+
+UPDATE Account SET BillingCountry='$CORRECT_NAME'
+WHERE BillingCountry IN ($INVALID_NAMES);
+
+UPDATE Account SET ShippingCountry='$CORRECT_NAME'
+WHERE ShippingCountry IN ($INVALID_NAMES);
+
+UPDATE Account SET custom_country__c ='$CORRECT_NAME'
+WHERE custom_country__c IN ($INVALID_NAMES);
+
+</pre>
+Naturally we put this script into a file (along with files for other countries). In the end we created a master script
+that looked like:
+<pre style='margin-left:.5in'>
+##
+## Normalize names for many countries
+##
+OPEN USA.sql
+OPEN GreatBritain.sql
+OPEN Germany.sql
+##
+## etc.. for about 60 different countries.
+</pre>
+</body>
+</html>

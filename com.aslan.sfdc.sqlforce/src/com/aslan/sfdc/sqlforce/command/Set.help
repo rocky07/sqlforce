@@ -1,0 +1,39 @@
+SET variable=value
+
+Set a SQLForce environment variable.
+
+variable     -- any name that follows Java variable naming rules. 
+predicate    -- any value. Any quotes specified are preserved.
+
+Examples:
+  SET MYARG=How now brown cow
+  SET ClearAVariable=
+  
+ Variables can be referenced in most SQLForce commands (including SELECT/INSERT/UPDATE/DELETE)
+ using one of the following syntax forms:
+ 
+   Form1: $VariableName
+   Form2: ${VariableName}
+   
+ Form2 is most useful when the value is referenced in a string.
+ 
+ Examples:
+   SET CountryList='United States', 'Canada'
+   SELECT Name FROM Contact WHERE MailingCountry IN ( $CountryList );
+   
+   SET Prefix=Smart
+   SELECT Title FROM Contact WHERE Title LIKE '${Prefix}%';
+ 
+ In addition to variables a user may create, there are a small number of variables automatically
+ maintained by SQLForce.
+ 
+   LOG               -- Set the level of logging to stderr. Values: INFO, WARNING, ERROR
+   ROW_COUNT         -- Set after a SOQL statement to be the number of rows successfully effected.
+   ROW_ERROR_COUNT   -- Set after a SOQL statement to be the nubmer of rows that failed.
+   STATUS            -- If a command fails, set to the last error message. Null on success.
+   SELECT_TAB        -- Value used to separate columns returned by SELECT. Default is tab.
+   SELECT_QUOTE      -- If set, values returned by SELECT will be quoted using the variable's
+                        value. Most common values are ' and ". Default is empty (no quotes).
+                        
+
+

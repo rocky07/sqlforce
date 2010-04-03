@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>SQLForce Use Case: Mark Old Leads Inactive</title>
+</head>
+<body>
+<H1>SQLForce Use Case: Mark Old Leads Inactive</H1>
+<p>
+Our SalesForce instance had Lead records that were very old, had never been touched, and were causing problems processing new leads.
+We wanted to quickly find all old leads and change their status to <I>Archived</I>.
+</p>
+<p>
+There were two steps to this project:
+<ul><li>Build SOQL to find the leads we wanted to archive.</li>
+<li>Update the status of the leads found in the first step</li></ul>
+</p>
+<h2>Find Leads to Archive</h2>
+<p>This step took a little experimentation before we settled on the final SOQL.</p>
+<pre style='margin-left:.5in'>
+
+SELECT name FROM Lead
+WHERE
+	LastModifiedDate <= LAST_QUARTER
+	AND Status IN ('Open')
+	;
+	
+
+</pre>
+<h2>Update Status of Leads to <I>Archive</I></h2>
+<p>This step was easy (easy using SQLForce -- not so easy otherwise).</p>
+<pre  style='margin-left:.5in'>
+
+UPDATE Lead SET Status='Archive'
+WHERE
+	LastModifiedDate <= LAST_QUARTER
+	AND Status IN ('Open')
+	;
+	
+</pre>
+<p>This is a good example of a common task that takes just a few minutes with SQLForce. Alternatives 
+like using the SalesForce UI or writing a custom application in Java would take orders of magnitudes more time.</p>
+</body>
+</html>
