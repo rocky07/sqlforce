@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>SQLForce -- A Command Line Tool for Working with SalesForce</title>
+</head>
+<body>
+<H1>SQLForce -- A Command Line Tool for Working with SalesForce</H1>
+<p>
+SQLForce was born out of the frustration of not having basic ANSI SQL commands for manipulating
+SalesForce databases. In short, SQLForce provide ANSI like SOQL commands that can save you a lot
+of time when maintaining SalesForce.
+</p>
+<p>To use SQLForce you will need:
+<ul>
+<li>A Java 1.6 (or later) JRE. If you are looking at this project I am sure you already know that you
+can pick this up at <a href="http://java.sun.com">java.sun.com</a></li>
+<li>Your SalesForce credentials plus a generated security token.</li>
+</ul>
+</p>
+<p>
+The simplest way to launch SQLForce is:
+<ul>
+<li>java -jar sqlforce.jar</li>
+</ul>
+This will launch SQLForce without connecting to SalesForce. Once in, type <I>HELP</I>to 
+discover the available commands. Hint: The command
+to connect to SalesForce is <I>CONNECT</I>.
+</p>
+<p>
+SQLForce also has a handful of command line switches like any other program. To discover them type:
+<ul>
+<li>java -jar sqlforce.jar -#</li>
+</ul>
+One of the first things you will want to do is put your Salesforce credentials into a configuration file so you can avoid
+typing:
+<pre style='margin-left:.5in'>
+CONNECT PRODUCTION gsmithfarmer@gmail.com MyPassword MySecurityToken
+</pre>
+everytime you want to connect to Salesforce. A configuration file keeps your credentials out of scripts and supports the
+shorter form of the CONNECT command:
+<pre style='margin-left:.5in'>
+CONNECT PROFILE profileName
+</pre>
+To learn about the SQLForce configuration file see the <a href="CredentialSetup.html"><i>Credential Setup</i></a> documentation.
+<p>
+Another task you may want to do is package  the "java -jar sqlforce.jar" into a script file (.bat, .sh, .csh, etc.).
+I usually do this and also include login credentials or a profile reference in my script. Examples:
+<pre style='margin-left:.5in'>
+java sqlforce.jar -connect myProfileName -logINFO
+
+OR
+
+java sqlforce.jar -connect "PRODUCTION,gsmithfarmer@gmail.com,MyPassword,MySecurityToken" -log INFO
+</pre>
+</p>
+<p>
+The first step you should take is to read some of the <a href="UseCases/index.html">use cases</a>. They included descriptions of problems that have been solved
+with SQLForce.
+</p>
+<p>
+If you find SQLForce useful, please let me know: <a href="mailto:gsmithfarmer@gmail.com">gsmithfarmer@gmail.com</a>.
+<br>When you find problems or have suggestions I will always be interested.</br>
+<p>For the record:
+<ul>
+<li>The code is 100% java.</li>
+<li>The code is also packaged as a set of Eclipse plugins.</li>
+<li>JUnit Code coverage is around 97% as measured by <a href="http://www.eclemma.org">EclEmma</a></li>
+</ul>
+</p>
+</p>
+
+
+</body>
+</html>

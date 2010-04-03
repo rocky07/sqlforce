@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>SQLForce Use Case: Create a CSV File</title>
+</head>
+<body>
+<H1>SQLForce Use Case: Create a CSV File</H1>
+<p>
+Of course you can create a CSV file using the SalesForce UI. The SalesForce report writer is a nice piece of work.
+In our case, I wanted the file with 30 seconds of work and the ability to create the file in a scripting environment.
+I am not good enough to create a SalesForce report using their UI in 30 seconds. I am good enough using SQLForce.
+</p>
+<p>
+There are two ways to solve this problem. The first is to redirect the output of a SQLForce SELECT statement to a file.
+In the following example, I wrote the output to a file in my home directory.
+<pre style='margin-left:.5in'>
+##
+## Change the default column delimiter for the SELECT to a comma.
+##
+SET SELECT_TAB=,
+
+SELECT name, phone, email, Account.Name, Account.ShippingCountry
+FROM Contact
+WHERE
+	phone LIKE '314%'
+
+OUTPUT "${user.home}/MyData.txt"
+	;
+	
+</pre>
+<p>The other way to solve this problem is to simply redirect the stdout of SQLForce on the command line (just like any other
+program that writes to stdout)</p>
+
+<p>This is a good example of a common task that takes just a few minutes with SQLForce. A regular SalesForce may not
+want to do this task, but as an administrator I do it a lot.</p>
+</body>
+</html>

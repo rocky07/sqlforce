@@ -1,0 +1,33 @@
+UPDATE table SET col=value [,col=value]* [WHERE predicate];
+UPDATE table (col [,col]*) id=(value [,value]*) [,id=(value[,value]*)]*;
+
+Update records in a SalesForce table.
+
+table        -- update records in this table
+col=value    -- new values for a column
+predicate    -- anything supported by SOQL
+
+After the UPDATE completes the following variables will be set:
+
+ROW_COUNT       -- number of rows that were updated.
+ROW_ERROR_COUNT -- number of records that failed to update (example: permission error).
+
+Examples:
+
+  UPDATE Contact SET Title='CEO' WHERE FirstName='Mary' AND LastName='Smith';
+  
+  UPDATE Contact SET Title='CIO', MailingCountry='USA' WHERE LastName='Smith' LIMIT 1;
+  
+  UPDATE Contact(title, MailingCountry) 
+  	003A0000005ggaoIAA=('CEO', 'USA')
+  	, 003A0000005gganIAA=('CIO', 'Mexico');
+  
+The UPDATE command supports environment variable substitution both in the value
+part of the SET clause and in the predicate.
+
+Example:
+  SET MyTitle=CIO
+  UPDATE Contact SET Title=$CIO WHERE FirstName='Caleb' AND LastName='Smith';
+  
+  SET MyTitle=Athlete
+  UPDATE Contact SET Title='${MyTitle}' WHERE FirstName='Noah' AND LastName='Smith';

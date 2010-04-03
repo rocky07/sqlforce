@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: SalesForce tools for accessing the partner interface.
+Bundle-SymbolicName: com.aslan.sfdc.partner
+Bundle-Version: 1.0.0
+Bundle-Vendor: Aslan Technologies
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: com.sforce.soap.partner;bundle-version="1.0.0";visibility:=reexport
+Export-Package: com.aslan.sfdc.partner,
+ com.aslan.sfdc.partner.admin,
+ com.aslan.sfdc.partner.record,
+ com.aslan.sfdc.partner.record.custom

@@ -1,0 +1,18 @@
+Echo expression
+
+Echo the results of any expression (after environment variable replacement) to stdout.
+
+expression   -- Write this to stdout. Not quotes are required. Just like the Linux echo. 
+
+
+Examples:
+  ECHO Java is installed in ${java.home}
+  Java is installed in C:\Program Files\Java\jre6
+  
+  ECHO I am $USERNAME
+  I am greg
+  
+  ECHO The last query returned $ROW_COUNT rows
+  The last query returned 23 rows
+  
+ 
