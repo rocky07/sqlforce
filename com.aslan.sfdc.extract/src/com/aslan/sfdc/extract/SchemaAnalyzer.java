@@ -52,6 +52,8 @@ public class SchemaAnalyzer {
 		public Field[] getFields() {
 			return describeResult.getFields();
 		}
+		
+		
 	}
 	
 	private LoginManager.Session session;

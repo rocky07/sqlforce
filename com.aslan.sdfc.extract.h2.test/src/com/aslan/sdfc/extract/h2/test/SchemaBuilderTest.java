@@ -12,11 +12,15 @@ package com.aslan.sdfc.extract.h2.test;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.text.DateFormat;
+import java.util.Calendar;
 
 import com.aslan.sfdc.extract.DefaultExtractionMonitor;
 import com.aslan.sfdc.extract.ExtractionManager;
+import com.aslan.sfdc.extract.ExtractionRuleset;
 import com.aslan.sfdc.extract.IDatabaseBuilder;
 import com.aslan.sfdc.extract.IExtractionMonitor;
+import com.aslan.sfdc.extract.ExtractionRuleset.TableRule;
 import com.aslan.sfdc.extract.ansi.SQLEmitterDatabaseBuilder;
 import com.aslan.sfdc.extract.h2.H2DatabaseBuilder;
 import com.aslan.sfdc.partner.LoginManager;
@@ -33,10 +37,13 @@ import junit.framework.TestCase;
 public class SchemaBuilderTest extends TestCase {
 
 	IExtractionMonitor monitor = new DefaultExtractionMonitor() {
+		private DateFormat dateFormat = DateFormat.getTimeInstance();
 
 		@Override
 		public void reportMessage(String msg) {
-				System.err.println(msg);
+			Calendar cal = Calendar.getInstance();
+			
+			System.err.println(dateFormat.format( cal.getTime()) + " : " + msg);
 		}
 		
 	};
@@ -83,11 +90,16 @@ public class SchemaBuilderTest extends TestCase {
 			
 			ExtractionManager mgr = new ExtractionManager(session, builder);
 			
-			//mgr.extractSchema( "Attachment", monitor);
-			//mgr.extractData("Attachment", monitor);
+			ExtractionRuleset rules = new ExtractionRuleset();
 			
-			mgr.extractSchema(monitor );
-			mgr.extractData(monitor);
+			rules.includeTable(new TableRule(".*"));
+			rules.excludeTable(new TableRule("Attachment"));
+			//rules.includeTable(new TableRule("Account"));
+			//rules.includeTable( new TableRule("Contact"));
+			
+			mgr.extractSchema(rules, monitor);
+			mgr.extractData(rules, monitor);
+			
 		} finally {
 			if (null != connection) {
 				connection.close();
