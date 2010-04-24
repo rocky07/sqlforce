@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: CopyForce H2 Edition
+Bundle-SymbolicName: com.aslan.sfdc.copyforce.h2
+Bundle-Version: 1.0.0
+Bundle-Vendor: Aslan Technologies
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: com.aslan.sfdc.copyforce;bundle-version="1.0.0",
+ com.aslan.sfdc.extract.h2;bundle-version="1.0.0"
