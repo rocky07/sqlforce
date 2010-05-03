@@ -45,7 +45,8 @@ public class ExtractionManager {
 	private IDatabaseBuilder builder;
 	private List<String> allTableNames = new ArrayList<String>();
 	private SchemaAnalyzer schemaAnalyzer;
-	private boolean reportRowExtraction = false;
+	private boolean reportRowExtraction = true;
+	private int maxBytesToBuffer = 1*(1024*1024);
 	
 	
 	private Map<String,TableDescriptor> tableNameMap = new HashMap<String,TableDescriptor>();
@@ -57,14 +58,16 @@ public class ExtractionManager {
 		
 	}
 	
-	private int getMaxRowsToBuffer( String sObjectName ) {
-		if( "Attachment".equalsIgnoreCase(sObjectName)) {
-			return 25;
-		} else {
-			return 500;
-		}
+	/**
+	 * Set the maximum number of bytes that will be cached by the system until flushing rows to
+	 * the destination database.
+	 * 
+	 * @param nBytes number of bytes to buffer.
+	 */
+	public void setMaxBytesToBuffer( int nBytes ) {
+		maxBytesToBuffer = nBytes;
 	}
-	
+
 	/**
 	 * Return a list of all defined tables in the Salesforce.
 	 * 
@@ -186,7 +189,6 @@ public class ExtractionManager {
 			return;
 		}
 		final Field fields[] = tableDesc.describeResult.getFields();
-		final int maxRowsToBuffer = getMaxRowsToBuffer(sObjectName);
 		
 		StringBuffer sql = new StringBuffer();
 		sql.append("SELECT ");
@@ -197,7 +199,9 @@ public class ExtractionManager {
 		
 		class MyCallback extends DefaultSObjectQuery2Callback {
 			List<String[]> rowBuffer = new ArrayList<String[]>();
+			
 			int nWritten = 0;
+			int nBytesPending = 0;
 			
 			private void flush() {
 				if( 0 == rowBuffer.size()) { return; }
@@ -213,11 +217,17 @@ public class ExtractionManager {
 				}
 				nWritten += rowBuffer.size();
 				rowBuffer.clear();
+				nBytesPending = 0;
 			}
 			@Override
 			public void addRow(int rowNumber, String[] data) {
 				rowBuffer.add(data);
-				if( rowBuffer.size() >= maxRowsToBuffer ) {
+				for( String s : data ) {
+					if( null != s ) {
+						nBytesPending += s.length();
+					}
+				}
+				if( nBytesPending >= maxBytesToBuffer ) {
 					flush();
 				}
 			}
