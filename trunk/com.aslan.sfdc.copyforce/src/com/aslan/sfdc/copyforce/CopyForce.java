@@ -20,6 +20,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import com.aslan.parser.commandline.CommandLineParser;
+import com.aslan.parser.commandline.CommandLineParser.SwitchDef;
 import com.aslan.sfdc.extract.DefaultExtractionMonitor;
 import com.aslan.sfdc.extract.ExtractionManager;
 import com.aslan.sfdc.extract.ExtractionRuleset;
@@ -38,7 +39,7 @@ import com.aslan.sfdc.partner.LoginManager;
  */
 public abstract class CopyForce {
 
-	public static int DEFAULT_TIMEOUT = 100000;
+	public static int DEFAULT_TIMEOUT = 1000000;
 	public static final String SW_CONNECT = "connect";
 	public static final String SW_LOG = "log";
 	public static final String SW_INIT = "init";
@@ -48,17 +49,18 @@ public abstract class CopyForce {
 	public static final String SW_CONFIG = "config";
 	public static final String SW_TRACE = "trace";
 
-	private static final String[] baseCmdSwitches = {
-		"connect:string:::profileName OR ConnectionType,Username,Password,SecurityToken",
-		"log:string:error:info,warning,error:Set the default message level written to stderr",
-		"config:xfile:::Description what should be transferred from Salesforce",
-		"version:none:::Print the version number of the program to stderr",
-		"schema:none:::If set schema the system will create the schema before transferring data",
-		"silent:none:::If specified then progress is not written to stdout",
-		"trace:none:::If set the be verbose about program flow",
+	private static final SwitchDef[]  baseCmdSwitches = {
+		new SwitchDef( "string", SW_CONNECT, "profileName OR ConnectionType,Username,Password,SecurityToken")
+		,new SwitchDef( "string", SW_LOG, "error", "info,warning,error:Set the default message level written to stderr" )
+		,new SwitchDef( "xfile", SW_CONFIG, "Description what should be transferred from Salesforce")
+		,new SwitchDef( "none", SW_VERSION, "Print the version number of the program to stderr" )
+		,new SwitchDef( "none", SW_SILENT, "If specified then progress is not written to stdout")
+		,new SwitchDef( "none", SW_SCHEMA, "If set schema the system will create the schema before transferring data" )
+		,new SwitchDef( "none", SW_TRACE, "If set the be verbose about program flow" )
 	};
 	
-	private List<String> cmdSwitches = new ArrayList<String>();
+	
+	private List<SwitchDef> cmdSwitches = new ArrayList<SwitchDef>();
 	private boolean traceMode = false;
 	
 	private class ConfigSaxHandler extends DefaultHandler {
@@ -88,7 +90,7 @@ public abstract class CopyForce {
 		}
 	}
 	public CopyForce() {
-		for( String s : baseCmdSwitches ) {
+		for( SwitchDef s : baseCmdSwitches ) {
 			cmdSwitches.add(s);
 		}
 		
@@ -138,14 +140,14 @@ public abstract class CopyForce {
 	 * 
 	 * @param switchList extra command line switches.
 	 */
-	public void addCmdSwitches( String[] switchList ) {
-		for( String s : switchList ) {
+	public void addCmdSwitches( SwitchDef[] switchList ) {
+		for( SwitchDef s : switchList ) {
 			cmdSwitches.add(s);
 		}
 	}
 	
 	public void execute( String args[]) throws Exception {
-		CommandLineParser parser = new CommandLineParser(cmdSwitches.toArray( new String[0]));
+		CommandLineParser parser = new CommandLineParser(cmdSwitches.toArray( new SwitchDef[0]));
 
 		args = (null==args?new String[0]:args);
 		parser.parse( args );

@@ -201,7 +201,15 @@ public class CommandLineParser
 */
 	public CommandLineParser()
 	{
-		this(null);
+		defineSwitchType( new SwitchTypeNoArg( "none" ));
+		defineSwitchType( new SwitchTypeString( "string" ));
+		defineSwitchType( new SwitchTypeInt( "int" ));
+		defineSwitchType( new SwitchTypeDouble( "double" ));
+		defineSwitchType( new SwitchTypeBoolean( "boolean" ));
+		defineSwitchType( new SwitchTypeFile( "file" ));
+		defineSwitchType( new SwitchTypeExistingFile( "xfile" ));
+		defineSwitchType( new SwitchTypeDir( "dir" ));
+		defineSwitchType( new SwitchTypeExistingDir( "xdir" ));
 	}
 
 /**
@@ -212,19 +220,20 @@ public class CommandLineParser
 */
 	public CommandLineParser( String[] switchList )
 	{
-		defineSwitchType( new SwitchTypeNoArg( "none" ));
-		defineSwitchType( new SwitchTypeString( "string" ));
-		defineSwitchType( new SwitchTypeInt( "int" ));
-		defineSwitchType( new SwitchTypeDouble( "double" ));
-		defineSwitchType( new SwitchTypeBoolean( "boolean" ));
-		defineSwitchType( new SwitchTypeFile( "file" ));
-		defineSwitchType( new SwitchTypeExistingFile( "xfile" ));
-		defineSwitchType( new SwitchTypeDir( "dir" ));
-		defineSwitchType( new SwitchTypeExistingDir( "xdir" ));
+		this();
 
 		if( switchList != null ) { defineSwitches( switchList ); }
 	}
 
+	/**
+	 * Create a CommandLineParser providing the available switch definitions.
+	 * @param switchList definition of all switches which should be recognized by the parser
+	 */
+	public CommandLineParser( SwitchDef[] switchList ) {
+		this();
+		
+		if( switchList != null ) { defineSwitches( switchList ); }
+	}
 /*
 * Built in switch type for switchs with no arguments
 */
@@ -403,27 +412,27 @@ public class CommandLineParser
 	}
 
 /*
-* This private class holds the definitions of all currently defined switches
+* This class holds the definitions of all currently defined switches
 *
 */
 	private class Switch {
-		HashMap<String,String>	valueMap;
-		String	defaultValue;
-		String	value;
-		String	description;
-		SwitchType swType;
+		private HashMap<String,String>	valueMap;
+		private String	defaultValue;
+		private String	value;
+		private String	description;
+		private SwitchType swType;
 
-		public Switch( SwitchType swType , String value)
+		private Switch( SwitchType swType , String value)
 		{
 			this(swType,value,null);
 		}
 
-		public Switch( SwitchType swType, String value, String description )
+		private Switch( SwitchType swType, String value, String description )
 		{
 			this( swType, null, value, description );
 		}
 
-		public Switch( SwitchType swType, 
+		private Switch( SwitchType swType, 
 				String valueOptions[], String value, String description )
 		{
 			this.swType = swType;
@@ -440,7 +449,7 @@ public class CommandLineParser
 			}
 		}
 
-		public String getOptionString()
+		private String getOptionString()
 		{
 			if( valueMap == null ) { return null; }
 			
@@ -457,6 +466,35 @@ public class CommandLineParser
 		
 	}
 
+	/**
+	 * Convenience class for contructing switches in class that use the Command Line Parser.
+	 * 
+	 * @author greg
+	 *
+	 */
+	public static class SwitchDef {
+		private String switchTypeName;
+		private String switchName;
+		private String defaultValue;
+		private String valueOptions[];
+		private String description;
+		
+		public SwitchDef( String switchTypeName, String switchName, String defaultValue, String valueOptions[], String description ) {
+			this.switchTypeName = switchTypeName;
+			this.switchName = switchName;
+			this.defaultValue = defaultValue;
+			this.valueOptions = valueOptions;
+			this.description = description;
+		}
+		
+		public SwitchDef( String switchTypeName, String switchName, String defaultValue, String description ) {
+			this( switchTypeName, switchName, defaultValue, (String[]) null, description );
+		}
+		
+		public SwitchDef( String switchTypeName, String switchName, String description ) {
+			this( switchTypeName, switchName, (String) null, description );
+		}
+	}
 /**
 * Pad a value on the right with spaces to a specific length.
 *
@@ -652,6 +690,35 @@ public class CommandLineParser
 	{
 		for( int n = 0; n < switchList.length; n++ ) {
 			_defineSwitch( switchList[n], paramDelimiter );
+		}
+	}
+	
+	/**
+	 * Tell the parser about available switches.
+	 * <p>If any of the switch types references in the argument are not known, then an error will be thrown.
+	 * 
+	 * @param switchList list of switches to define.
+	 */
+	public void defineSwitches( SwitchDef switchList[]) {
+		for( SwitchDef sw : switchList ) {
+			
+			SwitchType swType;
+			if( null == sw.switchTypeName || 0==sw.switchTypeName.trim().length()) {
+				
+					swType = switchTypes.get( ((sw.defaultValue==null)?"none":"string") );
+			} else {
+				if(!switchTypes.containsKey(sw.switchTypeName.toLowerCase())) {
+					throw new IllegalArgumentException("Unrecognized switch type : " + sw.switchTypeName );
+				}
+				swType = switchTypes.get(sw.switchTypeName.toLowerCase());
+			}
+			
+			
+			String name = sw.switchName.toLowerCase();
+
+			if( definedSwitches.containsKey(name) ) { definedSwitches.remove(name); }
+
+			definedSwitches.put( name, new Switch( swType, sw.valueOptions, sw.defaultValue, sw.description ));
 		}
 	}
 /**

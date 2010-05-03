@@ -14,6 +14,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import com.aslan.parser.commandline.CommandLineParser;
+import com.aslan.parser.commandline.CommandLineParser.SwitchDef;
 import com.aslan.sfdc.copyforce.CopyForce;
 import com.aslan.sfdc.extract.IDatabaseBuilder;
 import com.aslan.sfdc.extract.h2.H2DatabaseBuilder;
@@ -29,12 +30,12 @@ public class CopyForceH2 extends CopyForce {
 	public static final String SW_H2USER = "h2user";
 	public static final String SW_H2PASSWORD = "h2password";
 	
-	private static final String[] cmdSwitches = {
-		"h2connect:string:::connection string for an H2 database",
-		"h2user:string:sa::user name for connecting to an H2 database. If database is created this user will be used.",
-		"h2connect:string:::password for connecting to an H2 database.",
-		
+	private static final SwitchDef[]  cmdSwitches = {
+		new SwitchDef( "string", SW_H2CONNECT, "connection string for an H2 database")
+		,new SwitchDef( "string", SW_H2USER, "error", "user name for connecting to an H2 database. If database is created this user will be used." )
+		,new SwitchDef( "string", SW_H2PASSWORD, "password for connecting to an H2 database.")
 	};
+
 	
 	private Connection connection = null;
 	
