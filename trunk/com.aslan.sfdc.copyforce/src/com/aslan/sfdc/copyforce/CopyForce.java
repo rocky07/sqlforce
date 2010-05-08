@@ -39,7 +39,6 @@ import com.aslan.sfdc.partner.LoginManager;
  */
 public abstract class CopyForce {
 
-	public static int DEFAULT_TIMEOUT = 1000000;
 	public static final String SW_CONNECT = "connect";
 	public static final String SW_LOG = "log";
 	public static final String SW_INIT = "init";
@@ -48,6 +47,8 @@ public abstract class CopyForce {
 	public static final String SW_SILENT = "silent";
 	public static final String SW_CONFIG = "config";
 	public static final String SW_TRACE = "trace";
+	public static final String SW_TIMEOUT = "timeout";
+	public static final String SW_BUFFER = "buffer";
 
 	private static final SwitchDef[]  baseCmdSwitches = {
 		new SwitchDef( "string", SW_CONNECT, "profileName OR ConnectionType,Username,Password,SecurityToken")
@@ -57,11 +58,15 @@ public abstract class CopyForce {
 		,new SwitchDef( "none", SW_SILENT, "If specified then progress is not written to stdout")
 		,new SwitchDef( "none", SW_SCHEMA, "If set schema the system will create the schema before transferring data" )
 		,new SwitchDef( "none", SW_TRACE, "If set the be verbose about program flow" )
+		,new SwitchDef( "int", SW_TIMEOUT, "1000000", "Maximum time (milliseconds) for Salesforce" )
+		,new SwitchDef( "int", SW_BUFFER, "20", "Number of megabytes to use when buffering Salesforce data" )
 	};
 	
 	
 	private List<SwitchDef> cmdSwitches = new ArrayList<SwitchDef>();
 	private boolean traceMode = false;
+	private int salesforceTimeout = 1000000;
+	private int salesforceRowBufferMB = 20;
 	
 	private class ConfigSaxHandler extends DefaultHandler {
 		private ExtractionRuleset ruleSet;
@@ -133,7 +138,7 @@ public abstract class CopyForce {
 		}
 		
 		
-		return new LoginManager().login( credentials, DEFAULT_TIMEOUT );
+		return new LoginManager().login( credentials, salesforceTimeout );
 	}
 	/**
 	 * Add one or more command line switches to the list of standard switches.
@@ -153,6 +158,8 @@ public abstract class CopyForce {
 		parser.parse( args );
 		
 		traceMode = parser.isSet( SW_TRACE);
+		salesforceTimeout = parser.getInt(SW_TIMEOUT);
+		salesforceRowBufferMB = parser.getInt(SW_BUFFER );
 		
 		//
 		// Login into Salesforce.
@@ -202,6 +209,7 @@ public abstract class CopyForce {
 		// Start the extraction
 		//
 		ExtractionManager mgr = new ExtractionManager(session, builder);
+		mgr.setMaxBytesToBuffer( salesforceRowBufferMB*(1024*1024));
 		if( parser.isSet( SW_SCHEMA) ) {
 			trace("Start creation of Schema in target database");
 			mgr.extractSchema( rules, monitor);
