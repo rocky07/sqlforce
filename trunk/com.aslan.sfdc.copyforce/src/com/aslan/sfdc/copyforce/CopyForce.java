@@ -74,15 +74,29 @@ public abstract class CopyForce {
 			this.ruleSet = ruleSet;
 		}
 		
+		private String getAttribute(Attributes attributes, String name ) {
+			String value = attributes.getValue( name);
+			
+			if( null==value || 0==value.trim().length()) { return null; }
+			return value;
+		}
 		public void startElement(String uri, String localName, String qName,
 				Attributes attributes) throws SAXException {
 			
 			if( "include".equals( qName)) {
-				String name = attributes.getValue( "table");
-				if( null != name && name.trim().length()>0) {
-					ruleSet.includeTable(new TableRule(name));
+				String name = getAttribute( attributes, "table");
+				if( null != name ) {
+					
+					TableRule rule = new TableRule(name);
+					String predicate = getAttribute( attributes, "where");
+					if( null != predicate ) {
+						rule.setPredicate( predicate);
+					}
+					
+					ruleSet.includeTable(rule);
 					trace("Include table " + name );
 				}
+				
 			}
 			
 			if( "exclude".equals( qName)) {

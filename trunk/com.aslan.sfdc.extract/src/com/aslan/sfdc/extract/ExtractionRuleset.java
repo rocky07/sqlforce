@@ -40,6 +40,7 @@ public class ExtractionRuleset {
 		private Pattern pattern;
 		private String regexp;
 		private boolean includeReferencedTables = false;
+		private String predicate = null;
 	
 		public TableRule( String regexp ) {
 			this(regexp, false );
@@ -61,6 +62,23 @@ public class ExtractionRuleset {
 			return includeReferencedTables;
 		}
 		
+		/**
+		 * Get the clause to include after the SOQL WHERE when fetching
+		 * records from any table that matches the rule.
+		 * 
+		 * @return where clause (or null if there is no predicate defined).
+		 */
+		public String getPredicate() { return predicate; }
+		
+		/**
+		 * Set conditions (the WHERE part of a SOQL statement) that should be used
+		 * when selecting records from tables that match the rule.
+		 * <p>
+		 * Example: CreatedDate >= LAST_MONTH
+		 * 
+		 * @param predicate what to use after the WHERE when selecting records from tables that match the rules.
+		 */
+		public void setPredicate( String predicate ) { this.predicate = predicate; }
 		/**
 		 * Determine if tables referenced by this table will be automatically extracted
 		 * if this table is extracted.
