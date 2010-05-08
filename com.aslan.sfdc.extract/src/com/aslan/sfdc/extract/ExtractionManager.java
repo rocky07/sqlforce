@@ -41,6 +41,26 @@ public class ExtractionManager {
 		}
 	}
 	
+	private class TableRuleInstance {
+		private ExtractionRuleset ruleSet;
+		private TableRule tableRule;
+		private String tableName;
+		private boolean byReference;
+		
+		TableRuleInstance( ExtractionRuleset ruleSet, TableRule tableRule, String tableName, boolean byReference ) {
+			this.ruleSet = ruleSet;
+			this.tableRule = tableRule;
+			this.tableName = tableName;
+			this.byReference = byReference;
+		}
+		
+		public ExtractionRuleset getRuleSet() { return ruleSet; }
+		public TableRule getTableRule() { return tableRule; }
+		public String getTableName() { return tableName; }
+		public boolean isByReference() { return byReference; }
+		
+		
+	}
 	private LoginManager.Session session;
 	private IDatabaseBuilder builder;
 	private List<String> allTableNames = new ArrayList<String>();
@@ -129,10 +149,12 @@ public class ExtractionManager {
 	 * @return order list of tables.
 	 * @throws Exception if salesforce fails.
 	 */
-	private List<String> calculateExtractionList(ExtractionRuleset ruleSet, IExtractionMonitor monitor ) throws Exception {
+	
+
+	private List<TableRuleInstance> calculateExtractionList(ExtractionRuleset ruleSet, IExtractionMonitor monitor ) throws Exception {
 		List<String> tableNames = getAllTableNames();
 		Set<String> extractedTables = new HashSet<String>();
-		List<String> tableList = new ArrayList<String>();
+		List<TableRuleInstance> tableList = new ArrayList<TableRuleInstance>();
 		Set<String> excludedTables = new HashSet<String>();
 		
 		for( String name : tableNames ) {
@@ -148,7 +170,7 @@ public class ExtractionManager {
 				if( !rule.isMatch(name)) { continue; }
 				
 				if( !rule.isIncludeReferencedTables()) {
-					tableList.add(name);
+					tableList.add(new TableRuleInstance( ruleSet, rule, name, false));
 					extractedTables.add(name);
 					continue;
 				}
@@ -162,11 +184,11 @@ public class ExtractionManager {
 				
 				for(SchemaAnalyzer.Table refTable : refTables ) {
 					if( extractedTables.contains(refTable.getName())) { continue; }
-					tableList.add(refTable.getName());
+					tableList.add(new TableRuleInstance( ruleSet, rule, refTable.getName(), true));
 					extractedTables.add(refTable.getName());
 				}
 				if( !extractedTables.contains(name)) { // A self referential table may already be included
-					tableList.add(name);
+					tableList.add(new TableRuleInstance( ruleSet, rule, name, false));
 					extractedTables.add(name);
 				}
 			}
@@ -181,8 +203,9 @@ public class ExtractionManager {
 	 * @param monitor
 	 * @throws Exception if anything goes wrong.
 	 */
-	private void extractData(String sObjectName, final IExtractionMonitor monitor ) throws Exception {
+	private void extractData(TableRuleInstance rule, final IExtractionMonitor monitor ) throws Exception {
 		
+		String sObjectName = rule.getTableName();
 		final TableDescriptor tableDesc = getTableDescriptor( sObjectName );
 		if( !tableDesc.describeResult.isQueryable()) {
 			monitor.reportMessage("Skip " + sObjectName + ". SELECT Operation not supported by Salesforce");
@@ -196,6 +219,10 @@ public class ExtractionManager {
 			sql.append( (n>0?",":"") + fields[n].getName());
 		}
 		sql.append( " FROM " + tableDesc.describeResult.getName());
+		
+		if( null != rule.getTableRule().getPredicate()) {
+			sql.append( " WHERE " + rule.getTableRule().getPredicate());
+		}
 		
 		class MyCallback extends DefaultSObjectQuery2Callback {
 			List<String[]> rowBuffer = new ArrayList<String[]>();
@@ -240,7 +267,11 @@ public class ExtractionManager {
 		}
 		MyCallback callback = new MyCallback();
 		
-		monitor.reportMessage("Start Extract Data: " + sObjectName );
+		monitor.reportMessage("Start Extract Data: " + sObjectName 
+				+ (null==rule.getTableRule().getPredicate()?
+						" (All Rows)"
+						:(" (WHERE " + rule.getTableRule().getPredicate() + ")")));
+		
 		(new SObjectQueryHelper()).findRows( session, sql.toString(), callback );
 		monitor.reportMessage("End Extract Data: " + sObjectName + ", " + callback.nWritten + " rows extracted");
 	}
@@ -255,10 +286,10 @@ public class ExtractionManager {
 	 */
 	public void extractData(ExtractionRuleset ruleSet,  IExtractionMonitor monitor ) throws Exception {
 		monitor.reportMessage("Calculating the order in which data will be extracted");
-		List<String> tables = calculateExtractionList(ruleSet, monitor );
+		List<TableRuleInstance> tables = calculateExtractionList(ruleSet, monitor );
 		
-		for( String name : tables ) {
-			extractData( name, monitor );
+		for( TableRuleInstance table : tables ) {
+			extractData( table, monitor );
 		}
 		monitor.reportMessage("Finished extracting data");
 	}
@@ -287,10 +318,10 @@ public class ExtractionManager {
 	public void extractSchema(ExtractionRuleset ruleSet, IExtractionMonitor monitor) throws Exception {
 		
 		monitor.reportMessage("Calculating the order in which schema will be extracted");
-		List<String> tables = calculateExtractionList(ruleSet, monitor );
+		List<TableRuleInstance> tables = calculateExtractionList(ruleSet, monitor );
 		
-		for( String name : tables ) {
-			extractSchema( name, monitor );
+		for( TableRuleInstance rule : tables ) {
+			extractSchema( rule.getTableName(), monitor );
 		}
 		monitor.reportMessage("Finished extracting schema");
 		
