@@ -55,6 +55,10 @@ public interface IDatabaseBuilder {
 	/**
 	 * Insert data into a table.
 	 * 
+	 * Note that a record's unique ID will ALWAYS be the first column in every dataRow.
+	 * A IDatabaseBuilder instance should use the ID value to determine if the data is new
+	 * to the extraction database or an update.
+	 * 
 	 * @param sfdcTable insert into this table
 	 * @param fields the fields to insert.
 	 * @param dataRows rows to insert. data in the same order as fields in table.

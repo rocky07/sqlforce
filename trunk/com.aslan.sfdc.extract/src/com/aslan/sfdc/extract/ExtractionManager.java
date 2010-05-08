@@ -214,9 +214,10 @@ public class ExtractionManager {
 		final Field fields[] = tableDesc.describeResult.getFields();
 		
 		StringBuffer sql = new StringBuffer();
-		sql.append("SELECT ");
+		sql.append("SELECT ID"); // ALWAYS make the ID be the first column selected.
 		for( int n = 0; n < fields.length; n++ ) {
-			sql.append( (n>0?",":"") + fields[n].getName());
+			if( "id".equalsIgnoreCase(fields[n].getName())) { continue; }
+			sql.append( "," + fields[n].getName());
 		}
 		sql.append( " FROM " + tableDesc.describeResult.getName());
 		
