@@ -5,7 +5,6 @@ Bundle-SymbolicName: com.aslan.sfdc.partner.test
 Bundle-Version: 1.0.0
 Bundle-Vendor: Aslan Technologies
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: com.aslan.sfdc.partner.transfer;bundle-version="1.0.0",
- com.aslan.sfdc.partner.duplicate;bundle-version="1.0.0",
+Require-Bundle: com.aslan.sfdc.partner;bundle-version="1.0.0";visibility:=reexport,
  org.junit;bundle-version="3.8.2"
 Export-Package: com.aslan.sfdc.partner.test
