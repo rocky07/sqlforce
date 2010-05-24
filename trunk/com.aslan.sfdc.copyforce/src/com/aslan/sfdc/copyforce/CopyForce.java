@@ -39,6 +39,79 @@ import com.aslan.sfdc.partner.LoginManager;
  */
 public abstract class CopyForce {
 
+	private class CopyThread extends Thread {
+		private CommandLineParser parser;
+		private Exception exception;
+		private IExtractionMonitor monitor;
+
+		CopyThread( CommandLineParser parser, IExtractionMonitor monitor ) {
+			this.parser = parser;
+			this.monitor = monitor;
+		}
+		
+		private void copy() throws Exception {
+			
+			traceMode = parser.isSet( SW_TRACE);
+			salesforceTimeout = parser.getInt(SW_TIMEOUT);
+			salesforceRowBufferMB = parser.getInt(SW_BUFFER );
+			
+			//
+			// Login into Salesforce.
+			//
+		
+			if( !parser.isSet(SW_CONNECT)) {
+				throw new Exception("Required switch " + SW_CONNECT + " was not specified");
+			}
+			String connectString =  parser.getString(SW_CONNECT);
+			trace("Connect to Salesforce - " + connectString );
+			LoginManager.Session session = connectToSalesforce( connectString );
+			
+			//
+			// Determine what should be transferred to the output database.
+			//
+			
+			ExtractionRuleset rules = new ExtractionRuleset();
+			if( parser.isSet(SW_CONFIG)) {
+				trace("Load extraction rules from " + parser.getString(SW_CONFIG));
+				SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
+				ConfigSaxHandler handler = new ConfigSaxHandler(rules);
+				
+				saxParser.parse( parser.getFile(SW_CONFIG), handler);
+				
+			} else { // Copy everything if rules are not specified.
+				trace("Using default extraction rules");
+				rules.includeTable(new TableRule(".*"));
+			}
+			//
+			// Connect to the destination database.
+			//
+			IDatabaseBuilder builder = getDatabaseBuilder(parser);
+			
+			//
+			// Start the extraction
+			//
+			ExtractionManager mgr = new ExtractionManager(session, builder);
+			mgr.setMaxBytesToBuffer( salesforceRowBufferMB*(1024*1024));
+			if( parser.isSet( SW_SCHEMA) ) {
+				trace("Start creation of Schema in target database");
+				mgr.extractSchema( rules, monitor);
+			}
+			
+			
+			trace("Start copy of data from Salesforce to target database");
+			mgr.extractData( rules, monitor);
+			trace("Finished");
+		}
+		
+		public void run() {
+			exception = null;
+			try {
+				copy();
+			} catch( Exception e ) {
+				exception = e;
+			}
+		}
+	}
 	public static final String SW_CONNECT = "connect";
 	public static final String SW_LOG = "log";
 	public static final String SW_INIT = "init";
@@ -49,6 +122,7 @@ public abstract class CopyForce {
 	public static final String SW_TRACE = "trace";
 	public static final String SW_TIMEOUT = "timeout";
 	public static final String SW_BUFFER = "buffer";
+	public static final String SW_GUI = "GUI";
 
 	private static final SwitchDef[]  baseCmdSwitches = {
 		new SwitchDef( "string", SW_CONNECT, "profileName OR ConnectionType,Username,Password,SecurityToken")
@@ -57,9 +131,10 @@ public abstract class CopyForce {
 		,new SwitchDef( "none", SW_VERSION, "Print the version number of the program to stderr" )
 		,new SwitchDef( "none", SW_SILENT, "If specified then progress is not written to stdout")
 		,new SwitchDef( "none", SW_SCHEMA, "If set schema the system will create the schema before transferring data" )
-		,new SwitchDef( "none", SW_TRACE, "If set the be verbose about program flow" )
+		,new SwitchDef( "none", SW_TRACE, "If set then be verbose about program flow" )
 		,new SwitchDef( "int", SW_TIMEOUT, "1000000", "Maximum time (milliseconds) for Salesforce" )
 		,new SwitchDef( "int", SW_BUFFER, "20", "Number of megabytes to use when buffering Salesforce data" )
+		,new SwitchDef( "none", SW_GUI, "If set then show progress in a GUI" )
 	};
 	
 	
@@ -171,46 +246,23 @@ public abstract class CopyForce {
 		args = (null==args?new String[0]:args);
 		parser.parse( args );
 		
-		traceMode = parser.isSet( SW_TRACE);
-		salesforceTimeout = parser.getInt(SW_TIMEOUT);
-		salesforceRowBufferMB = parser.getInt(SW_BUFFER );
-		
-		//
-		// Login into Salesforce.
-		//
-	
-		if( !parser.isSet(SW_CONNECT)) {
-			throw new Exception("Required switch " + SW_CONNECT + " was not specified");
-		}
-		String connectString =  parser.getString(SW_CONNECT);
-		trace("Connect to Salesforce - " + connectString );
-		LoginManager.Session session = connectToSalesforce( connectString );
-		
-		//
-		// Determine what should be transferred to the output database.
-		//
-		
-		ExtractionRuleset rules = new ExtractionRuleset();
-		if( parser.isSet(SW_CONFIG)) {
-			trace("Load extraction rules from " + parser.getString(SW_CONFIG));
-			SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
-			ConfigSaxHandler handler = new ConfigSaxHandler(rules);
-			
-			saxParser.parse( parser.getFile(SW_CONFIG), handler);
-			
-		} else { // Copy everything if rules are not specified.
-			trace("Using default extraction rules");
-			rules.includeTable(new TableRule(".*"));
-		}
-		//
-		// Connect to the destination database.
-		//
-		IDatabaseBuilder builder = getDatabaseBuilder(parser);
+		boolean isGUI = parser.isSet( SW_GUI );
 		boolean isSilent = parser.isSet(SW_SILENT);
 		
-		IExtractionMonitor monitor = isSilent?
-			new DefaultExtractionMonitor()
-			: new DefaultExtractionMonitor() {
+		IExtractionMonitor monitor;
+		if( isSilent ) {
+			monitor = new DefaultExtractionMonitor();
+		} else if( isGUI ) {
+			monitor = new DefaultExtractionMonitor() {
+
+				@Override
+				public void reportMessage(String msg) {
+					System.err.println("GUI: " + msg);
+				}
+				
+			};
+		} else {
+			monitor = new DefaultExtractionMonitor() {
 
 				@Override
 				public void reportMessage(String msg) {
@@ -218,22 +270,16 @@ public abstract class CopyForce {
 				}
 				
 			};
-		
-		//
-		// Start the extraction
-		//
-		ExtractionManager mgr = new ExtractionManager(session, builder);
-		mgr.setMaxBytesToBuffer( salesforceRowBufferMB*(1024*1024));
-		if( parser.isSet( SW_SCHEMA) ) {
-			trace("Start creation of Schema in target database");
-			mgr.extractSchema( rules, monitor);
 		}
 		
 		
-		trace("Start copy of data from Salesforce to target database");
-		mgr.extractData( rules, monitor);
-		trace("Finished");
+		CopyThread thread = new CopyThread( parser, monitor );
+		thread.start();
+		thread.join();
 		
+		if( null != thread.exception ) {
+			throw thread.exception;
+		}
 	}
 
 }

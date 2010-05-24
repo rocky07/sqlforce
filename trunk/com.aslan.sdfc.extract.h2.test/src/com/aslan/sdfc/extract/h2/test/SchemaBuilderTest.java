@@ -15,18 +15,17 @@ import java.sql.DriverManager;
 import java.text.DateFormat;
 import java.util.Calendar;
 
+import junit.framework.TestCase;
+
 import com.aslan.sfdc.extract.DefaultExtractionMonitor;
 import com.aslan.sfdc.extract.ExtractionManager;
 import com.aslan.sfdc.extract.ExtractionRuleset;
 import com.aslan.sfdc.extract.IDatabaseBuilder;
 import com.aslan.sfdc.extract.IExtractionMonitor;
 import com.aslan.sfdc.extract.ExtractionRuleset.TableRule;
-import com.aslan.sfdc.extract.ansi.SQLEmitterDatabaseBuilder;
 import com.aslan.sfdc.extract.h2.H2DatabaseBuilder;
 import com.aslan.sfdc.partner.LoginManager;
 import com.aslan.sfdc.partner.test.SfdcTestEnvironment;
-
-import junit.framework.TestCase;
 
 /**
  * Verify that an H2 Schema can be build from Salesforce.
@@ -85,14 +84,14 @@ public class SchemaBuilderTest extends TestCase {
 					+ baseDatabaseName.getAbsolutePath(), "sa", "fred");
 
 			//LoginManager.Session session = SfdcTestEnvironment.getTestSession();
-			LoginManager.Session session = SfdcTestEnvironment.getSession("readonly");
+			LoginManager.Session session = SfdcTestEnvironment.getSession("sandbox");
 			IDatabaseBuilder builder = new H2DatabaseBuilder( connection );
 			
 			ExtractionManager mgr = new ExtractionManager(session, builder);
 			
 			ExtractionRuleset rules = new ExtractionRuleset();
 			
-			rules.includeTable(new TableRule(".*"));
+			rules.includeTable(new TableRule("User"));
 			rules.excludeTable(new TableRule("Attachment"));
 			//rules.includeTable(new TableRule("Account"));
 			//rules.includeTable( new TableRule("Contact"));
