@@ -1,5 +1,8 @@
 #labels Featured
 = What's New =
+27-Aug-10
+  * Fixed a problem with the Jython module when reference more than 2 levels deep on columns and using the selectRecords() method.
+  * Upgraded to version 19.0 of the partner WSDL.
 
 03-Apr-10
   * Fixed date time parsers and made them generous wrt syntax (almost correct date or dateTime values will be patched on the fly to meet SOQL syntax requirements).
