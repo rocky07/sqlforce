@@ -1,4 +1,4 @@
-#Wed Mar 24 08:10:27 CDT 2010
+#Fri Aug 27 21:43:13 CDT 2010
 eclipse.preferences.version=1
 encoding//src/com/sforce/soap/partner/AllowFieldTruncationHeader.java=UTF-8
 encoding//src/com/sforce/soap/partner/AssignmentRuleHeader.java=UTF-8
@@ -41,6 +41,7 @@ encoding//src/com/sforce/soap/partner/DescribeSoftphoneScreenPopOption.java=UTF-
 encoding//src/com/sforce/soap/partner/DescribeTab.java=UTF-8
 encoding//src/com/sforce/soap/partner/DescribeTabSetResult.java=UTF-8
 encoding//src/com/sforce/soap/partner/DescribeTabs.java=UTF-8
+encoding//src/com/sforce/soap/partner/DisableFeedTrackingHeader.java=UTF-8
 encoding//src/com/sforce/soap/partner/Email.java=UTF-8
 encoding//src/com/sforce/soap/partner/EmailFileAttachment.java=UTF-8
 encoding//src/com/sforce/soap/partner/EmailHeader.java=UTF-8

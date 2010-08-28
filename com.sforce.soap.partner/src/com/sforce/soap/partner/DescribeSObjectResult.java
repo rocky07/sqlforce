@@ -22,6 +22,8 @@ public class DescribeSObjectResult  implements java.io.Serializable {
 
     private boolean deprecatedAndHidden;
 
+    private boolean feedEnabled;
+
     private com.sforce.soap.partner.Field[] fields;
 
     private java.lang.String keyPrefix;
@@ -69,6 +71,7 @@ public class DescribeSObjectResult  implements java.io.Serializable {
            boolean customSetting,
            boolean deletable,
            boolean deprecatedAndHidden,
+           boolean feedEnabled,
            com.sforce.soap.partner.Field[] fields,
            java.lang.String keyPrefix,
            java.lang.String label,
@@ -94,6 +97,7 @@ public class DescribeSObjectResult  implements java.io.Serializable {
            this.customSetting = customSetting;
            this.deletable = deletable;
            this.deprecatedAndHidden = deprecatedAndHidden;
+           this.feedEnabled = feedEnabled;
            this.fields = fields;
            this.keyPrefix = keyPrefix;
            this.label = label;
@@ -260,6 +264,26 @@ public class DescribeSObjectResult  implements java.io.Serializable {
      */
     public void setDeprecatedAndHidden(boolean deprecatedAndHidden) {
         this.deprecatedAndHidden = deprecatedAndHidden;
+    }
+
+
+    /**
+     * Gets the feedEnabled value for this DescribeSObjectResult.
+     * 
+     * @return feedEnabled
+     */
+    public boolean isFeedEnabled() {
+        return feedEnabled;
+    }
+
+
+    /**
+     * Sets the feedEnabled value for this DescribeSObjectResult.
+     * 
+     * @param feedEnabled
+     */
+    public void setFeedEnabled(boolean feedEnabled) {
+        this.feedEnabled = feedEnabled;
     }
 
 
@@ -659,6 +683,7 @@ public class DescribeSObjectResult  implements java.io.Serializable {
             this.customSetting == other.isCustomSetting() &&
             this.deletable == other.isDeletable() &&
             this.deprecatedAndHidden == other.isDeprecatedAndHidden() &&
+            this.feedEnabled == other.isFeedEnabled() &&
             ((this.fields==null && other.getFields()==null) || 
              (this.fields!=null &&
               java.util.Arrays.equals(this.fields, other.getFields()))) &&
@@ -725,6 +750,7 @@ public class DescribeSObjectResult  implements java.io.Serializable {
         _hashCode += (isCustomSetting() ? Boolean.TRUE : Boolean.FALSE).hashCode();
         _hashCode += (isDeletable() ? Boolean.TRUE : Boolean.FALSE).hashCode();
         _hashCode += (isDeprecatedAndHidden() ? Boolean.TRUE : Boolean.FALSE).hashCode();
+        _hashCode += (isFeedEnabled() ? Boolean.TRUE : Boolean.FALSE).hashCode();
         if (getFields() != null) {
             for (int i=0;
                  i<java.lang.reflect.Array.getLength(getFields());
@@ -830,6 +856,12 @@ public class DescribeSObjectResult  implements java.io.Serializable {
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("deprecatedAndHidden");
         elemField.setXmlName(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "deprecatedAndHidden"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("feedEnabled");
+        elemField.setXmlName(new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "feedEnabled"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);

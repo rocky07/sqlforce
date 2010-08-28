@@ -79,21 +79,22 @@ public class FaultCode implements java.io.Serializable {
     public static final javax.xml.namespace.QName _value60 = javax.xml.namespace.QName.valueOf("{urn:fault.partner.soap.sforce.com}NUMBER_OUTSIDE_VALID_RANGE");
     public static final javax.xml.namespace.QName _value61 = javax.xml.namespace.QName.valueOf("{urn:fault.partner.soap.sforce.com}OPERATION_TOO_LARGE");
     public static final javax.xml.namespace.QName _value62 = javax.xml.namespace.QName.valueOf("{urn:fault.partner.soap.sforce.com}ORG_IN_MAINTENANCE");
-    public static final javax.xml.namespace.QName _value63 = javax.xml.namespace.QName.valueOf("{urn:fault.partner.soap.sforce.com}ORG_LOCKED");
-    public static final javax.xml.namespace.QName _value64 = javax.xml.namespace.QName.valueOf("{urn:fault.partner.soap.sforce.com}ORG_NOT_OWNED_BY_INSTANCE");
-    public static final javax.xml.namespace.QName _value65 = javax.xml.namespace.QName.valueOf("{urn:fault.partner.soap.sforce.com}PASSWORD_LOCKOUT");
-    public static final javax.xml.namespace.QName _value66 = javax.xml.namespace.QName.valueOf("{urn:fault.partner.soap.sforce.com}PORTAL_NO_ACCESS");
-    public static final javax.xml.namespace.QName _value67 = javax.xml.namespace.QName.valueOf("{urn:fault.partner.soap.sforce.com}QUERY_TIMEOUT");
-    public static final javax.xml.namespace.QName _value68 = javax.xml.namespace.QName.valueOf("{urn:fault.partner.soap.sforce.com}QUERY_TOO_COMPLICATED");
-    public static final javax.xml.namespace.QName _value69 = javax.xml.namespace.QName.valueOf("{urn:fault.partner.soap.sforce.com}REQUEST_LIMIT_EXCEEDED");
-    public static final javax.xml.namespace.QName _value70 = javax.xml.namespace.QName.valueOf("{urn:fault.partner.soap.sforce.com}REQUEST_RUNNING_TOO_LONG");
-    public static final javax.xml.namespace.QName _value71 = javax.xml.namespace.QName.valueOf("{urn:fault.partner.soap.sforce.com}SERVER_UNAVAILABLE");
-    public static final javax.xml.namespace.QName _value72 = javax.xml.namespace.QName.valueOf("{urn:fault.partner.soap.sforce.com}SSO_SERVICE_DOWN");
-    public static final javax.xml.namespace.QName _value73 = javax.xml.namespace.QName.valueOf("{urn:fault.partner.soap.sforce.com}TOO_MANY_APEX_REQUESTS");
-    public static final javax.xml.namespace.QName _value74 = javax.xml.namespace.QName.valueOf("{urn:fault.partner.soap.sforce.com}TRIAL_EXPIRED");
-    public static final javax.xml.namespace.QName _value75 = javax.xml.namespace.QName.valueOf("{urn:fault.partner.soap.sforce.com}UNKNOWN_EXCEPTION");
-    public static final javax.xml.namespace.QName _value76 = javax.xml.namespace.QName.valueOf("{urn:fault.partner.soap.sforce.com}UNSUPPORTED_API_VERSION");
-    public static final javax.xml.namespace.QName _value77 = javax.xml.namespace.QName.valueOf("{urn:fault.partner.soap.sforce.com}UNSUPPORTED_CLIENT");
+    public static final javax.xml.namespace.QName _value63 = javax.xml.namespace.QName.valueOf("{urn:fault.partner.soap.sforce.com}ORG_IS_DOT_ORG");
+    public static final javax.xml.namespace.QName _value64 = javax.xml.namespace.QName.valueOf("{urn:fault.partner.soap.sforce.com}ORG_LOCKED");
+    public static final javax.xml.namespace.QName _value65 = javax.xml.namespace.QName.valueOf("{urn:fault.partner.soap.sforce.com}ORG_NOT_OWNED_BY_INSTANCE");
+    public static final javax.xml.namespace.QName _value66 = javax.xml.namespace.QName.valueOf("{urn:fault.partner.soap.sforce.com}PASSWORD_LOCKOUT");
+    public static final javax.xml.namespace.QName _value67 = javax.xml.namespace.QName.valueOf("{urn:fault.partner.soap.sforce.com}PORTAL_NO_ACCESS");
+    public static final javax.xml.namespace.QName _value68 = javax.xml.namespace.QName.valueOf("{urn:fault.partner.soap.sforce.com}QUERY_TIMEOUT");
+    public static final javax.xml.namespace.QName _value69 = javax.xml.namespace.QName.valueOf("{urn:fault.partner.soap.sforce.com}QUERY_TOO_COMPLICATED");
+    public static final javax.xml.namespace.QName _value70 = javax.xml.namespace.QName.valueOf("{urn:fault.partner.soap.sforce.com}REQUEST_LIMIT_EXCEEDED");
+    public static final javax.xml.namespace.QName _value71 = javax.xml.namespace.QName.valueOf("{urn:fault.partner.soap.sforce.com}REQUEST_RUNNING_TOO_LONG");
+    public static final javax.xml.namespace.QName _value72 = javax.xml.namespace.QName.valueOf("{urn:fault.partner.soap.sforce.com}SERVER_UNAVAILABLE");
+    public static final javax.xml.namespace.QName _value73 = javax.xml.namespace.QName.valueOf("{urn:fault.partner.soap.sforce.com}SSO_SERVICE_DOWN");
+    public static final javax.xml.namespace.QName _value74 = javax.xml.namespace.QName.valueOf("{urn:fault.partner.soap.sforce.com}TOO_MANY_APEX_REQUESTS");
+    public static final javax.xml.namespace.QName _value75 = javax.xml.namespace.QName.valueOf("{urn:fault.partner.soap.sforce.com}TRIAL_EXPIRED");
+    public static final javax.xml.namespace.QName _value76 = javax.xml.namespace.QName.valueOf("{urn:fault.partner.soap.sforce.com}UNKNOWN_EXCEPTION");
+    public static final javax.xml.namespace.QName _value77 = javax.xml.namespace.QName.valueOf("{urn:fault.partner.soap.sforce.com}UNSUPPORTED_API_VERSION");
+    public static final javax.xml.namespace.QName _value78 = javax.xml.namespace.QName.valueOf("{urn:fault.partner.soap.sforce.com}UNSUPPORTED_CLIENT");
     public static final FaultCode value1 = new FaultCode(_value1);
     public static final FaultCode value2 = new FaultCode(_value2);
     public static final FaultCode value3 = new FaultCode(_value3);
@@ -171,6 +172,7 @@ public class FaultCode implements java.io.Serializable {
     public static final FaultCode value75 = new FaultCode(_value75);
     public static final FaultCode value76 = new FaultCode(_value76);
     public static final FaultCode value77 = new FaultCode(_value77);
+    public static final FaultCode value78 = new FaultCode(_value78);
     public javax.xml.namespace.QName getValue() { return _value_;}
     public static FaultCode fromValue(javax.xml.namespace.QName value)
           throws java.lang.IllegalArgumentException {

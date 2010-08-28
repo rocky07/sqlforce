@@ -53,6 +53,29 @@ class SelectRecordsTest( unittest.TestCase):
                 session.delete( "Contact", insertedIds )
         
          
+    def testSelectDeepRecords(self):
+        firstName = "SelectRecords2UnitTest"
+        session = TestEnvironment.getSession()
+        
+        insertedAccountId = None
+        insertedIds = []
+        
+        try:
+            insertedAccountId = session.insert("Account", ["Name"], [["SelectRecordIndusty"]] )[0]
+
+            insertData = [ [insertedAccountId, firstName, "Smith"]]
+            insertedIds = session.insert("Contact", ["accountId", "FirstName", "LastName"], insertData )
+
+            records = session.selectRecords("SELECT name, account.name, account.owner.alias FROM Contact where id='" + insertedIds[0] + "'")
+            for rec in records:
+                self.assertTrue( None != rec.account.owner.alias )
+                
+                
+        finally:
+            if None != insertedIds:
+                session.delete( "Contact", insertedIds )
+            if None != insertedAccountId:
+                session.delete( "Account", [insertedAccountId])
         
 if __name__=='__main__':
     unittest.main()
