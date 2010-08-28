@@ -1230,6 +1230,13 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
             cachedSerFactories.add(new org.apache.axis.encoding.ser.ArraySerializerFactory(qName, qName2));
             cachedDeserFactories.add(new org.apache.axis.encoding.ser.ArrayDeserializerFactory());
 
+            qName = new javax.xml.namespace.QName("urn:partner.soap.sforce.com", ">DisableFeedTrackingHeader");
+            cachedSerQNames.add(qName);
+            cls = com.sforce.soap.partner.DisableFeedTrackingHeader.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
             qName = new javax.xml.namespace.QName("urn:partner.soap.sforce.com", ">EmailHeader");
             cachedSerQNames.add(qName);
             cls = com.sforce.soap.partner.EmailHeader.class;
@@ -1677,13 +1684,6 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
-            qName = new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "DescribeGlobalSObjectResult");
-            cachedSerQNames.add(qName);
-            cls = com.sforce.soap.partner.DescribeGlobalSObjectResult.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
     }
     private void addBindings1() {
             java.lang.Class cls;
@@ -1699,6 +1699,13 @@ public class SoapBindingStub extends org.apache.axis.client.Stub implements com.
             java.lang.Class simpledf = org.apache.axis.encoding.ser.SimpleDeserializerFactory.class;
             java.lang.Class simplelistsf = org.apache.axis.encoding.ser.SimpleListSerializerFactory.class;
             java.lang.Class simplelistdf = org.apache.axis.encoding.ser.SimpleListDeserializerFactory.class;
+            qName = new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "DescribeGlobalSObjectResult");
+            cachedSerQNames.add(qName);
+            cls = com.sforce.soap.partner.DescribeGlobalSObjectResult.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
             qName = new javax.xml.namespace.QName("urn:partner.soap.sforce.com", "DescribeLayout");
             cachedSerQNames.add(qName);
             cls = com.sforce.soap.partner.DescribeLayout.class;

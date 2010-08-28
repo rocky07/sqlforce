@@ -68,6 +68,7 @@ public class StatusCode implements java.io.Serializable {
     public static final java.lang.String _ERROR_IN_MAILER = "ERROR_IN_MAILER";
     public static final java.lang.String _FAILED_ACTIVATION = "FAILED_ACTIVATION";
     public static final java.lang.String _FIELD_CUSTOM_VALIDATION_EXCEPTION = "FIELD_CUSTOM_VALIDATION_EXCEPTION";
+    public static final java.lang.String _FIELD_FILTER_VALIDATION_EXCEPTION = "FIELD_FILTER_VALIDATION_EXCEPTION";
     public static final java.lang.String _FIELD_INTEGRITY_EXCEPTION = "FIELD_INTEGRITY_EXCEPTION";
     public static final java.lang.String _FILTERED_LOOKUP_LIMIT_EXCEEDED = "FILTERED_LOOKUP_LIMIT_EXCEEDED";
     public static final java.lang.String _HTML_FILE_UPLOAD_NOT_ALLOWED = "HTML_FILE_UPLOAD_NOT_ALLOWED";
@@ -104,6 +105,7 @@ public class StatusCode implements java.io.Serializable {
     public static final java.lang.String _INVALID_OR_NULL_FOR_RESTRICTED_PICKLIST = "INVALID_OR_NULL_FOR_RESTRICTED_PICKLIST";
     public static final java.lang.String _INVALID_PARTNER_NETWORK_STATUS = "INVALID_PARTNER_NETWORK_STATUS";
     public static final java.lang.String _INVALID_PERSON_ACCOUNT_OPERATION = "INVALID_PERSON_ACCOUNT_OPERATION";
+    public static final java.lang.String _INVALID_READ_ONLY_USER_DML = "INVALID_READ_ONLY_USER_DML";
     public static final java.lang.String _INVALID_SAVE_AS_ACTIVITY_FLAG = "INVALID_SAVE_AS_ACTIVITY_FLAG";
     public static final java.lang.String _INVALID_SESSION_ID = "INVALID_SESSION_ID";
     public static final java.lang.String _INVALID_SETUP_OWNER = "INVALID_SETUP_OWNER";
@@ -224,6 +226,7 @@ public class StatusCode implements java.io.Serializable {
     public static final StatusCode ERROR_IN_MAILER = new StatusCode(_ERROR_IN_MAILER);
     public static final StatusCode FAILED_ACTIVATION = new StatusCode(_FAILED_ACTIVATION);
     public static final StatusCode FIELD_CUSTOM_VALIDATION_EXCEPTION = new StatusCode(_FIELD_CUSTOM_VALIDATION_EXCEPTION);
+    public static final StatusCode FIELD_FILTER_VALIDATION_EXCEPTION = new StatusCode(_FIELD_FILTER_VALIDATION_EXCEPTION);
     public static final StatusCode FIELD_INTEGRITY_EXCEPTION = new StatusCode(_FIELD_INTEGRITY_EXCEPTION);
     public static final StatusCode FILTERED_LOOKUP_LIMIT_EXCEEDED = new StatusCode(_FILTERED_LOOKUP_LIMIT_EXCEEDED);
     public static final StatusCode HTML_FILE_UPLOAD_NOT_ALLOWED = new StatusCode(_HTML_FILE_UPLOAD_NOT_ALLOWED);
@@ -260,6 +263,7 @@ public class StatusCode implements java.io.Serializable {
     public static final StatusCode INVALID_OR_NULL_FOR_RESTRICTED_PICKLIST = new StatusCode(_INVALID_OR_NULL_FOR_RESTRICTED_PICKLIST);
     public static final StatusCode INVALID_PARTNER_NETWORK_STATUS = new StatusCode(_INVALID_PARTNER_NETWORK_STATUS);
     public static final StatusCode INVALID_PERSON_ACCOUNT_OPERATION = new StatusCode(_INVALID_PERSON_ACCOUNT_OPERATION);
+    public static final StatusCode INVALID_READ_ONLY_USER_DML = new StatusCode(_INVALID_READ_ONLY_USER_DML);
     public static final StatusCode INVALID_SAVE_AS_ACTIVITY_FLAG = new StatusCode(_INVALID_SAVE_AS_ACTIVITY_FLAG);
     public static final StatusCode INVALID_SESSION_ID = new StatusCode(_INVALID_SESSION_ID);
     public static final StatusCode INVALID_SETUP_OWNER = new StatusCode(_INVALID_SETUP_OWNER);

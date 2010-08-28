@@ -103,7 +103,7 @@ class _SQLForceRecord():
             if 1==len(subNames):
                 setattr( self, subNames[0], None)
             else:
-                setattr( self, subNames[0], _SQLForceRecord( subNames[0], subNames[1:]))
+                setattr( self, subNames[0], _SQLForceRecord( subNames[0], [".".join(subNames[1:])]))
     
     def setValue(self, column, value ):
         subNames = column.split(".")
