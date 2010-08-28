@@ -1,7 +1,7 @@
 #labels Featured
 = What's New =
 27-Aug-10
-  * Fixed a problem with the Jython module when reference more than 2 levels deep on columns and using the selectRecords() method.
+  * Fixed a problem with the Jython module when referencing more than 2 levels deep on columns and using the selectRecords() method.
   * Upgraded to version 19.0 of the partner WSDL.
 
 03-Apr-10
