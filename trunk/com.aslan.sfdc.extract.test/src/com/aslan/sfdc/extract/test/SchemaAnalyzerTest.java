@@ -9,6 +9,8 @@
 
 package com.aslan.sfdc.extract.test;
 
+import java.util.List;
+
 import com.aslan.sfdc.extract.SchemaAnalyzer;
 import com.aslan.sfdc.extract.SchemaAnalyzer.Table;
 import com.aslan.sfdc.partner.LoginManager;
@@ -16,37 +18,45 @@ import com.aslan.sfdc.partner.test.SfdcTestEnvironment;
 
 import junit.framework.TestCase;
 
-/**
- * @author greg
- *
- */
 public class SchemaAnalyzerTest extends TestCase {
 
-	/* (non-Javadoc)
-	 * @see junit.framework.TestCase#setUp()
-	 */
 	protected void setUp() throws Exception {
 		super.setUp();
 	}
 
-	/**
-	 * Test method for {@link com.aslan.sfdc.extract.SchemaAnalyzer#getTable(java.lang.String)}.
-	 */
-	public void testGetTable() throws Exception {
-		LoginManager.Session session = SfdcTestEnvironment.getTestSession();
-		SchemaAnalyzer analyzer = new SchemaAnalyzer(session);
-		
-		Table table = analyzer.getTable("Contact");
-		
-		assertNotNull(table);
-		System.err.println(table.getName());
+	protected void tearDown() throws Exception {
+		super.tearDown();
 	}
 
-	/**
-	 * Test method for {@link com.aslan.sfdc.extract.SchemaAnalyzer#getTables()}.
-	 */
-	public void testGetTables() {
+	public void testGetTable() throws Exception {
 		LoginManager.Session session = SfdcTestEnvironment.getTestSession();
+		SchemaAnalyzer analyzer = new SchemaAnalyzer( session );
+		
+		Table table = analyzer.getTable("User");
+		assertNotNull(table);
+		
+		try {
+			table = analyzer.getTable("ThisIsNotATableName");
+			fail("Found a non-existent table");
+		} catch( Exception e ) {}
+		
+	}
+
+	public void testGetTables() throws Exception {
+		LoginManager.Session session = SfdcTestEnvironment.getTestSession();
+		SchemaAnalyzer analyzer = new SchemaAnalyzer( session );
+
+		List<Table> tables = analyzer.getTables();
+		
+		for( Table table : tables ) {
+			System.err.print( table.getName() + " : " );
+			for( Table ref : table.getTableReferences()) {
+				System.err.print( ref.getName() + ", " );
+			}
+			System.err.println("");
+			
+		}
+		
 	}
 
 }
