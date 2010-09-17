@@ -90,28 +90,35 @@ class SelectParser():
         else:
             return None
 
-class _SQLForceRecord():
-    '''
-    Single record for a record returned by selectRecords() or selectRecords2()
-    '''
+class _SQLForceRecordColumn:
+    def __init__(self):
+        pass
+ 
+class _SQLForceRecord:
     def __init__(self, table, columns):
-        
+       
         self._table = table
-        
-        for name in columns:
-            subNames = name.split(".")
-            if 1==len(subNames):
-                setattr( self, subNames[0], None)
-            else:
-                setattr( self, subNames[0], _SQLForceRecord( subNames[0], [".".join(subNames[1:])]))
-    
+       
+        for columnName in columns:
+            parent = self
+            splitNames = columnName.split(".")
+            for name in splitNames[0:-1]:
+                if not (name in dir(parent)):
+                    setattr( parent, name, _SQLForceRecordColumn())
+           
+                parent = getattr( parent, name )
+ 
+            setattr(parent, splitNames[-1:][0], None )
+       
+                 
     def setValue(self, column, value ):
-        subNames = column.split(".")
-        if 1==len(subNames):
-            setattr( self, subNames[0], value)
-        else:
-            record = getattr( self, subNames[0] )
-            record.setValue( ".".join(subNames[1:]), value)
+ 
+        parent = self
+        splitNames = column.split(".")
+        for name in splitNames[0:-1]:
+            parent = getattr( parent, name )
+ 
+        setattr( parent, splitNames[-1:][0], value )
 
 
 class Session:
