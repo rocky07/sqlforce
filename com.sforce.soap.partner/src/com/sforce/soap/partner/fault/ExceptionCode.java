@@ -36,6 +36,7 @@ public class ExceptionCode implements java.io.Serializable {
     public static final java.lang.String _EXCEEDED_MAX_TYPES_LIMIT = "EXCEEDED_MAX_TYPES_LIMIT";
     public static final java.lang.String _EXCEEDED_QUOTA = "EXCEEDED_QUOTA";
     public static final java.lang.String _FUNCTIONALITY_NOT_ENABLED = "FUNCTIONALITY_NOT_ENABLED";
+    public static final java.lang.String _FUNCTIONALITY_TEMPORARILY_UNAVAILABLE = "FUNCTIONALITY_TEMPORARILY_UNAVAILABLE";
     public static final java.lang.String _INACTIVE_OWNER_OR_USER = "INACTIVE_OWNER_OR_USER";
     public static final java.lang.String _INACTIVE_PORTAL = "INACTIVE_PORTAL";
     public static final java.lang.String _INSUFFICIENT_ACCESS = "INSUFFICIENT_ACCESS";
@@ -64,6 +65,7 @@ public class ExceptionCode implements java.io.Serializable {
     public static final java.lang.String _INVALID_SSO_GATEWAY_URL = "INVALID_SSO_GATEWAY_URL";
     public static final java.lang.String _INVALID_TYPE = "INVALID_TYPE";
     public static final java.lang.String _INVALID_TYPE_FOR_OPERATION = "INVALID_TYPE_FOR_OPERATION";
+    public static final java.lang.String _JSON_PARSER_ERROR = "JSON_PARSER_ERROR";
     public static final java.lang.String _LIMIT_EXCEEDED = "LIMIT_EXCEEDED";
     public static final java.lang.String _LOGIN_CHALLENGE_ISSUED = "LOGIN_CHALLENGE_ISSUED";
     public static final java.lang.String _LOGIN_CHALLENGE_PENDING = "LOGIN_CHALLENGE_PENDING";
@@ -95,6 +97,8 @@ public class ExceptionCode implements java.io.Serializable {
     public static final java.lang.String _UNKNOWN_EXCEPTION = "UNKNOWN_EXCEPTION";
     public static final java.lang.String _UNSUPPORTED_API_VERSION = "UNSUPPORTED_API_VERSION";
     public static final java.lang.String _UNSUPPORTED_CLIENT = "UNSUPPORTED_CLIENT";
+    public static final java.lang.String _UNSUPPORTED_MEDIA_TYPE = "UNSUPPORTED_MEDIA_TYPE";
+    public static final java.lang.String _XML_PARSER_ERROR = "XML_PARSER_ERROR";
     public static final ExceptionCode API_CURRENTLY_DISABLED = new ExceptionCode(_API_CURRENTLY_DISABLED);
     public static final ExceptionCode API_DISABLED_FOR_ORG = new ExceptionCode(_API_DISABLED_FOR_ORG);
     public static final ExceptionCode CANT_ADD_STANDADRD_PORTAL_USER_TO_TERRITORY = new ExceptionCode(_CANT_ADD_STANDADRD_PORTAL_USER_TO_TERRITORY);
@@ -114,6 +118,7 @@ public class ExceptionCode implements java.io.Serializable {
     public static final ExceptionCode EXCEEDED_MAX_TYPES_LIMIT = new ExceptionCode(_EXCEEDED_MAX_TYPES_LIMIT);
     public static final ExceptionCode EXCEEDED_QUOTA = new ExceptionCode(_EXCEEDED_QUOTA);
     public static final ExceptionCode FUNCTIONALITY_NOT_ENABLED = new ExceptionCode(_FUNCTIONALITY_NOT_ENABLED);
+    public static final ExceptionCode FUNCTIONALITY_TEMPORARILY_UNAVAILABLE = new ExceptionCode(_FUNCTIONALITY_TEMPORARILY_UNAVAILABLE);
     public static final ExceptionCode INACTIVE_OWNER_OR_USER = new ExceptionCode(_INACTIVE_OWNER_OR_USER);
     public static final ExceptionCode INACTIVE_PORTAL = new ExceptionCode(_INACTIVE_PORTAL);
     public static final ExceptionCode INSUFFICIENT_ACCESS = new ExceptionCode(_INSUFFICIENT_ACCESS);
@@ -142,6 +147,7 @@ public class ExceptionCode implements java.io.Serializable {
     public static final ExceptionCode INVALID_SSO_GATEWAY_URL = new ExceptionCode(_INVALID_SSO_GATEWAY_URL);
     public static final ExceptionCode INVALID_TYPE = new ExceptionCode(_INVALID_TYPE);
     public static final ExceptionCode INVALID_TYPE_FOR_OPERATION = new ExceptionCode(_INVALID_TYPE_FOR_OPERATION);
+    public static final ExceptionCode JSON_PARSER_ERROR = new ExceptionCode(_JSON_PARSER_ERROR);
     public static final ExceptionCode LIMIT_EXCEEDED = new ExceptionCode(_LIMIT_EXCEEDED);
     public static final ExceptionCode LOGIN_CHALLENGE_ISSUED = new ExceptionCode(_LOGIN_CHALLENGE_ISSUED);
     public static final ExceptionCode LOGIN_CHALLENGE_PENDING = new ExceptionCode(_LOGIN_CHALLENGE_PENDING);
@@ -173,6 +179,8 @@ public class ExceptionCode implements java.io.Serializable {
     public static final ExceptionCode UNKNOWN_EXCEPTION = new ExceptionCode(_UNKNOWN_EXCEPTION);
     public static final ExceptionCode UNSUPPORTED_API_VERSION = new ExceptionCode(_UNSUPPORTED_API_VERSION);
     public static final ExceptionCode UNSUPPORTED_CLIENT = new ExceptionCode(_UNSUPPORTED_CLIENT);
+    public static final ExceptionCode UNSUPPORTED_MEDIA_TYPE = new ExceptionCode(_UNSUPPORTED_MEDIA_TYPE);
+    public static final ExceptionCode XML_PARSER_ERROR = new ExceptionCode(_XML_PARSER_ERROR);
     public java.lang.String getValue() { return _value_;}
     public static ExceptionCode fromValue(java.lang.String value)
           throws java.lang.IllegalArgumentException {

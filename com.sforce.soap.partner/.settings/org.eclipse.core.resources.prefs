@@ -1,5 +1,6 @@
-#Fri Aug 27 21:43:13 CDT 2010
+#Thu Oct 14 09:53:20 CDT 2010
 eclipse.preferences.version=1
+encoding//src/com/sforce/soap/partner/AllOrNoneHeader.java=UTF-8
 encoding//src/com/sforce/soap/partner/AllowFieldTruncationHeader.java=UTF-8
 encoding//src/com/sforce/soap/partner/AssignmentRuleHeader.java=UTF-8
 encoding//src/com/sforce/soap/partner/CallOptions.java=UTF-8
