@@ -11,12 +11,15 @@
 package com.aslan.sfdc.sqlforce.command;
 
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import com.aslan.sfdc.partner.LoginManager;
 import com.aslan.sfdc.sqlforce.AbstractSQLForceCommand;
 import com.aslan.sfdc.sqlforce.LexicalAnalyzer;
 import com.aslan.sfdc.sqlforce.LexicalToken;
 import com.aslan.sfdc.sqlforce.SQLForceEnvironment;
+import com.sforce.soap.partner.DescribeGlobalResult;
+import com.sforce.soap.partner.DescribeGlobalSObjectResult;
 import com.sforce.soap.partner.Field;
 
 /**
@@ -39,6 +42,32 @@ public class Describe extends AbstractSQLForceCommand {
 		return getHelp( Describe.class, "Describe.help");
 	}
 	
+	private void directory( LoginManager.Session session, SQLForceEnvironment env ) throws Exception {
+		DescribeGlobalResult describeGlobalResult = session.getBinding().describeGlobal();
+		
+		DescribeGlobalSObjectResult resultList[] = describeGlobalResult.getSobjects();
+		TreeSet<String> map = new TreeSet<String>();
+		for( DescribeGlobalSObjectResult result : resultList ) {
+			map.add( result.getName());
+		}
+		for( String name : map) {
+			env.println(name);
+		}
+	}
+	
+	private void showFields( LoginManager.Session session, SQLForceEnvironment env, String objectName ) throws Exception {
+		Field fieldList[] = session.getDescribeSObjectResult( objectName ).getFields();
+
+		TreeMap<String,Field> map = new TreeMap<String,Field>();
+		for( Field field : fieldList ) {
+			map.put( field.getName(), field);
+		}
+		
+		for( String name : map.keySet()) {
+			env.println(name);
+		}
+	}
+	
 	public void execute(LexicalToken token, LexicalAnalyzer lex,
 			SQLForceEnvironment env) throws Exception {
 
@@ -49,17 +78,12 @@ public class Describe extends AbstractSQLForceCommand {
 		LoginManager.Session session = env.getSession();
 		
 		try {
-			Field fieldList[] = session.getDescribeSObjectResult( objectName ).getFields();
-
-			TreeMap<String,Field> map = new TreeMap<String,Field>();
-			for( Field field : fieldList ) {
-				map.put( field.getName(), field);
+			if( null==objectName || 0==objectName.trim().length()) {
+				directory( session, env );
+			} else {
+				showFields( session, env, objectName );
 			}
-			
-			for( String name : map.keySet()) {
-				env.println(name);
-			}
-			
+	
 		} catch( Exception e ) {
 			throw new Exception( e.toString());
 		}

@@ -383,7 +383,7 @@ public class LoginManager {
 		} break;
 		
 		case Sandbox: {
-			locator.setSoapEndpointAddress("https://test.salesforce.com/services/Soap/u/19.0");
+			locator.setSoapEndpointAddress("https://test.salesforce.com/services/Soap/u/20.0");
 			int n = credentials.getUsername().lastIndexOf(".");
 			if( n < 0 ) {
 				throw new Exception("Sandbox login attempt but no sandbox specified on the user name.");

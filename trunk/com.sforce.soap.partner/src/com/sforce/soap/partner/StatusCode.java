@@ -17,6 +17,7 @@ public class StatusCode implements java.io.Serializable {
         _table_.put(_value_,this);
     }
 
+    public static final java.lang.String _ALL_OR_NONE_OPERATION_ROLLED_BACK = "ALL_OR_NONE_OPERATION_ROLLED_BACK";
     public static final java.lang.String _ALREADY_IN_PROCESS = "ALREADY_IN_PROCESS";
     public static final java.lang.String _ASSIGNEE_TYPE_REQUIRED = "ASSIGNEE_TYPE_REQUIRED";
     public static final java.lang.String _BAD_CUSTOM_ENTITY_PARENT_DOMAIN = "BAD_CUSTOM_ENTITY_PARENT_DOMAIN";
@@ -88,6 +89,7 @@ public class StatusCode implements java.io.Serializable {
     public static final java.lang.String _INVALID_CURRENCY_CONV_RATE = "INVALID_CURRENCY_CONV_RATE";
     public static final java.lang.String _INVALID_CURRENCY_CORP_RATE = "INVALID_CURRENCY_CORP_RATE";
     public static final java.lang.String _INVALID_CURRENCY_ISO = "INVALID_CURRENCY_ISO";
+    public static final java.lang.String _INVALID_DATA_URI = "INVALID_DATA_URI";
     public static final java.lang.String _INVALID_EMAIL_ADDRESS = "INVALID_EMAIL_ADDRESS";
     public static final java.lang.String _INVALID_EMPTY_KEY_OWNER = "INVALID_EMPTY_KEY_OWNER";
     public static final java.lang.String _INVALID_FIELD = "INVALID_FIELD";
@@ -152,6 +154,7 @@ public class StatusCode implements java.io.Serializable {
     public static final java.lang.String _PRIVATE_CONTACT_ON_ASSET = "PRIVATE_CONTACT_ON_ASSET";
     public static final java.lang.String _RECORD_IN_USE_BY_WORKFLOW = "RECORD_IN_USE_BY_WORKFLOW";
     public static final java.lang.String _REQUEST_RUNNING_TOO_LONG = "REQUEST_RUNNING_TOO_LONG";
+    public static final java.lang.String _REQUIRED_FEATURE_MISSING = "REQUIRED_FEATURE_MISSING";
     public static final java.lang.String _REQUIRED_FIELD_MISSING = "REQUIRED_FIELD_MISSING";
     public static final java.lang.String _SELF_REFERENCE_FROM_TRIGGER = "SELF_REFERENCE_FROM_TRIGGER";
     public static final java.lang.String _SHARE_NEEDED_FOR_CHILD_OWNER = "SHARE_NEEDED_FOR_CHILD_OWNER";
@@ -173,8 +176,11 @@ public class StatusCode implements java.io.Serializable {
     public static final java.lang.String _UNSPECIFIED_EMAIL_ADDRESS = "UNSPECIFIED_EMAIL_ADDRESS";
     public static final java.lang.String _UNSUPPORTED_APEX_TRIGGER_OPERATON = "UNSUPPORTED_APEX_TRIGGER_OPERATON";
     public static final java.lang.String _UNVERIFIED_SENDER_ADDRESS = "UNVERIFIED_SENDER_ADDRESS";
+    public static final java.lang.String _USER_OWNS_PORTAL_ACCOUNT_EXCEPTION = "USER_OWNS_PORTAL_ACCOUNT_EXCEPTION";
+    public static final java.lang.String _USER_WITH_APEX_SHARES_EXCEPTION = "USER_WITH_APEX_SHARES_EXCEPTION";
     public static final java.lang.String _WEBLINK_SIZE_LIMIT_EXCEEDED = "WEBLINK_SIZE_LIMIT_EXCEEDED";
     public static final java.lang.String _WRONG_CONTROLLER_TYPE = "WRONG_CONTROLLER_TYPE";
+    public static final StatusCode ALL_OR_NONE_OPERATION_ROLLED_BACK = new StatusCode(_ALL_OR_NONE_OPERATION_ROLLED_BACK);
     public static final StatusCode ALREADY_IN_PROCESS = new StatusCode(_ALREADY_IN_PROCESS);
     public static final StatusCode ASSIGNEE_TYPE_REQUIRED = new StatusCode(_ASSIGNEE_TYPE_REQUIRED);
     public static final StatusCode BAD_CUSTOM_ENTITY_PARENT_DOMAIN = new StatusCode(_BAD_CUSTOM_ENTITY_PARENT_DOMAIN);
@@ -246,6 +252,7 @@ public class StatusCode implements java.io.Serializable {
     public static final StatusCode INVALID_CURRENCY_CONV_RATE = new StatusCode(_INVALID_CURRENCY_CONV_RATE);
     public static final StatusCode INVALID_CURRENCY_CORP_RATE = new StatusCode(_INVALID_CURRENCY_CORP_RATE);
     public static final StatusCode INVALID_CURRENCY_ISO = new StatusCode(_INVALID_CURRENCY_ISO);
+    public static final StatusCode INVALID_DATA_URI = new StatusCode(_INVALID_DATA_URI);
     public static final StatusCode INVALID_EMAIL_ADDRESS = new StatusCode(_INVALID_EMAIL_ADDRESS);
     public static final StatusCode INVALID_EMPTY_KEY_OWNER = new StatusCode(_INVALID_EMPTY_KEY_OWNER);
     public static final StatusCode INVALID_FIELD = new StatusCode(_INVALID_FIELD);
@@ -310,6 +317,7 @@ public class StatusCode implements java.io.Serializable {
     public static final StatusCode PRIVATE_CONTACT_ON_ASSET = new StatusCode(_PRIVATE_CONTACT_ON_ASSET);
     public static final StatusCode RECORD_IN_USE_BY_WORKFLOW = new StatusCode(_RECORD_IN_USE_BY_WORKFLOW);
     public static final StatusCode REQUEST_RUNNING_TOO_LONG = new StatusCode(_REQUEST_RUNNING_TOO_LONG);
+    public static final StatusCode REQUIRED_FEATURE_MISSING = new StatusCode(_REQUIRED_FEATURE_MISSING);
     public static final StatusCode REQUIRED_FIELD_MISSING = new StatusCode(_REQUIRED_FIELD_MISSING);
     public static final StatusCode SELF_REFERENCE_FROM_TRIGGER = new StatusCode(_SELF_REFERENCE_FROM_TRIGGER);
     public static final StatusCode SHARE_NEEDED_FOR_CHILD_OWNER = new StatusCode(_SHARE_NEEDED_FOR_CHILD_OWNER);
@@ -331,6 +339,8 @@ public class StatusCode implements java.io.Serializable {
     public static final StatusCode UNSPECIFIED_EMAIL_ADDRESS = new StatusCode(_UNSPECIFIED_EMAIL_ADDRESS);
     public static final StatusCode UNSUPPORTED_APEX_TRIGGER_OPERATON = new StatusCode(_UNSUPPORTED_APEX_TRIGGER_OPERATON);
     public static final StatusCode UNVERIFIED_SENDER_ADDRESS = new StatusCode(_UNVERIFIED_SENDER_ADDRESS);
+    public static final StatusCode USER_OWNS_PORTAL_ACCOUNT_EXCEPTION = new StatusCode(_USER_OWNS_PORTAL_ACCOUNT_EXCEPTION);
+    public static final StatusCode USER_WITH_APEX_SHARES_EXCEPTION = new StatusCode(_USER_WITH_APEX_SHARES_EXCEPTION);
     public static final StatusCode WEBLINK_SIZE_LIMIT_EXCEEDED = new StatusCode(_WEBLINK_SIZE_LIMIT_EXCEEDED);
     public static final StatusCode WRONG_CONTROLLER_TYPE = new StatusCode(_WRONG_CONTROLLER_TYPE);
     public java.lang.String getValue() { return _value_;}
