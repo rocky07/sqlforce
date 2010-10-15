@@ -1,5 +1,9 @@
 #labels Featured
 = What's New =
+
+15-Oct-10
+  * Upgrade to Winter'11 (version 20.0) protocol.
+
 17-Sep-10
   * Fixed a problem with the Jython module when deep column references had non-ovelapping paths. Parser was not picking up the value from each path.
 
