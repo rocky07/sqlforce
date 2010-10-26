@@ -79,6 +79,7 @@ public class SchemaBuilderTest extends TestCase {
 		Connection connection = null;
 		File baseDatabaseName = File.createTempFile("TestH2Database", "");
 		baseDatabaseName.deleteOnExit();
+		baseDatabaseName = new File("C:/tmp/MyH2Database");
 
 		try {
 			connection = DriverManager.getConnection("jdbc:h2:"
@@ -106,10 +107,12 @@ public class SchemaBuilderTest extends TestCase {
 			if (null != connection) {
 				connection.close();
 			}
+			/*
 			File dbFile = new File( baseDatabaseName.getAbsolutePath() + ".h2.db");
 			dbFile.delete();
 			File lobDir = new File(baseDatabaseName.getAbsolutePath() + ".lobs.db" );
 			rmdir(lobDir);
+			*/
 			System.err.println("Database was: " + baseDatabaseName);
 		}
 

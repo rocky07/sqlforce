@@ -9,10 +9,17 @@
 
 package com.aslan.sfdc.extract.ansi;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TimeZone;
 
 import com.aslan.sfdc.extract.IDatabaseBuilder;
 import com.sforce.soap.partner.DescribeSObjectResult;
@@ -31,7 +38,14 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 	public abstract String getStringType( int width );
 	public abstract String getIntType( int width );
 	public abstract String getDecimalType( int width, int scale );
+	public abstract Connection getConnection();
 	
+	private DateFormat dateParser;
+	
+	public AnsiDatabaseBuilder() {
+		dateParser = new SimpleDateFormat( "yyyy-mm-dd'T'HH:mm:ss.SSS'Z'");
+		dateParser.setTimeZone( TimeZone.getTimeZone("GMT+0"));
+	}
 	/**
 	 * Run a bit of SQL created by the class.
 	 * 
@@ -107,6 +121,7 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 
 		@Override
 		public String makeValue(String value) {
+			
 			return "'" + value.replace("'", "''") + "'";
 		}
 	}
@@ -254,19 +269,13 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 		sql.append(");");
 		executeSQL( sql.toString());
 	}
-	@Override
-	public void insertData(DescribeSObjectResult sfdcTable, Field[] fields,
-			List<String[]> dataRows) throws Exception {
-		
-		StringBuffer sql = new StringBuffer();
-		sql.append("INSERT INTO " + getLocalName(sfdcTable) + "(");
+	
+	private IValueMaker[] getValueMakers( Field[] fields ) {
 		IValueMaker valueMakers[] = new IValueMaker[fields.length];
-		
 		for( int n = 0; n < fields.length; n++ ) {
 			Field field = fields[n];
 			String fieldTypeName = field.getType().getValue();
 			
-			sql.append( (n>0?",":"") + field.getName());
 			
 			if( isQuotedField(field)) {
 				valueMakers[n] = new QuotedValueMaker();
@@ -286,11 +295,34 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 				valueMakers[n] = new SkipValueMaker();
 			}
 		}
+		return valueMakers;
+	}
+	
+	@Override
+	public void insertData(DescribeSObjectResult sfdcTable, Field[] fields,
+			List<String[]> dataRows) throws Exception {
+		
+		StringBuffer sql = new StringBuffer();
+		sql.append("INSERT INTO " + getLocalName(sfdcTable) + "(");
+		IValueMaker valueMakers[] = getValueMakers(fields);
+		int n2Insert = 0;
+		
+		for( int n = 0; n < fields.length; n++ ) {
+			Field field = fields[n];
+			
+			sql.append( (n>0?",":"") + field.getName());
+
+		}
 		sql.append( ") VALUES");
 		
 		for( int n = 0; n < dataRows.size(); n ++ ) {
 			String[] row = dataRows.get(n);
 			
+			java.util.Date lastModDate = getLastModifiedDate( sfdcTable, row[0] );
+			if( null != lastModDate ) {
+				if( isUpdateNecessary( sfdcTable, fields, row, lastModDate )) { updateData( sfdcTable, fields, row );};
+				continue;
+			}
 			if( n > 0 ) { sql.append( "\n,"); }
 			sql.append("(");
 			for( int k = 0; k < row.length; k++ ) {
@@ -303,12 +335,134 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 				sql.append( (k>0?",":"") + value );
 			}
 			sql.append(")");
+			n2Insert++;
 		}
-		sql.append(";");
-		executeSQL( sql.toString());
+		if( n2Insert > 0 ) {
+			sql.append(";");
+			executeSQL( sql.toString());
+		}
 	}
 	
 	
+	/**
+	 * Determine if the data in a row needs to be updated.
+	 * 
+	 * @param sfdcTable
+	 * @param fields
+	 * @param row
+	 * @return
+	 * @throws Exception
+	 */
+	private boolean isUpdateNecessary(DescribeSObjectResult sfdcTable, Field[] fields, String[] row, java.util.Date lastModDate ) throws Exception {
+		//
+		// Find the time of last modification in Salesforce.
+		//
 	
+		java.util.Date sfdcDate = null;
+		for( int n=0; n < fields.length; n++ ) {
+			Field field = fields[n];
+			if( field.getName().equalsIgnoreCase("systemmodstamp")) {
+				String ansiDate = row[n];
+				sfdcDate = dateParser.parse( ansiDate );
+
+				break;
+			}
+		}
+		
+		if( null == sfdcDate )  { return false; }
+		
+		return sfdcDate.getTime() > lastModDate.getTime();
+	}
+	private void updateData(DescribeSObjectResult sfdcTable, Field[] fields,
+			String[] row) throws Exception {
+
+		IValueMaker valueMakers[] = getValueMakers(fields);
+		QuotedValueMaker quoteMaker = new QuotedValueMaker();
+
+
+		StringBuffer sql = new StringBuffer();
+		sql.append( "UPDATE " + getLocalName(sfdcTable) + " SET " );
+		String id = row[0];
+		boolean firstValue = true;
+		for( int n = 1; n < row.length; n++ ) {
+			if( valueMakers[n] instanceof SkipValueMaker ) { continue; }
+			String value = row[n];
+			if( null==value || 0==value.trim().length()) {
+				value = "null";
+			} else {
+				value = valueMakers[n].makeValue(value);
+			}
+			sql.append((firstValue?"":",") + fields[n].getName() + "=" + value);
+			firstValue = false;
+		}
+		sql.append(" WHERE id=" + quoteMaker.makeValue(id));
+
+		sql.append(";");
+		executeSQL( sql.toString());
+		
+
+	}
+	
+	private java.util.Date getLastModifiedDate(DescribeSObjectResult sfdcTable, String id ) throws Exception {
+		Statement stmt = null;
+		ResultSet result = null;
+		java.util.Date lastModDate = null;
+		Connection connection = getConnection();
+		if( null == connection) { return null; }
+		
+		try {
+			stmt = connection.createStatement();
+			result = stmt.executeQuery("SELECT systemmodstamp FROM " + getLocalName(sfdcTable) + " WHERE id='" + id + "'");
+			if( result.next()) {
+				long gmtModTime = result.getTimestamp(1).getTime();
+				
+				lastModDate = new java.util.Date( gmtModTime );
+			}
+		} catch( Exception e ) {
+			e.printStackTrace();
+		} finally {
+			if( null != result) { result.close(); }
+			if( null != stmt ) { stmt.close(); }
+		}
+		
+		return lastModDate;
+	}
+	
+	private boolean isDataNew(DescribeSObjectResult sfdcTable, String id)
+			throws Exception {
+		java.util.Date cal = getLastModifiedDate( sfdcTable, id );
+		return cal==null;
+	}
+	
+	private boolean isDataOlder(DescribeSObjectResult sfdcTable, String id,
+			Calendar calendar) throws Exception {
+		
+		java.util.Date dbDate = getLastModifiedDate( sfdcTable, id );
+		
+		return (null==dbDate)?true:(dbDate.getTime() < calendar.getTime().getTime());
+	}
+	
+	
+	@Override
+	public boolean isTableNew(DescribeSObjectResult sfdcTable) throws Exception {
+		Statement stmt = null;
+		ResultSet result = null;
+		boolean foundIt = false;
+		Connection connection = getConnection();
+		if( null == connection) { return false; }
+		
+		try {
+			stmt = connection.createStatement();
+			result = stmt.executeQuery("SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE table_name='" + getLocalName(sfdcTable).toUpperCase() + "'");
+			foundIt = result.next();
+		} catch( Exception e ) {
+			e.printStackTrace();
+		} finally {
+			if( null != result) { result.close(); }
+			if( null != stmt ) { stmt.close(); }
+		}
+		
+		return !foundIt;
+	}
 
 }

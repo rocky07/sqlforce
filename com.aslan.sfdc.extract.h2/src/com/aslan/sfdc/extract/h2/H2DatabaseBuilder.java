@@ -11,8 +11,12 @@ package com.aslan.sfdc.extract.h2;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.Calendar;
 
 import com.aslan.sfdc.extract.ansi.AnsiDatabaseBuilder;
+import com.sforce.soap.partner.DescribeSObjectResult;
 
 /**
  * Extract a Salesforce Database into a H2 Database.
@@ -61,7 +65,6 @@ public class H2DatabaseBuilder extends AnsiDatabaseBuilder {
 		PreparedStatement stmt = null;
 		
 		try {
-//			System.err.println(sql.substring( 0, 40 ));
 			stmt = connection.prepareStatement(sql);
 			stmt.execute();
 		} finally {
@@ -70,6 +73,11 @@ public class H2DatabaseBuilder extends AnsiDatabaseBuilder {
 			}
 		}
 
+	}
+
+	@Override
+	public Connection getConnection() {
+		return connection;
 	}
 
 }

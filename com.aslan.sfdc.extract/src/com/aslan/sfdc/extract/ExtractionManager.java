@@ -259,11 +259,13 @@ public class ExtractionManager {
 				}
 				
 				monitor.readData( sObjectName, rowBuffer.size() + nWritten );
-				if( nBytesPending >= maxBytesToBuffer ) {
+				if( nBytesPending >= maxBytesToBuffer || monitor.isCancel()) {
 					flush();
 				}
 				
-
+				if( monitor.isCancel()) { 
+					cancel();
+				}
 			}
 
 			@Override
@@ -300,8 +302,9 @@ public class ExtractionManager {
 		
 		for( TableRuleInstance table : tables ) {
 			extractData( table, monitor );
+			if( monitor.isCancel()) { break; }
 		}
-		monitor.reportMessage("Finished extracting data");
+		monitor.reportMessage("Finished extracting data" + (monitor.isCancel()?": CANCELLED":""));
 	}
 	/**
 	 * Extract the schema for a single object from Salesforce.
@@ -313,9 +316,11 @@ public class ExtractionManager {
 	private void extractSchema(String sObjectName, IExtractionMonitor monitor ) throws Exception {
 		
 		TableDescriptor tableDesc = getTableDescriptor( sObjectName );
-		builder.createTable( tableDesc.describeResult);
-		monitor.createTable(sObjectName);
-		Thread.yield();
+		if( builder.isTableNew( tableDesc.describeResult)) {
+			builder.createTable( tableDesc.describeResult);
+			monitor.createTable(sObjectName);
+			Thread.yield();
+		}
 	}
 	
 	/**
@@ -333,8 +338,9 @@ public class ExtractionManager {
 		
 		for( TableRuleInstance rule : tables ) {
 			extractSchema( rule.getTableName(), monitor );
+			if( monitor.isCancel()) { break; }
 		}
-		monitor.reportMessage("Finished extracting schema"); 
+		monitor.reportMessage("Finished extracting schema" + (monitor.isCancel()?": CANCELLED":"")); 
 		
 	}
 }

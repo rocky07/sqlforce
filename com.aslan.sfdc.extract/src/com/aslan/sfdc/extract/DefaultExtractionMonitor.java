@@ -44,4 +44,9 @@ public class DefaultExtractionMonitor implements IExtractionMonitor {
 	public void readData(String tableName, int nRowsRead) {
 	}
 
+	@Override
+	public boolean isCancel() {
+		return false;
+	}
+
 }

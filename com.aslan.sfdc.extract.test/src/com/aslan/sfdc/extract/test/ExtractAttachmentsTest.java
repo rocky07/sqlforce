@@ -46,6 +46,12 @@ public class ExtractAttachmentsTest extends TestCase {
 			}
 			
 		}
+
+		@Override
+		public boolean isTableNew(DescribeSObjectResult sfdcTable)
+				throws Exception {
+			return false;
+		}
 		
 	}
 	protected void setUp() throws Exception {
