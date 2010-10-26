@@ -70,8 +70,13 @@ public class ExtractionManager {
 	
 	
 	private Map<String,TableDescriptor> tableNameMap = new HashMap<String,TableDescriptor>();
+	private Set<String> noExportTables = new HashSet<String>();
 	
 	public ExtractionManager( LoginManager.Session session, IDatabaseBuilder builder ) throws Exception {
+		
+		for( String table : new String[] {"UserProfileFeed", "Vote", "EntitySubscription"} ) {
+			noExportTables.add(table.toUpperCase());
+		}
 		this.session = session;
 		this.builder = builder;
 		this.schemaAnalyzer = new SchemaAnalyzer( session );
@@ -205,12 +210,16 @@ public class ExtractionManager {
 	 */
 	private void extractData(TableRuleInstance rule, final IExtractionMonitor monitor ) throws Exception {
 		
+
 		final String sObjectName = rule.getTableName();
 		final TableDescriptor tableDesc = getTableDescriptor( sObjectName );
-		if( !tableDesc.describeResult.isQueryable()) {
-			monitor.reportMessage("Skip " + sObjectName + ". SELECT Operation not supported by Salesforce");
+		
+		if( noExportTables.contains(sObjectName.toUpperCase()) || !tableDesc.describeResult.isQueryable()) {
+			monitor.startCopyData(sObjectName);
+			monitor.endCopyData( sObjectName, 0 );
 			return;
 		}
+		
 		final Field fields[] = tableDesc.describeResult.getFields();
 		
 		StringBuffer sql = new StringBuffer();
