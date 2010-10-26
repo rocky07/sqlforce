@@ -26,23 +26,15 @@ import com.aslan.sfdc.partner.LoginManager;
 import com.aslan.sfdc.partner.test.SfdcTestEnvironment;
 
 /**
- * Verify that an H2 Schema can be build from Salesforce.
+ * Extract a complete database (takes a long time).
  * 
  * @author greg
  * 
  */
-public class SchemaBuilderTest extends TestCase {
+public class FullDatabaseExtractTest extends TestCase {
 
 	IExtractionMonitor monitor = new SwingExtractionMonitor();
-
-	private void rmdir( File dir ) {
-		if( dir.isDirectory()) {
-			for( File file : dir.listFiles()) {
-				rmdir( file );
-			}
-		}
-		dir.delete();
-	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -63,36 +55,33 @@ public class SchemaBuilderTest extends TestCase {
 	}
 
 	public void testExtractAllTables() throws Exception {
-		Connection connection = null;
-		File baseDatabaseName = File.createTempFile("TestH2Database", "");
-		baseDatabaseName.deleteOnExit();
-
+		Connection connection = null;	
+		File baseDatabaseName = new File("C:/tmp/MyTestH2Database");
+		System.err.println("Extracting to: " + baseDatabaseName);
 		try {
 			connection = DriverManager.getConnection("jdbc:h2:"
 					+ baseDatabaseName.getAbsolutePath(), "sa", "fred");
 
-			LoginManager.Session session = SfdcTestEnvironment.getTestSession();
+			//LoginManager.Session session = SfdcTestEnvironment.getTestSession();
+			LoginManager.Session session = SfdcTestEnvironment.getSession("Sandbox");
 			IDatabaseBuilder builder = new H2DatabaseBuilder( connection );
 			
 			ExtractionManager mgr = new ExtractionManager(session, builder);
 			
 			ExtractionRuleset rules = new ExtractionRuleset();
 			
+			//rules.includeTable(new TableRule("User", true));
+			rules.excludeTable(new TableRule("Attachment"));
 			rules.includeTable(new TableRule(".*", true));
-		
-			monitor =  new SwingExtractionMonitor();
+			//rules.includeTable( new TableRule("Contact"));
+			
 			mgr.extractSchema( rules, monitor);
-	
+			mgr.extractData(rules, monitor);
 			
 		} finally {
 			if (null != connection) {
 				connection.close();
 			}
-			
-			File dbFile = new File( baseDatabaseName.getAbsolutePath() + ".h2.db");
-			dbFile.delete();
-			File lobDir = new File(baseDatabaseName.getAbsolutePath() + ".lobs.db" );
-			rmdir(lobDir);
 			
 			System.err.println("Database was: " + baseDatabaseName);
 		}
