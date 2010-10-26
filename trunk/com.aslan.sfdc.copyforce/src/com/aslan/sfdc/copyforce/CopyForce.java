@@ -81,7 +81,7 @@ public abstract class CopyForce {
 				
 			} else { // Copy everything if rules are not specified.
 				trace("Using default extraction rules");
-				rules.includeTable(new TableRule(".*"));
+				rules.includeTable(new TableRule(".*", true));
 			}
 			//
 			// Connect to the destination database.
