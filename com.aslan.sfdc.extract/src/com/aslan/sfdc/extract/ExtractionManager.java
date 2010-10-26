@@ -205,7 +205,7 @@ public class ExtractionManager {
 	 */
 	private void extractData(TableRuleInstance rule, final IExtractionMonitor monitor ) throws Exception {
 		
-		String sObjectName = rule.getTableName();
+		final String sObjectName = rule.getTableName();
 		final TableDescriptor tableDesc = getTableDescriptor( sObjectName );
 		if( !tableDesc.describeResult.isQueryable()) {
 			monitor.reportMessage("Skip " + sObjectName + ". SELECT Operation not supported by Salesforce");
@@ -246,6 +246,8 @@ public class ExtractionManager {
 				nWritten += rowBuffer.size();
 				rowBuffer.clear();
 				nBytesPending = 0;
+				
+				monitor.copyData( sObjectName, nWritten);
 			}
 			@Override
 			public void addRow(int rowNumber, String[] data) {
@@ -255,9 +257,13 @@ public class ExtractionManager {
 						nBytesPending += s.length();
 					}
 				}
+				
+				monitor.readData( sObjectName, rowBuffer.size() + nWritten );
 				if( nBytesPending >= maxBytesToBuffer ) {
 					flush();
 				}
+				
+
 			}
 
 			@Override
@@ -268,12 +274,15 @@ public class ExtractionManager {
 		}
 		MyCallback callback = new MyCallback();
 		
+		monitor.startCopyData(sObjectName);
 		monitor.reportMessage("Start Extract Data: " + sObjectName 
 				+ (null==rule.getTableRule().getPredicate()?
 						" (All Rows)"
 						:(" (WHERE " + rule.getTableRule().getPredicate() + ")")));
 		
 		(new SObjectQueryHelper()).findRows( session, sql.toString(), callback );
+		
+		monitor.endCopyData( sObjectName, callback.nWritten);
 		monitor.reportMessage("End Extract Data: " + sObjectName + ", " + callback.nWritten + " rows extracted");
 	}
 	
@@ -303,9 +312,10 @@ public class ExtractionManager {
 	 */
 	private void extractSchema(String sObjectName, IExtractionMonitor monitor ) throws Exception {
 		
-		monitor.reportMessage("Extract Schema: " + sObjectName );
 		TableDescriptor tableDesc = getTableDescriptor( sObjectName );
 		builder.createTable( tableDesc.describeResult);
+		monitor.createTable(sObjectName);
+		Thread.yield();
 	}
 	
 	/**
@@ -318,13 +328,13 @@ public class ExtractionManager {
 	 */
 	public void extractSchema(ExtractionRuleset ruleSet, IExtractionMonitor monitor) throws Exception {
 		
-		monitor.reportMessage("Calculating the order in which schema will be extracted");
+		monitor.reportMessage("Calculating the order in which schema will be extracted"); 
 		List<TableRuleInstance> tables = calculateExtractionList(ruleSet, monitor );
 		
 		for( TableRuleInstance rule : tables ) {
 			extractSchema( rule.getTableName(), monitor );
 		}
-		monitor.reportMessage("Finished extracting schema");
+		monitor.reportMessage("Finished extracting schema"); 
 		
 	}
 }

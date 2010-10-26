@@ -22,6 +22,7 @@ import com.aslan.sfdc.extract.ExtractionManager;
 import com.aslan.sfdc.extract.ExtractionRuleset;
 import com.aslan.sfdc.extract.IDatabaseBuilder;
 import com.aslan.sfdc.extract.IExtractionMonitor;
+import com.aslan.sfdc.extract.SwingExtractionMonitor;
 import com.aslan.sfdc.extract.ExtractionRuleset.TableRule;
 import com.aslan.sfdc.extract.h2.H2DatabaseBuilder;
 import com.aslan.sfdc.partner.LoginManager;
@@ -39,10 +40,10 @@ public class SchemaBuilderTest extends TestCase {
 		private DateFormat dateFormat = DateFormat.getTimeInstance();
 
 		@Override
-		public void reportMessage(String msg) {
+		public void createTable(String name) {
 			Calendar cal = Calendar.getInstance();
 			
-			System.err.println(dateFormat.format( cal.getTime()) + " : " + msg);
+			System.err.println(dateFormat.format( cal.getTime()) + " : " + name);
 		}
 		
 	};
@@ -84,19 +85,21 @@ public class SchemaBuilderTest extends TestCase {
 					+ baseDatabaseName.getAbsolutePath(), "sa", "fred");
 
 			//LoginManager.Session session = SfdcTestEnvironment.getTestSession();
-			LoginManager.Session session = SfdcTestEnvironment.getSession("sandbox");
+			LoginManager.Session session = SfdcTestEnvironment.getSession("UnitTests");
 			IDatabaseBuilder builder = new H2DatabaseBuilder( connection );
 			
 			ExtractionManager mgr = new ExtractionManager(session, builder);
 			
 			ExtractionRuleset rules = new ExtractionRuleset();
 			
-			rules.includeTable(new TableRule("User"));
-			rules.excludeTable(new TableRule("Attachment"));
-			//rules.includeTable(new TableRule("Account"));
+			//rules.includeTable(new TableRule("User", true));
+			//rules.excludeTable(new TableRule("Attachment"));
+			rules.includeTable(new TableRule("Account", true));
 			//rules.includeTable( new TableRule("Contact"));
 			
-			mgr.extractSchema(rules, monitor);
+			//mgr.extractSchema(rules, monitor);
+			monitor =  new SwingExtractionMonitor();
+			mgr.extractSchema( rules, monitor);
 			mgr.extractData(rules, monitor);
 			
 		} finally {
