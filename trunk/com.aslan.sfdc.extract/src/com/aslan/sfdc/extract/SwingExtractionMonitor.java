@@ -10,6 +10,8 @@ package com.aslan.sfdc.extract;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -17,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -175,6 +178,7 @@ public class SwingExtractionMonitor implements IExtractionMonitor {
 	private final Map<String, SalesforceTable> tableNameMap = new HashMap<String, SalesforceTable>();
 	private final SalesforceTableModel tableModel = new SalesforceTableModel();
 	private CopyTimerThread copyTimerThread = null;
+	private boolean isCancelled = false;
 	
 	public SwingExtractionMonitor() {
 		initMonitor( frame.getContentPane());
@@ -196,8 +200,21 @@ public class SwingExtractionMonitor implements IExtractionMonitor {
 		table.setPreferredScrollableViewportSize(new java.awt.Dimension(500, 300));
 		
 		JLabel label = new JLabel(copyright);
-		
-		myRoot.add( label, BorderLayout.SOUTH);
+		JPanel controlPanel = new JPanel();
+		controlPanel.setLayout( new BorderLayout());
+		controlPanel.add( label, BorderLayout.SOUTH);
+		JButton cancelButton = new JButton("Cancel");
+		controlPanel.add( cancelButton, BorderLayout.CENTER);
+		cancelButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				SwingExtractionMonitor.this.isCancelled = true;
+				
+			}
+			
+		});
+		myRoot.add( controlPanel, BorderLayout.SOUTH);
 		myRoot.add(scroller, BorderLayout.CENTER );
 		root.add( myRoot );
 		
@@ -314,6 +331,11 @@ public class SwingExtractionMonitor implements IExtractionMonitor {
 		table.nRowsRead = nRowsRead;
 		refreshTable( table );
 		
+	}
+
+	@Override
+	public boolean isCancel() {
+		return isCancelled;
 	}
 
 }

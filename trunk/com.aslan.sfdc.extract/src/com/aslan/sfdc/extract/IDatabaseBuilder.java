@@ -9,6 +9,7 @@
 
 package com.aslan.sfdc.extract;
 
+import java.util.Calendar;
 import java.util.List;
 
 import com.sforce.soap.partner.DescribeSObjectResult;
@@ -45,10 +46,19 @@ public interface IDatabaseBuilder {
 	
 	
 	/**
+	 * Determine if a table is already defined in the destination data store.
+	 * 
+	 * @param sfdcTable description of a Salesforce Object
+	 * @return true if the table is defined, else false.
+	 * @throws Exception if anything goes wrong.
+	 */
+	boolean isTableNew( DescribeSObjectResult sfdcTable) throws Exception ;
+	
+	/**
 	 * Create a table from a Saleforce SObject (DO NOT CREATE Foreign Keys!)
 	 * 
 	 * @param sfdcTable description of a Salesforce Object
-	 * @throws Exception if anythig goes wrong.
+	 * @throws Exception if anything goes wrong.
 	 */
 	void createTable( DescribeSObjectResult sfdcTable ) throws Exception;
 	
@@ -56,8 +66,7 @@ public interface IDatabaseBuilder {
 	 * Insert data into a table.
 	 * 
 	 * Note that a record's unique ID will ALWAYS be the first column in every dataRow.
-	 * A IDatabaseBuilder instance should use the ID value to determine if the data is new
-	 * to the extraction database or an update.
+	 * If the data is already in the database, then update it if it is newer.
 	 * 
 	 * @param sfdcTable insert into this table
 	 * @param fields the fields to insert.
@@ -65,5 +74,7 @@ public interface IDatabaseBuilder {
 	 * @throws Exception if anything fails.
 	 */
 	void insertData( DescribeSObjectResult sfdcTable, Field[] fields, List<String[]> dataRows ) throws Exception;
+	
+
 		
 }

@@ -10,6 +10,10 @@
 package com.aslan.sfdc.extract.ansi;
 
 import java.io.OutputStream;
+import java.sql.Connection;
+import java.util.Calendar;
+
+import com.sforce.soap.partner.DescribeSObjectResult;
 
 /**
  * Write all SQL statements that could be used to recreate a Salesforce Database to a stream.
@@ -55,6 +59,18 @@ public class SQLEmitterDatabaseBuilder extends AnsiDatabaseBuilder {
 		emitStream.write( sql.getBytes() );
 		emitStream.write( '\n' );
 
+	}
+
+
+	@Override
+	public boolean isTableNew(DescribeSObjectResult sfdcTable) throws Exception {
+		return false;
+	}
+
+
+	@Override
+	public Connection getConnection() {
+		return null;
 	}
 
 }

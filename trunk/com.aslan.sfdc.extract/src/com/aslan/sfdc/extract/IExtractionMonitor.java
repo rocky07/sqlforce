@@ -62,4 +62,11 @@ public interface IExtractionMonitor {
 	 * @param msg indication of progress readable by a human.
 	 */
 	void reportMessage( String msg );
+	
+	/**
+	 * If true the cancel the current run in an orderly fashion.
+	 * 
+	 * @return true if current run should be cancelled.
+	 */
+	boolean isCancel();
 }
