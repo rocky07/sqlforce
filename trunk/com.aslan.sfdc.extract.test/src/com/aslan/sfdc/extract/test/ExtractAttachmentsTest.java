@@ -30,6 +30,7 @@ public class ExtractAttachmentsTest extends TestCase {
 
 	private class DatabaseScanner implements IDatabaseBuilder {
 
+		private int recNo = 0;
 		@Override
 		public void createTable(DescribeSObjectResult sfdcTable)
 				throws Exception {
@@ -41,7 +42,7 @@ public class ExtractAttachmentsTest extends TestCase {
 		public void insertData(DescribeSObjectResult sfdcTable, Field[] fields,
 				List<String[]> dataRows) throws Exception {
 			for( String[] row : dataRows ) {
-				System.err.println(row[0]);
+				System.err.println(recNo++ + " : " + row[0] + " : " + sfdcTable.getName() );
 			}
 			
 		}
@@ -56,13 +57,14 @@ public class ExtractAttachmentsTest extends TestCase {
 	}
 
 	public void testGetAttachments() throws Exception {
-		//LoginManager.Session session = SfdcTestEnvironment.getSession("Readonly");
-		LoginManager.Session session = SfdcTestEnvironment.getTestSession();
+		LoginManager.Session session = SfdcTestEnvironment.getSession("Readonly");
+		//LoginManager.Session session = SfdcTestEnvironment.getTestSession();
 		DatabaseScanner scanner = new DatabaseScanner();
 		ExtractionManager mgr = new ExtractionManager(session, scanner);
 		ExtractionRuleset rules = new ExtractionRuleset();
 		
-		rules.includeTable(new TableRule("Attachment", true));
+		
+		rules.includeTable(new TableRule("Attachment", false));
 		mgr.extractData( rules, new DefaultExtractionMonitor());
 			
 

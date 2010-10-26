@@ -17,12 +17,31 @@ package com.aslan.sfdc.extract;
  */
 public class DefaultExtractionMonitor implements IExtractionMonitor {
 
-	/* (non-Javadoc)
-	 * @see com.aslan.sfdc.extract.IExtractionMonitor#reportMessage(java.lang.String)
-	 */
+
 	@Override
 	public void reportMessage(String msg) {
 
+	}
+
+	@Override
+	public void copyData(String tableName, int nRowsCopied) {
+		
+	}
+
+	@Override
+	public void createTable(String name) {
+	}
+
+	@Override
+	public void endCopyData(String tableName, int nRowsCopied) {
+	}
+
+	@Override
+	public void startCopyData(String tableName) {
+	}
+
+	@Override
+	public void readData(String tableName, int nRowsRead) {
 	}
 
 }

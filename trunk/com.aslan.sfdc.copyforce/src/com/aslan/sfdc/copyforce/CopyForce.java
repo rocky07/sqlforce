@@ -26,6 +26,7 @@ import com.aslan.sfdc.extract.ExtractionManager;
 import com.aslan.sfdc.extract.ExtractionRuleset;
 import com.aslan.sfdc.extract.IDatabaseBuilder;
 import com.aslan.sfdc.extract.IExtractionMonitor;
+import com.aslan.sfdc.extract.SwingExtractionMonitor;
 import com.aslan.sfdc.extract.ExtractionRuleset.TableRule;
 import com.aslan.sfdc.partner.LoginCredentials;
 import com.aslan.sfdc.partner.LoginCredentialsRegistry;
@@ -253,14 +254,8 @@ public abstract class CopyForce {
 		if( isSilent ) {
 			monitor = new DefaultExtractionMonitor();
 		} else if( isGUI ) {
-			monitor = new DefaultExtractionMonitor() {
-
-				@Override
-				public void reportMessage(String msg) {
-					System.err.println("GUI: " + msg);
-				}
-				
-			};
+			monitor = new SwingExtractionMonitor();
+			
 		} else {
 			monitor = new DefaultExtractionMonitor() {
 
