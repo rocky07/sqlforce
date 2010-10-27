@@ -16,9 +16,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.TimeZone;
 
 import com.aslan.sfdc.extract.IDatabaseBuilder;
@@ -35,9 +33,11 @@ import com.sforce.soap.partner.FieldType;
  */
 public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 
-	public abstract String getStringType( int width );
-	public abstract String getIntType( int width );
-	public abstract String getDecimalType( int width, int scale );
+	protected abstract String getStringType( int width );
+	protected abstract String getIntType( int width );
+	protected abstract String getDecimalType( int width, int scale );
+	
+	
 	public abstract Connection getConnection();
 	
 	private DateFormat dateParser;
@@ -45,6 +45,33 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 	public AnsiDatabaseBuilder() {
 		dateParser = new SimpleDateFormat( "yyyy-mm-dd'T'HH:mm:ss.SSS'Z'");
 		dateParser.setTimeZone( TimeZone.getTimeZone("GMT+0"));
+	}
+	
+	protected boolean isMultiValueInsertSupported() {
+		return true;
+	}
+	protected String getBooleanType() {
+		return "BOOLEAN";
+	}
+
+	protected String getDateTimeType() {
+		return "TIMESTAMP";
+	}
+
+	protected String getTimeType() {
+		return "TIME";
+	}
+	
+	protected String getDateType() {
+		return "DATE";
+	}
+
+	protected String getCLOBType() {
+		return "CLOB";
+	}
+	
+	protected String getTruthValue( boolean isTrue ) {
+		return isTrue?"TRUE":"FALSE";
 	}
 	/**
 	 * Run a bit of SQL created by the class.
@@ -148,7 +175,7 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 
 		@Override
 		public String makeValue(String value) {
-			return "true".equalsIgnoreCase(value)?"TRUE":"FALSE";
+			return getTruthValue("true".equalsIgnoreCase(value) );
 		}
 	}
 	
@@ -186,6 +213,7 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 		if( "GROUP".equalsIgnoreCase(sfdcTable.getName())) {
 			return "GROUP2";
 		}
+		
 		return sfdcTable.getName();
 	}
 	/* (non-Javadoc)
@@ -228,7 +256,7 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 				
 			} else if( FIELDTYPE_BOOLEAN.equals(fieldTypeName)) {
 				
-				columnDefs.add( fieldName + " BOOLEAN " + nullOption + uniqueOption);
+				columnDefs.add( fieldName + " " + getBooleanType() + " " + nullOption + uniqueOption);
 				
 			}  else if( FIELDTYPE_REFERENCE.equals(fieldTypeName)) {
 				
@@ -236,23 +264,23 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 				
 			}  else if( FIELDTYPE_DATETIME.equals(fieldTypeName)) {
 				
-				columnDefs.add( fieldName + " TIMESTAMP " + nullOption + uniqueOption);
+				columnDefs.add( fieldName +  " " + getDateTimeType() + " " + nullOption + uniqueOption);
 				
 			} else if( FIELDTYPE_DATE.equals(fieldTypeName)) {
 				
-				columnDefs.add( fieldName + " DATE " + nullOption + uniqueOption);
+				columnDefs.add( fieldName + " " + getDateType() + " " + nullOption + uniqueOption);
 				
 			} else if( FIELDTYPE_TIME.equals(fieldTypeName)) {
 				
-				columnDefs.add( fieldName + " TIME " + nullOption + uniqueOption);
+				columnDefs.add( fieldName + " " + getTimeType() + " " + nullOption + uniqueOption);
 				
 			} else if( FIELDTYPE_ANYTYPE.equals(fieldTypeName)) {
 				
-				columnDefs.add( fieldName + " CLOB ");
+				columnDefs.add( fieldName + " " + getCLOBType() + " ");
 				
 			} else if( FIELDTYPE_BASE64.equals(fieldTypeName)) {
 				
-				columnDefs.add( fieldName + " CLOB ");
+				columnDefs.add( fieldName + " " + getCLOBType() + " ");
 				
 			} else {
 				throw new Exception("Unrecognized field type: " + fieldTypeName );
@@ -315,31 +343,58 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 		}
 		sql.append( ") VALUES");
 		
-		for( int n = 0; n < dataRows.size(); n ++ ) {
-			String[] row = dataRows.get(n);
-			
-			java.util.Date lastModDate = getLastModifiedDate( sfdcTable, row[0] );
-			if( null != lastModDate ) {
-				if( isUpdateNecessary( sfdcTable, fields, row, lastModDate )) { updateData( sfdcTable, fields, row );};
-				continue;
-			}
-			if( n > 0 ) { sql.append( "\n,"); }
-			sql.append("(");
-			for( int k = 0; k < row.length; k++ ) {
-				String value = row[k];
-				if( null==value || 0==value.trim().length()) {
-					value = "null";
-				} else {
-					value = valueMakers[k].makeValue(value);
+		String sqlPrefix = sql.toString();
+		
+		if( isMultiValueInsertSupported()) {
+			for( int n = 0; n < dataRows.size(); n ++ ) {
+				String[] row = dataRows.get(n);
+
+				java.util.Date lastModDate = getLastModifiedDate( sfdcTable, row[0] );
+				if( null != lastModDate ) {
+					if( isUpdateNecessary( sfdcTable, fields, row, lastModDate )) { updateData( sfdcTable, fields, row );};
+					continue;
 				}
-				sql.append( (k>0?",":"") + value );
+				if( n > 0 ) { sql.append( "\n,"); }
+				sql.append("(");
+				for( int k = 0; k < row.length; k++ ) {
+					String value = row[k];
+					if( null==value || 0==value.trim().length()) {
+						value = "null";
+					} else {
+						value = valueMakers[k].makeValue(value);
+					}
+					sql.append( (k>0?",":"") + value );
+				}
+				sql.append(")");
+				n2Insert++;
 			}
-			sql.append(")");
-			n2Insert++;
-		}
-		if( n2Insert > 0 ) {
-			sql.append(";");
-			executeSQL( sql.toString());
+			if( n2Insert > 0 ) {
+				sql.append(";");
+				executeSQL( sql.toString());
+			}
+		} else {
+			for( int n = 0; n < dataRows.size(); n ++ ) {
+				String[] row = dataRows.get(n);
+				sql.setLength(0);
+				sql.append( sqlPrefix );
+				java.util.Date lastModDate = getLastModifiedDate( sfdcTable, row[0] );
+				if( null != lastModDate ) {
+					if( isUpdateNecessary( sfdcTable, fields, row, lastModDate )) { updateData( sfdcTable, fields, row );};
+					continue;
+				}
+				sql.append("(");
+				for( int k = 0; k < row.length; k++ ) {
+					String value = row[k];
+					if( null==value || 0==value.trim().length()) {
+						value = "null";
+					} else {
+						value = valueMakers[k].makeValue(value);
+					}
+					sql.append( (k>0?",":"") + value );
+				}
+				sql.append(")");
+				executeSQL(sql.toString());
+			}
 		}
 	}
 	

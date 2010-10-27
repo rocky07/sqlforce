@@ -31,19 +31,19 @@ public class SQLEmitterDatabaseBuilder extends AnsiDatabaseBuilder {
 	
 	
 	@Override
-	public String getDecimalType(int width, int scale) {
+	protected String getDecimalType(int width, int scale) {
 		return "DECIMAL(" + width + "," + scale + ")";
 	}
 
 
 	@Override
-	public String getIntType(int width) {
+	protected String getIntType(int width) {
 		return "DECIMAL(" + width + ",0)";
 	}
 
 
 	@Override
-	public String getStringType(int width) {
+	protected String getStringType(int width) {
 		if( width > 32000 ) {
 			return "CLOB";
 		}
