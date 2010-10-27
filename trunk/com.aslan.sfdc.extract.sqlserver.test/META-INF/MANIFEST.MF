@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Extract SQL Server Tests
+Bundle-SymbolicName: com.aslan.sfdc.extract.sqlserver.test
+Bundle-Version: 1.0.0
+Bundle-Vendor: Aslan Technologies
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: com.aslan.sfdc.extract.sqlserver;bundle-version="1.0.0",
+ com.aslan.sfdc.partner.test;bundle-version="1.0.0",
+ org.junit;bundle-version="3.8.2"

@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Sqlserver
+Bundle-SymbolicName: com.microsoft.sqlserver
+Bundle-Version: 1.0.0
+Bundle-Vendor: MICROSOFT
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: com.microsoft.sqlserver.jdbc,
+ microsoft.sql
