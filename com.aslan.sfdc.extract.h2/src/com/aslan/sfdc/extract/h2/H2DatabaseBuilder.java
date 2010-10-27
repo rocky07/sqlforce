@@ -33,7 +33,7 @@ public class H2DatabaseBuilder extends AnsiDatabaseBuilder {
 	}
 	
 	@Override
-	public String getDecimalType(int width, int scale) {
+	protected String getDecimalType(int width, int scale) {
 		if( 0 == scale ) {
 			return "INTEGER";
 		} else {
@@ -44,18 +44,19 @@ public class H2DatabaseBuilder extends AnsiDatabaseBuilder {
 
 
 	@Override
-	public String getIntType(int width) {
+	protected String getIntType(int width) {
 		return "INTEGER";
 	}
 
 
 	@Override
-	public String getStringType(int width) {
+	protected String getStringType(int width) {
 		if( width > 32000 ) {
 			return "CLOB";
 		}
 		return "VARCHAR(" + width + ")";
 	}
+	
 	
 	/* (non-Javadoc)
 	 * @see com.aslan.sfdc.extract.ansi.AnsiDatabaseBuilder#executeSQL(java.lang.String)
