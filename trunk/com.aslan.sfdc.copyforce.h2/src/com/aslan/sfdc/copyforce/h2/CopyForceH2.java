@@ -27,7 +27,7 @@ import com.aslan.sfdc.extract.h2.H2DatabaseBuilder;
  */
 public class CopyForceH2 extends CopyForce {
 
-	public static final String SW_H2CONNECT = "h2connect";
+	public static final String SW_H2CONNECT = "h2";
 	public static final String SW_H2USER = "h2user";
 	public static final String SW_H2PASSWORD = "h2password";
 	

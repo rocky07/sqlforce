@@ -9,12 +9,20 @@
 
 package com.aslan.sfdc.extract;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
 import com.aslan.sfdc.extract.ExtractionRuleset.TableRule;
 import com.aslan.sfdc.partner.DefaultSObjectQuery2Callback;
@@ -61,6 +69,29 @@ public class ExtractionManager {
 		
 		
 	}
+	
+	/**
+	 * SAX Parser handler for picking up local configuration data.
+	 * 
+	 */
+	private class ConfigHandler extends DefaultHandler
+	{
+
+		ConfigHandler( ) {}
+
+		@Override
+		public void startElement(String uri, String localName, String qName,
+				Attributes attributes) throws SAXException {
+			
+			if( "NoDataExport".equals(qName)) {
+				String name = attributes.getValue("name");
+				noExportTables.add(name.toUpperCase());
+			}
+			
+		}
+		
+		
+	}
 	private LoginManager.Session session;
 	private IDatabaseBuilder builder;
 	private List<String> allTableNames = new ArrayList<String>();
@@ -74,9 +105,26 @@ public class ExtractionManager {
 	
 	public ExtractionManager( LoginManager.Session session, IDatabaseBuilder builder ) throws Exception {
 		
-		for( String table : new String[] {"UserProfileFeed", "Vote", "EntitySubscription"} ) {
-			noExportTables.add(table.toUpperCase());
+		//
+		// Load configuration data
+		//
+		
+		InputStream inStream = null;
+		try {
+			inStream = ExtractionManager.class.getResourceAsStream("ExtractionManagerConfig.xml");
+			SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
+			ConfigHandler handler = new ConfigHandler();
+			parser.parse(inStream, handler );
+			
+		} finally {
+			if( null != inStream ) {
+				inStream.close();
+			}
 		}
+		
+		//
+		// Start the process
+		//
 		this.session = session;
 		this.builder = builder;
 		this.schemaAnalyzer = new SchemaAnalyzer( session );
@@ -282,7 +330,8 @@ public class ExtractionManager {
 				}
 				
 				monitor.readData( sObjectName, nRead );
-				if( nBytesPending >= maxBytesToBuffer || monitor.isCancel()) {
+
+				if( (nBytesPending >= maxBytesToBuffer) || monitor.isCancel()) {
 					flush();
 				}
 				

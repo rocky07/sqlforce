@@ -7,7 +7,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 import com.aslan.sfdc.extract.ansi.AnsiDatabaseBuilder;
-import com.sforce.soap.partner.DescribeSObjectResult;
 
 /**
  * Extract a Salesforce Database into a Microsoft SQL/Server Database.
@@ -23,16 +22,22 @@ public class SqlServerDatabaseBuilder extends AnsiDatabaseBuilder {
 	}
 	
 	@Override
-	protected String getLocalName(DescribeSObjectResult sfdcTable ) {
-		if( "CASE".equalsIgnoreCase(sfdcTable.getName())) {
+	protected String getExportedName(String columnOrTableName) {
+
+		if( "CASE".equalsIgnoreCase(columnOrTableName)) {
 			return "Case2";
 		}
-		if( "USER".equalsIgnoreCase(sfdcTable.getName())) {
+		if( "USER".equalsIgnoreCase(columnOrTableName)) {
 			return "User2";
 		}
-		return super.getLocalName(sfdcTable);
+		
+		if( "COMMIT".equalsIgnoreCase(columnOrTableName)) {
+			return "Commit2";
+		}
+		return super.getExportedName(columnOrTableName);
 	}
 	
+
 	@Override
 	protected boolean isMultiValueInsertSupported() {
 		return false;

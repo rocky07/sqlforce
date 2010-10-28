@@ -9,15 +9,25 @@
 
 package com.aslan.sfdc.extract.ansi;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
 import com.aslan.sfdc.extract.IDatabaseBuilder;
 import com.sforce.soap.partner.DescribeSObjectResult;
@@ -33,6 +43,30 @@ import com.sforce.soap.partner.FieldType;
  */
 public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 
+	/**
+	 * SAX Parser handler for picking up local configuration data.
+	 * 
+	 */
+	private class ConfigHandler extends DefaultHandler
+	{
+
+		ConfigHandler( ) {}
+
+		@Override
+		public void startElement(String uri, String localName, String qName,
+				Attributes attributes) throws SAXException {
+			
+			if( "MapName".equals(qName)) {
+				String sfdc = attributes.getValue("sfdcName");
+				String name = attributes.getValue("exportName");
+				
+				exportNameMap.put(sfdc, name);
+			}
+		}
+		
+		
+	}
+	protected static String F_SYSTEMMODSTAMP = "SystemModstamp";
 	protected abstract String getStringType( int width );
 	protected abstract String getIntType( int width );
 	protected abstract String getDecimalType( int width, int scale );
@@ -40,11 +74,36 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 	
 	public abstract Connection getConnection();
 	
+	protected Map<String,String> exportNameMap = new HashMap<String,String>();
+	
 	private DateFormat dateParser;
 	
 	public AnsiDatabaseBuilder() {
 		dateParser = new SimpleDateFormat( "yyyy-mm-dd'T'HH:mm:ss.SSS'Z'");
 		dateParser.setTimeZone( TimeZone.getTimeZone("GMT+0"));
+		
+		//
+		// Load configuration data
+		//
+		
+		InputStream inStream = null;
+		try {
+			inStream = AnsiDatabaseBuilder.class.getResourceAsStream("AnsiDatabaseBuilderConfig.xml");
+			SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
+			ConfigHandler handler = new ConfigHandler();
+			parser.parse(inStream, handler );
+			
+		} catch(Exception e) {
+			e.printStackTrace(); // Never should happen. xml is packaged in the jar.
+		} finally {
+			if( null != inStream ) {
+				try {
+					inStream.close();
+				} catch (IOException e) {
+					;
+				}
+			}
+		}
 	}
 	
 	protected boolean isMultiValueInsertSupported() {
@@ -209,13 +268,15 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 			return "null";
 		}
 	}
-	protected String getLocalName(DescribeSObjectResult sfdcTable ) {
-		if( "GROUP".equalsIgnoreCase(sfdcTable.getName())) {
-			return "GROUP2";
-		}
+	
+	protected String getExportedName( String columnOrTableName ) {
 		
-		return sfdcTable.getName();
+		if( exportNameMap.containsKey(columnOrTableName )) {
+			return exportNameMap.get(columnOrTableName);
+		}
+		return columnOrTableName;
 	}
+	
 	/* (non-Javadoc)
 	 * @see com.aslan.sfdc.extract.IDatabaseBuilder#createTable(com.sforce.soap.partner.DescribeSObjectResult)
 	 */
@@ -236,51 +297,51 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 			
 			if( FIELDTYPE_ID.equals(fieldTypeName)) {
 				
-				columnDefs.add( fieldName + " CHAR(" + fieldLength + ") PRIMARY KEY");
+				columnDefs.add( getExportedName(fieldName) + " CHAR(" + fieldLength + ") PRIMARY KEY");
 				
 			} else if( isVarcharField( field )) {
 					
-				columnDefs.add( fieldName + " " + getStringType(fieldLength) + " " + nullOption + uniqueOption );
+				columnDefs.add( getExportedName(fieldName) + " " + getStringType(fieldLength) + " " + nullOption + uniqueOption );
 				
 			} else if( FIELDTYPE_INT.equals( fieldTypeName)) {
 				
-				columnDefs.add( fieldName + " " + getIntType( field.getDigits()) + " " + nullOption + uniqueOption);
+				columnDefs.add( getExportedName(fieldName) + " " + getIntType( field.getDigits()) + " " + nullOption + uniqueOption);
 				
 			} else if( FIELDTYPE_DOUBLE.equals(fieldTypeName)
 					|| FIELDTYPE_PERCENT.equals(fieldTypeName)
 					|| FIELDTYPE_CURRENCY.equals(fieldTypeName)){
 				
-				columnDefs.add( fieldName 
+				columnDefs.add( getExportedName(fieldName) 
 						+ " " + getDecimalType(field.getPrecision(), field.getScale()) + " "
 						+ nullOption + uniqueOption);
 				
 			} else if( FIELDTYPE_BOOLEAN.equals(fieldTypeName)) {
 				
-				columnDefs.add( fieldName + " " + getBooleanType() + " " + nullOption + uniqueOption);
+				columnDefs.add( getExportedName(fieldName) + " " + getBooleanType() + " " + nullOption + uniqueOption);
 				
 			}  else if( FIELDTYPE_REFERENCE.equals(fieldTypeName)) {
 				
-				columnDefs.add( fieldName + " CHAR(" + fieldLength + ")" + nullOption + uniqueOption);
+				columnDefs.add( getExportedName(fieldName) + " CHAR(" + fieldLength + ")" + nullOption + uniqueOption);
 				
 			}  else if( FIELDTYPE_DATETIME.equals(fieldTypeName)) {
 				
-				columnDefs.add( fieldName +  " " + getDateTimeType() + " " + nullOption + uniqueOption);
+				columnDefs.add( getExportedName(fieldName) +  " " + getDateTimeType() + " " + nullOption + uniqueOption);
 				
 			} else if( FIELDTYPE_DATE.equals(fieldTypeName)) {
 				
-				columnDefs.add( fieldName + " " + getDateType() + " " + nullOption + uniqueOption);
+				columnDefs.add( getExportedName(fieldName) + " " + getDateType() + " " + nullOption + uniqueOption);
 				
 			} else if( FIELDTYPE_TIME.equals(fieldTypeName)) {
 				
-				columnDefs.add( fieldName + " " + getTimeType() + " " + nullOption + uniqueOption);
+				columnDefs.add( getExportedName(fieldName) + " " + getTimeType() + " " + nullOption + uniqueOption);
 				
 			} else if( FIELDTYPE_ANYTYPE.equals(fieldTypeName)) {
 				
-				columnDefs.add( fieldName + " " + getCLOBType() + " ");
+				columnDefs.add( getExportedName(fieldName) + " " + getCLOBType() + " ");
 				
 			} else if( FIELDTYPE_BASE64.equals(fieldTypeName)) {
 				
-				columnDefs.add( fieldName + " " + getCLOBType() + " ");
+				columnDefs.add( getExportedName(fieldName) + " " + getCLOBType() + " ");
 				
 			} else {
 				throw new Exception("Unrecognized field type: " + fieldTypeName );
@@ -290,7 +351,7 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 
 		StringBuffer sql = new StringBuffer();
 		
-		sql.append( "CREATE TABLE " + getLocalName(sfdcTable) + "(");
+		sql.append( "CREATE TABLE " + getExportedName(sfdcTable.getName()) + "(");
 		for( int n = 0; n < columnDefs.size(); n++ ) {
 			sql.append( ((n>0)?",":"") + columnDefs.get(n) );
 		}
@@ -331,7 +392,7 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 			List<String[]> dataRows) throws Exception {
 		
 		StringBuffer sql = new StringBuffer();
-		sql.append("INSERT INTO " + getLocalName(sfdcTable) + "(");
+		sql.append("INSERT INTO " + getExportedName(sfdcTable.getName()) + "(");
 		IValueMaker valueMakers[] = getValueMakers(fields);
 		int n2Insert = 0;
 		int nSkipped = 0;
@@ -339,7 +400,7 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 		for( int n = 0; n < fields.length; n++ ) {
 			Field field = fields[n];
 			
-			sql.append( (n>0?",":"") + field.getName());
+			sql.append( (n>0?",":"") + getExportedName(field.getName()));
 
 		}
 		sql.append( ") VALUES");
@@ -426,7 +487,7 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 		java.util.Date sfdcDate = null;
 		for( int n=0; n < fields.length; n++ ) {
 			Field field = fields[n];
-			if( field.getName().equalsIgnoreCase("systemmodstamp")) {
+			if( field.getName().equalsIgnoreCase(F_SYSTEMMODSTAMP)) {
 				String ansiDate = row[n];
 				sfdcDate = dateParser.parse( ansiDate );
 
@@ -446,7 +507,7 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 
 
 		StringBuffer sql = new StringBuffer();
-		sql.append( "UPDATE " + getLocalName(sfdcTable) + " SET " );
+		sql.append( "UPDATE " + getExportedName(sfdcTable.getName()) + " SET " );
 		String id = row[0];
 		boolean firstValue = true;
 		for( int n = 1; n < row.length; n++ ) {
@@ -457,7 +518,7 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 			} else {
 				value = valueMakers[n].makeValue(value);
 			}
-			sql.append((firstValue?"":",") + fields[n].getName() + "=" + value);
+			sql.append((firstValue?"":",") + getExportedName(fields[n].getName()) + "=" + value);
 			firstValue = false;
 		}
 		sql.append(" WHERE id=" + quoteMaker.makeValue(id));
@@ -477,7 +538,7 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 		
 		try {
 			stmt = connection.createStatement();
-			result = stmt.executeQuery("SELECT systemmodstamp FROM " + getLocalName(sfdcTable) + " WHERE id='" + id + "'");
+			result = stmt.executeQuery("SELECT " + getExportedName(F_SYSTEMMODSTAMP) + " FROM " + getExportedName(sfdcTable.getName()) + " WHERE id='" + id + "'");
 			if( result.next()) {
 				long gmtModTime = result.getTimestamp(1).getTime();
 				
@@ -493,21 +554,6 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 		return lastModDate;
 	}
 	
-	private boolean isDataNew(DescribeSObjectResult sfdcTable, String id)
-			throws Exception {
-		java.util.Date cal = getLastModifiedDate( sfdcTable, id );
-		return cal==null;
-	}
-	
-	private boolean isDataOlder(DescribeSObjectResult sfdcTable, String id,
-			Calendar calendar) throws Exception {
-		
-		java.util.Date dbDate = getLastModifiedDate( sfdcTable, id );
-		
-		return (null==dbDate)?true:(dbDate.getTime() < calendar.getTime().getTime());
-	}
-	
-	
 	@Override
 	public boolean isTableNew(DescribeSObjectResult sfdcTable) throws Exception {
 		Statement stmt = null;
@@ -518,7 +564,7 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 		
 		try {
 			stmt = connection.createStatement();
-			result = stmt.executeQuery("SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE table_name='" + getLocalName(sfdcTable).toUpperCase() + "'");
+			result = stmt.executeQuery("SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE UPPER(table_name)='" + getExportedName(sfdcTable.getName()).toUpperCase() + "'");
 			foundIt = result.next();
 		} catch( Exception e ) {
 			e.printStackTrace();
