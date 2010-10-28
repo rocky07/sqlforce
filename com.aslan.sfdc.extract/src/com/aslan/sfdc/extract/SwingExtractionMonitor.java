@@ -10,6 +10,7 @@ package com.aslan.sfdc.extract;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DateFormat;
@@ -39,6 +40,7 @@ public class SwingExtractionMonitor implements IExtractionMonitor {
 		private String action = "";
 		private Integer nRowsCopied = 0;
 		private Integer nRowsRead = 0;
+		private Integer nRowsSkipped = 0;
 		private Calendar copyStartTime;
 		private Calendar copyEndTime;
 		
@@ -57,10 +59,11 @@ public class SwingExtractionMonitor implements IExtractionMonitor {
 		private static final int ACTION_INDEX = 0;
 		private static final int NAME_INDEX = 1;
 		private static final int NREAD_INDEX = 2;
-		private static final int NROWS_INDEX = 3;
-		private static final int COPY_START_INDEX = 4;
-		private static final int ELAPSED_INDEX = 5;
-		private String[] columnNames = {"Action", "Table Name", "#Rows Read", "#Rows Copied", "Copy Start", "Elapsed Time"};
+		private static final int NSKIPPED_INDEX = 3;
+		private static final int NROWS_INDEX = 4;
+		private static final int COPY_START_INDEX = 5;
+		private static final int ELAPSED_INDEX = 6;
+		private String[] columnNames = {"Action", "Table Name", "#Read", "#Skipped", "#Copied", "Copy Start", "Elapsed Time"};
 		private DateFormat dateFormat = DateFormat.getTimeInstance();
 		
 		
@@ -99,6 +102,7 @@ public class SwingExtractionMonitor implements IExtractionMonitor {
 				
 			case NROWS_INDEX:
 			case NREAD_INDEX:
+			case NSKIPPED_INDEX:
 				return Integer.class;
 			default:
 				return Object.class;
@@ -145,6 +149,10 @@ public class SwingExtractionMonitor implements IExtractionMonitor {
 				
 			case NREAD_INDEX:
 				return table.nRowsRead;
+				
+			case NSKIPPED_INDEX:
+				return table.nRowsSkipped;
+				
 			default:
 				return "";
 			}
@@ -174,9 +182,11 @@ public class SwingExtractionMonitor implements IExtractionMonitor {
 		
 	}
 	private JFrame frame = new JFrame( "CopyForce Progress Monitor");
-	private final List<SalesforceTable> allTables = new ArrayList<SalesforceTable>();
-	private final Map<String, SalesforceTable> tableNameMap = new HashMap<String, SalesforceTable>();
-	private final SalesforceTableModel tableModel = new SalesforceTableModel();
+	private List<SalesforceTable> allTables = new ArrayList<SalesforceTable>();
+	private Map<String, SalesforceTable> tableNameMap = new HashMap<String, SalesforceTable>();
+	private SalesforceTableModel tableModel = new SalesforceTableModel();
+	private JTable tableUI;
+	private JScrollPane tableScroller;
 	private CopyTimerThread copyTimerThread = null;
 	private boolean isCancelled = false;
 	
@@ -190,14 +200,14 @@ public class SwingExtractionMonitor implements IExtractionMonitor {
 
 		String copyright = "Copyright (c) 2010 Gregory Smith (gsmithfarmer@gmail.com)";
 		
-		JTable table = new JTable();
-		table.setModel( tableModel );
+		tableUI = new JTable();
+		tableUI.setModel( tableModel );
 		
 		JPanel myRoot = new JPanel();
 		myRoot.setLayout(new BorderLayout());
 		
-		JScrollPane scroller = new JScrollPane( table );
-		table.setPreferredScrollableViewportSize(new java.awt.Dimension(500, 300));
+		tableScroller = new JScrollPane( tableUI );
+		tableUI.setPreferredScrollableViewportSize(new java.awt.Dimension(500, 300));
 		
 		JLabel label = new JLabel(copyright);
 		JPanel controlPanel = new JPanel();
@@ -215,7 +225,7 @@ public class SwingExtractionMonitor implements IExtractionMonitor {
 			
 		});
 		myRoot.add( controlPanel, BorderLayout.SOUTH);
-		myRoot.add(scroller, BorderLayout.CENTER );
+		myRoot.add(tableScroller, BorderLayout.CENTER );
 		root.add( myRoot );
 		
 	}
@@ -234,6 +244,9 @@ public class SwingExtractionMonitor implements IExtractionMonitor {
 				public void run() {
 
 					tableModel.fireTableRowsInserted( whatRow, whatRow );
+					
+					Rectangle rowRect = tableUI.getCellRect(whatRow, 0, true);
+					tableUI.scrollRectToVisible(rowRect);
 				}
 			});
 			
@@ -248,7 +261,7 @@ public class SwingExtractionMonitor implements IExtractionMonitor {
 	
 	public void refreshTable( SalesforceTable table ) {
 		final int tableIndex = allTables.indexOf(table);
-		
+
 		SwingUtilities.invokeLater(new Runnable() {
 
 			@Override
@@ -336,6 +349,22 @@ public class SwingExtractionMonitor implements IExtractionMonitor {
 	@Override
 	public boolean isCancel() {
 		return isCancelled;
+	}
+
+	@Override
+	public void skipData(String tableName, int nRowsSkipped) {
+		SalesforceTable table = getTable(tableName);
+		table.nRowsSkipped = nRowsSkipped;
+		refreshTable( table );
+		
+	}
+
+	@Override
+	public void skipTable(String name) {
+		SalesforceTable table = getTable(name);
+		table.action = "Schema OK";
+		refreshTable( table );
+		
 	}
 
 }

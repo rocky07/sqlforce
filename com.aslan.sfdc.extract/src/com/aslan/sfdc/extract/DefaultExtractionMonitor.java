@@ -49,4 +49,12 @@ public class DefaultExtractionMonitor implements IExtractionMonitor {
 		return false;
 	}
 
+	@Override
+	public void skipData(String tableName, int nRowsSkipped) {
+	}
+
+	@Override
+	public void skipTable(String name) {
+	}
+
 }

@@ -7,7 +7,7 @@
  *
  *******************************************************************************/
 
-package com.aslan.sfdc.copyforce.h2;
+package com.aslan.sfdc.copyforce.sqlserver;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -17,61 +17,51 @@ import com.aslan.parser.commandline.CommandLineParser;
 import com.aslan.parser.commandline.CommandLineParser.SwitchDef;
 import com.aslan.sfdc.copyforce.CopyForce;
 import com.aslan.sfdc.extract.IDatabaseBuilder;
-import com.aslan.sfdc.extract.h2.H2DatabaseBuilder;
+import com.aslan.sfdc.extract.sqlserver.SqlServerDatabaseBuilder;
 
 /**
- * Copy a Salesforce instance to a H2 database.
+ * Copy a Salesforce instance to a SQL Server database.
  * 
  * @author gsmithfarmer@gmail.com
  *
  */
-public class CopyForceH2 extends CopyForce {
+public class CopyForceSQLServer extends CopyForce {
+	public static final String SW_SQLSERVER = "sqlserver";
 
-	public static final String SW_H2CONNECT = "h2connect";
-	public static final String SW_H2USER = "h2user";
-	public static final String SW_H2PASSWORD = "h2password";
 	
 	private static final SwitchDef[]  cmdSwitches = {
-		new SwitchDef( "string", SW_H2CONNECT, "connection string for an H2 database")
-		,new SwitchDef( "string", SW_H2USER, "error", "user name for connecting to an H2 database. If database is created this user will be used." )
-		,new SwitchDef( "string", SW_H2PASSWORD, "password for connecting to an H2 database.")
+		new SwitchDef( "string", SW_SQLSERVER, "connection string for a SQLServer database")
+
 	};
 
 	
 	private Connection connection = null;
 	
-	public CopyForceH2() {
+	public CopyForceSQLServer() {
 		this.addCmdSwitches(cmdSwitches);
-
 	}
-	/* (non-Javadoc)
-	 * @see com.aslan.sfdc.copyforce.CopyForce#getDatabaseBuilder()
-	 */
+	
 	@Override
 	protected IDatabaseBuilder getDatabaseBuilder(CommandLineParser parser) throws Exception {
 		
-		if( !parser.isSet(SW_H2CONNECT )) {
-			throw new Exception("You must specified a H2 database using the -" + SW_H2CONNECT + " switch");
+		if( !parser.isSet(SW_SQLSERVER )) {
+			throw new Exception("You must specified a SQL Server database using the -" + SW_SQLSERVER + " switch");
 		}
 		
-		String connectString = parser.getString(SW_H2CONNECT);
-		String username = parser.getString(SW_H2USER);
-		String password = parser.getString(SW_H2PASSWORD);
+		String connectString = parser.getString(SW_SQLSERVER);
 		
-		if( !connectString.startsWith("jdbc:h2:")) {
-			connectString = "jdbc:h2:" + connectString;
+		if( !connectString.startsWith("jdbc:sqlserver:")) {
+			connectString = "jdbc:sqlserver:" + connectString;
 		}
 		
-		connection = DriverManager.getConnection(connectString, username, password );
-		return  new H2DatabaseBuilder( connection );
+		connection = DriverManager.getConnection(connectString);
+		return  new SqlServerDatabaseBuilder( connection );
 	}
-
-	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		CopyForceH2 copier = new CopyForceH2();
+		CopyForceSQLServer copier = new CopyForceSQLServer();
 		
 		try {
 			copier.execute( args );
@@ -86,7 +76,6 @@ public class CopyForceH2 extends CopyForce {
 				}
 			}
 		}
-
 		System.exit(0);
 
 	}

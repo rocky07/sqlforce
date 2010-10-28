@@ -71,9 +71,10 @@ public interface IDatabaseBuilder {
 	 * @param sfdcTable insert into this table
 	 * @param fields the fields to insert.
 	 * @param dataRows rows to insert. data in the same order as fields in table.
+	 * @return number of rows that were skipped (maybe already in the destination database).
 	 * @throws Exception if anything fails.
 	 */
-	void insertData( DescribeSObjectResult sfdcTable, Field[] fields, List<String[]> dataRows ) throws Exception;
+	int insertData( DescribeSObjectResult sfdcTable, Field[] fields, List<String[]> dataRows ) throws Exception;
 	
 
 		

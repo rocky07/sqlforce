@@ -24,6 +24,12 @@ public interface IExtractionMonitor {
 	 */
 	void createTable( String name );
 	
+	/**
+	 * Report when it is determined that a table already exists in the destination database.
+	 * 
+	 * @param name a table
+	 */
+	void skipTable( String name );
 	
 	/**
 	 * Report just before data is copied to a table.
@@ -39,6 +45,14 @@ public interface IExtractionMonitor {
 	 * @param nRowsCopied total number of rows copied to the table.
 	 */
 	void copyData( String tableName, int nRowsCopied );
+	
+	/**
+	 * Report each time data is skipped because the destination database is already up to date.
+	 * 
+	 * @param tableName a table
+	 * @param nRowsSkipped total number of rows skipped for this table (cumulative).
+	 */
+	void skipData( String tableName, int nRowsSkipped );
 	
 	/**
 	 * Report the number of rows read from Salesforce including those not yet copied to the destination database.

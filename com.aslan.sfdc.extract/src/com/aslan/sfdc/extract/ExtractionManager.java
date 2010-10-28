@@ -239,12 +239,17 @@ public class ExtractionManager {
 			
 			int nWritten = 0;
 			int nBytesPending = 0;
+			int nRead = 0;
+			int nSkipped = 0;
 			
 			private void flush() {
 				if( 0 == rowBuffer.size()) { return; }
-				
+				int skippedThisTime = 0;
+				int writtenThisTime = 0;
 				try {
-					builder.insertData( tableDesc.describeResult, fields, rowBuffer);
+					skippedThisTime = builder.insertData( tableDesc.describeResult, fields, rowBuffer);
+					writtenThisTime = rowBuffer.size() - skippedThisTime;
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -252,14 +257,23 @@ public class ExtractionManager {
 				if( reportRowExtraction ) {
 					monitor.reportMessage("....Rows " + (1+nWritten) + " to " + (nWritten + rowBuffer.size()));
 				}
-				nWritten += rowBuffer.size();
+				
 				rowBuffer.clear();
 				nBytesPending = 0;
 				
-				monitor.copyData( sObjectName, nWritten);
+				if( writtenThisTime > 0 ) {
+					nWritten += writtenThisTime;
+					monitor.copyData( sObjectName, nWritten);
+				}
+				
+				if( skippedThisTime > 0 ) {
+					nSkipped += skippedThisTime;
+					monitor.skipData( sObjectName, nSkipped );
+				}
 			}
 			@Override
 			public void addRow(int rowNumber, String[] data) {
+				nRead++;
 				rowBuffer.add(data);
 				for( String s : data ) {
 					if( null != s ) {
@@ -267,7 +281,7 @@ public class ExtractionManager {
 					}
 				}
 				
-				monitor.readData( sObjectName, rowBuffer.size() + nWritten );
+				monitor.readData( sObjectName, nRead );
 				if( nBytesPending >= maxBytesToBuffer || monitor.isCancel()) {
 					flush();
 				}
@@ -328,6 +342,9 @@ public class ExtractionManager {
 		if( builder.isTableNew( tableDesc.describeResult)) {
 			builder.createTable( tableDesc.describeResult);
 			monitor.createTable(sObjectName);
+			Thread.yield();
+		} else {
+			monitor.skipTable(sObjectName);
 			Thread.yield();
 		}
 	}
