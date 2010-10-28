@@ -327,13 +327,14 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 	}
 	
 	@Override
-	public void insertData(DescribeSObjectResult sfdcTable, Field[] fields,
+	public int insertData(DescribeSObjectResult sfdcTable, Field[] fields,
 			List<String[]> dataRows) throws Exception {
 		
 		StringBuffer sql = new StringBuffer();
 		sql.append("INSERT INTO " + getLocalName(sfdcTable) + "(");
 		IValueMaker valueMakers[] = getValueMakers(fields);
 		int n2Insert = 0;
+		int nSkipped = 0;
 		
 		for( int n = 0; n < fields.length; n++ ) {
 			Field field = fields[n];
@@ -351,7 +352,11 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 
 				java.util.Date lastModDate = getLastModifiedDate( sfdcTable, row[0] );
 				if( null != lastModDate ) {
-					if( isUpdateNecessary( sfdcTable, fields, row, lastModDate )) { updateData( sfdcTable, fields, row );};
+					if( isUpdateNecessary( sfdcTable, fields, row, lastModDate )) { 
+						updateData( sfdcTable, fields, row );
+					} else {
+						nSkipped++;
+					}
 					continue;
 				}
 				if( n > 0 ) { sql.append( "\n,"); }
@@ -379,7 +384,11 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 				sql.append( sqlPrefix );
 				java.util.Date lastModDate = getLastModifiedDate( sfdcTable, row[0] );
 				if( null != lastModDate ) {
-					if( isUpdateNecessary( sfdcTable, fields, row, lastModDate )) { updateData( sfdcTable, fields, row );};
+					if( isUpdateNecessary( sfdcTable, fields, row, lastModDate )) { 
+						updateData( sfdcTable, fields, row );
+					} else {
+						nSkipped++;
+					}
 					continue;
 				}
 				sql.append("(");
@@ -396,6 +405,7 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 				executeSQL(sql.toString());
 			}
 		}
+		return nSkipped;
 	}
 	
 	
