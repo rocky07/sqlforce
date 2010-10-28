@@ -60,10 +60,10 @@ public abstract class CopyForce {
 			// Login into Salesforce.
 			//
 		
-			if( !parser.isSet(SW_CONNECT)) {
-				throw new Exception("Required switch " + SW_CONNECT + " was not specified");
+			if( !parser.isSet(SW_SALESFORCE)) {
+				throw new Exception("Required switch " + SW_SALESFORCE + " was not specified");
 			}
-			String connectString =  parser.getString(SW_CONNECT);
+			String connectString =  parser.getString(SW_SALESFORCE);
 			trace("Connect to Salesforce - " + connectString );
 			LoginManager.Session session = connectToSalesforce( connectString );
 			
@@ -113,7 +113,7 @@ public abstract class CopyForce {
 			}
 		}
 	}
-	public static final String SW_CONNECT = "connect";
+	public static final String SW_SALESFORCE = "salesforce";
 	public static final String SW_LOG = "log";
 	public static final String SW_INIT = "init";
 	public static final String SW_VERSION = "version";
@@ -126,7 +126,7 @@ public abstract class CopyForce {
 	public static final String SW_GUI = "GUI";
 
 	private static final SwitchDef[]  baseCmdSwitches = {
-		new SwitchDef( "string", SW_CONNECT, "profileName OR ConnectionType,Username,Password,SecurityToken")
+		new SwitchDef( "string", SW_SALESFORCE, "profileName OR ConnectionType,Username,Password,SecurityToken")
 		,new SwitchDef( "string", SW_LOG, "error", "info,warning,error:Set the default message level written to stderr" )
 		,new SwitchDef( "xfile", SW_CONFIG, "Description what should be transferred from Salesforce")
 		,new SwitchDef( "none", SW_VERSION, "Print the version number of the program to stderr" )
@@ -134,7 +134,7 @@ public abstract class CopyForce {
 		,new SwitchDef( "none", SW_SCHEMA, "If set schema the system will create the schema before transferring data" )
 		,new SwitchDef( "none", SW_TRACE, "If set then be verbose about program flow" )
 		,new SwitchDef( "int", SW_TIMEOUT, "1000000", "Maximum time (milliseconds) for Salesforce" )
-		,new SwitchDef( "int", SW_BUFFER, "20", "Number of megabytes to use when buffering Salesforce data" )
+		,new SwitchDef( "int", SW_BUFFER, "2", "Number of megabytes to use when buffering Salesforce data" )
 		,new SwitchDef( "none", SW_GUI, "If set then show progress in a GUI" )
 	};
 	

@@ -232,8 +232,10 @@ public class SwingExtractionMonitor implements IExtractionMonitor {
 	
 	private SalesforceTable getTable( String name ) {
 	
+		SalesforceTable table;
+		
 		if( !tableNameMap.containsKey(name)) {
-			SalesforceTable table = new SalesforceTable(name);
+			table = new SalesforceTable(name);
 			allTables.add(table);
 			tableNameMap.put( name, table );
 			final int whatRow = allTables.size() - 1;
@@ -250,8 +252,18 @@ public class SwingExtractionMonitor implements IExtractionMonitor {
 				}
 			});
 			
+		} else {
+			table = tableNameMap.get(name);
+			final int whatRow = allTables.indexOf(table);
+			SwingUtilities.invokeLater(new Runnable() {
+
+				@Override
+				public void run() {			
+					Rectangle rowRect = tableUI.getCellRect(whatRow, 0, true);
+					tableUI.scrollRectToVisible(rowRect);
+				}
+			});
 		}
-		SalesforceTable table = tableNameMap.get(name);
 		
 		Thread.yield();
 		return table;

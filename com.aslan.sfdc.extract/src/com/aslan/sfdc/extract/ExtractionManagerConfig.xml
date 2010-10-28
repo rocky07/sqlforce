@@ -1,0 +1,17 @@
+<ExtractionManager>
+<!-- Configuration information ExtractionManager that is fairly constant -->
+
+<!-- Tables whose data should never be exported to an external source.
+     When a table makes this list it mostly likely does not support standard SOQL query syntax.
+-->
+	<NoDataExport name="Vote" />
+	<NoDataExport name="UserProfileFeed" />
+	<NoDataExport name="EntitySubscription" />
+	<NoDataExport name="AccountShare" />
+
+<!-- Table/Column names that should given another name in the external database.
+     Salesforce uses ANSI SQL keywords in a few places.
+-->
+	<MapName sfdcName="GROUP" exportName="GROUP2" />
+		
+</ExtractionManager>
