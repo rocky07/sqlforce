@@ -27,21 +27,21 @@ import com.aslan.sfdc.extract.sqlserver.SqlServerDatabaseBuilder;
  * This class only contains that CopyForce details that are specific to the SQL Server implementation. Most documentation and details are contained in the base class
  * {@link com.aslan.sfdc.copyforce.CopyForce}. However, the SQL Server implementation adds the following command line switches.
  * 
- * * <table border="2">
- * <tr align="left" valign="top">
- * <th>Command Line Switch</th><th>Description</th>
- * </tr>
- * <tr align="left" valign="top"><td>-sqlserver string</td>
- * <td>Connection string for accessing SQL Server.
- * Examples:
- * <ul>
- * <li>-sqlserver  "//localhost;databaseName=sqlforcetest;username=me;password=caleb&noah;"</li>
- * </ul>
- * Internally, the connection string will be passed to the SQL Server <i>DriverManager.getConnection()</i> method (prefixed by <i>jdbc:sqlserver:</i>).
- * </td>
- * </tr>
- * 
- *  </table>
+ <table border="2">
+ <tr align="left" valign="top">
+ <th>Command Line Switch</th><th>Description</th>
+ </tr>
+ <tr align="left" valign="top"><td>-sqlserver string</td>
+ <td>Connection string for accessing SQL Server.
+ Examples:
+ <ul>
+ <li>-sqlserver  "//localhost;databaseName=sqlforcetest;username=me;password=caleb&noah;"</li>
+ </ul>
+ Internally, the connection string will be passed to the SQL Server <i>DriverManager.getConnection()</i> method (prefixed by <i>jdbc:sqlserver:</i>).
+ </td>
+ </tr>
+ 
+ </table>
  *  <p>
  *  Example 1: Copy all Salesforce tables to an empty SQL Server database.
  *  <blockquote>

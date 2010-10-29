@@ -27,29 +27,29 @@ import com.aslan.sfdc.extract.h2.H2DatabaseBuilder;
  * This class only contains that CopyForce details that are specific to the H2 implementation. Most documentation and details are contained in the base class
  * {@link com.aslan.sfdc.copyforce.CopyForce}. However, the H2 implementation adds the following command line switches.
  * 
- * * <table border="2">
- * <tr align="left" valign="top">
- * <th>Command Line Switch</th><th>Description</th>
- * </tr>
- * <tr align="left" valign="top"><td>-h2 string</td>
- * <td>Connection string for accessing an existing (or creating a new) H2 database.
- * Examples:
- * <ul>
- * <li>-h2 C:/tmp/practiceH2</li>
- * </ul>
- * </td>
- * </tr>
- * 
- *  <tr align="left" valign="top"><td>-h2user string</td>
- *  <td>User name for the H2 database.
- *  </td>
- *  </tr>
- *  
- *  <tr align="left" valign="top"><td>-h2password string</td>
- *  <td>Password for the H2 database.
- *  </td>
- *  </tr>
- *  </table>
+ <table border="2">
+ <tr align="left" valign="top">
+ <th>Command Line Switch</th><th>Description</th>
+ </tr>
+ <tr align="left" valign="top"><td>-h2 string</td>
+ <td>Connection string for accessing an existing (or creating a new) H2 database.
+ Examples:
+ <ul>
+ <li>-h2 C:/tmp/practiceH2</li>
+ </ul>
+ </td>
+ </tr>
+ 
+   <tr align="left" valign="top"><td>-h2user string</td>
+   <td>User name for the H2 database.
+   </td>
+   </tr>
+   
+   <tr align="left" valign="top"><td>-h2password string</td>
+   <td>Password for the H2 database.
+   </td>
+   </tr>
+   </table>
  *  <p>
  *  Example 1: Create a new H2 database that contains all tables from Salesforce.
  *  <blockquote>

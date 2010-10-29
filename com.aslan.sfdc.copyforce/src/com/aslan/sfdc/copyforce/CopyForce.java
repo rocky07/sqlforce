@@ -35,112 +35,112 @@ import com.aslan.sfdc.partner.LoginManager;
 
 /**
  * Copy a Salesforce database to another database, creating the schema on the destination database as required.
- * 
- * CopyForce copies the schema and data from any Salesforce database to another database. Both complete and incremental copying are supported.
- * This particular class contains the parameters and control mechanisms that are common to all instances of CopyForce. There is always a concreted
- * class that extends this class for each particular designation database (example: CopyForceH2, CopyForceSqlServer).
- * <p>
- * The following command line switches are supported by all concrete implementations:
- *
- * <table border="2">
- * <tr align="left" valign="top">
- * <th>Command Line Switch</th><th>Description</th>
- * </tr>
- * <tr align="left" valign="top"><td>-salesforce string</td>
- * <td>Salesforce database from which data will be copied. This value can be a:
- * <ul>
- * <li>Name of a Salesforce profile defined in $HOME/sqlforce.ini</li>
- * <li>Comma separated string containing [Production||Sandbox],Username,Password,SecurityToken</li>
- * </ul>
- * Examples:
- * <ul>
- * <li>-salesforce Sandbox</li>
- * <li>-salesforce Production,gsmithfarmer@gmail.com,holyMoly,99898aasf89asf
- * </ul>
- * </td>
- * </tr>
- * 
- *  <tr align="left" valign="top"><td>-schema</td>
- *  <td>Create the Salesforce schema in the destination databases. Note that if a schema object already exists in the destination then CopyForce
- *  will skip it automatically.
- *  </td>
- *  </tr>
- *  
- *  <tr align="left" valign="top"><td>-include string</td>
- *  <td>Comma separated list of tables (or regular expressions) to copy from Salesforce. By default, all tables all included. Examples:
- *  <ul>
- *  <li>-include "Account,Contact"</li>
- *  <li>-include "Prod.*,Price.*"</li>
- *  </ul>
- *  </td>
- *  </tr>
- *  
- *  
- *  <tr align="left" valign="top"><td>-exclude string</td>
- *  <td>Comma separated list of tables (or regular expressions) to EXCLUDE from the copy from Salesforce. By default, no tables are excluded. Examples:
- *  <ul>
- *  <li>-exclude "Attachment"</li>
- *  <li>-exclude "Attachment,Software.*"</li>
- *  </ul>
- *  </td>
- *  </tr>
- *  
- *  <tr align="left" valign="top"><td>-config file</td>
- *  <td>XML file that specifies what to copy/exclude from Salesforce. This file should be used when the simple <i>-include</i> and <i>-exclude</i> are insufficient 
- *  to represent the parameters for the copy. See later in this documentation for the format of a configuration file.
- *  </td>
- *  </tr>
- *  
- *  <tr align="left" valign="top"><td>-gui</td>
- *  <td>Display a UI that indicates the progress of the copy. By default, progress is written to stdout.
- *  </td>
- *  </tr>
- *  
- *  <tr align="left" valign="top"><td>-silent</td>
- *  <td>Do not display progress messages.
- *  </td>
- *  </tr>
- *  
- *  <tr align="left" valign="top"><td>-timeout ms</td>
- *  <td>Set the timeout value for calls to Salesforce. The default is 1,000,000 and rarely needs to changed.
- *  </td>
- *  </tr>
- *  
- *  <tr align="left" valign="top"><td>-buffer mBytes</td>
- *  <td>Set the number of megabytes CopyForce will buffer from Salesforce before writing them to the destination database.
- *  </td>
- *  </tr>
- * </table>
- * <p>
- * The list of objects copied from Salesforce can optionally be controlled by a configuration file (see the <i>-config</i> command line switch). A configuration file
- * must be in the following form:
- * <blockquote>
- * &lt;CopyForce&gt;<br></br>
- * 	<blockquote>
- * 		&lt;include table="nameMatchingPattern" where="optional Where Clause" &gt;
- * <br></br>
- * 		&lt;exclude table="nameMatchingPattern" &gt;
- *
- *  </blockquote>
- * &lt;/CopyForce&gt;
- * </blockquote>
- * where:
- * <ul>
- * <li>The &lt;include&gt; element indicates tables that will be include in the copy. The <i>name</i> attribute is a regular expression that will be used to find matching
- * table names (a plain table name (like Account) is, of course, a regular expression. The optional <i>where</i> attribute is should be a string that can be appended to a
- * <i>WHERE</i> clause for SOQL against the table.</li>
- * <li>The &lt;exclude&gt; element indicates tables that should be excluded from the copy.
- * </ul>
- * Example: Copy all tables except Attachments:
- * <blockquote>
- * &lt;CopyForce&gt;
- * <blockquote>
- * 	&lt;include table=".*"  &gt;
- * <br></br>
- * 		&lt;exclude table="Attachment" &gt;
- * </blockquote>
- * &lt;/CopyForce&gt;
- * </blockquote>
+  
+  CopyForce copies the schema and data from any Salesforce database to another database. Both complete and incremental copying are supported.
+  This particular class contains the parameters and control mechanisms that are common to all instances of CopyForce. There is always a concreted
+  class that extends this class for each particular designation database (example: CopyForceH2, CopyForceSqlServer).
+  <p>
+  The following command line switches are supported by all concrete implementations:
+ 
+  <table border="2">
+  <tr align="left" valign="top">
+  <th>Command Line Switch</th><th>Description</th>
+  </tr>
+  <tr align="left" valign="top"><td>-salesforce string</td>
+  <td>Salesforce database from which data will be copied. This value can be a:
+  <ul>
+  <li>Name of a Salesforce profile defined in $HOME/sqlforce.ini</li>
+  <li>Comma separated string containing [Production||Sandbox],Username,Password,SecurityToken</li>
+  </ul>
+  Examples:
+  <ul>
+  <li>-salesforce Sandbox</li>
+  <li>-salesforce Production,gsmithfarmer@gmail.com,holyMoly,99898aasf89asf</li>
+  </ul>
+  </td>
+  </tr>
+  
+   <tr align="left" valign="top"><td>-schema</td>
+   <td>Create the Salesforce schema in the destination databases. Note that if a schema object already exists in the destination then CopyForce
+   will skip it automatically.
+   </td>
+   </tr>
+   
+   <tr align="left" valign="top"><td>-include string</td>
+   <td>Comma separated list of tables (or regular expressions) to copy from Salesforce. By default, all tables all included. Examples:
+   <ul>
+   <li>-include "Account,Contact"</li>
+   <li>-include "Prod.*,Price.*"</li>
+   </ul>
+   </td>
+   </tr>
+   
+   
+   <tr align="left" valign="top"><td>-exclude string</td>
+   <td>Comma separated list of tables (or regular expressions) to EXCLUDE from the copy from Salesforce. By default, no tables are excluded. Examples:
+   <ul>
+   <li>-exclude "Attachment"</li>
+   <li>-exclude "Attachment,Software.*"</li>
+   </ul>
+   </td>
+   </tr>
+   
+   <tr align="left" valign="top"><td>-config file</td>
+   <td>XML file that specifies what to copy/exclude from Salesforce. This file should be used when the simple <i>-include</i> and <i>-exclude</i> are insufficient 
+   to represent the parameters for the copy. See later in this documentation for the format of a configuration file.
+   </td>
+   </tr>
+   
+   <tr align="left" valign="top"><td>-gui</td>
+   <td>Display a UI that indicates the progress of the copy. By default, progress is written to stdout.
+   </td>
+   </tr>
+   
+   <tr align="left" valign="top"><td>-silent</td>
+   <td>Do not display progress messages.
+   </td>
+   </tr>
+   
+   <tr align="left" valign="top"><td>-timeout ms</td>
+   <td>Set the timeout value for calls to Salesforce. The default is 1,000,000 and rarely needs to changed.
+   </td>
+   </tr>
+   
+   <tr align="left" valign="top"><td>-buffer mBytes</td>
+   <td>Set the number of megabytes CopyForce will buffer from Salesforce before writing them to the destination database.
+   </td>
+   </tr>
+  </table>
+  <p>
+  The list of objects copied from Salesforce can optionally be controlled by a configuration file (see the <i>-config</i> command line switch). A configuration file
+  must be in the following form:
+  <blockquote>
+  &lt;CopyForce&gt;<br></br>
+  	<blockquote>
+  		&lt;include table="nameMatchingPattern" where="optional Where Clause" &gt;
+  <br></br>
+  		&lt;exclude table="nameMatchingPattern" &gt;
+ 
+   </blockquote>
+  &lt;/CopyForce&gt;
+  </blockquote>
+  where:
+  <ul>
+  <li>The &lt;include&gt; element indicates tables that will be include in the copy. The <i>name</i> attribute is a regular expression that will be used to find matching
+  table names (a plain table name (like Account) is, of course, a regular expression. The optional <i>where</i> attribute is should be a string that can be appended to a
+  <i>WHERE</i> clause for SOQL against the table.</li>
+  <li>The &lt;exclude&gt; element indicates tables that should be excluded from the copy.
+  </ul>
+  Example: Copy all tables except Attachments:
+  <blockquote>
+  &lt;CopyForce&gt;
+  <blockquote>
+  	&lt;include table=".*"  &gt;
+  <br></br>
+  		&lt;exclude table="Attachment" &gt;
+  </blockquote>
+  &lt;/CopyForce&gt;
+  </blockquote>
  * @author gsmithfarmer@gmail.com
  *
  */
