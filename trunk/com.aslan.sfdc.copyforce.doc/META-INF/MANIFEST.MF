@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Consolidated CopyForce javadoc.
+Bundle-SymbolicName: com.aslan.sfdc.copyforce.doc
+Bundle-Version: 1.0.0
+Bundle-Vendor: Aslan Technologies
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
