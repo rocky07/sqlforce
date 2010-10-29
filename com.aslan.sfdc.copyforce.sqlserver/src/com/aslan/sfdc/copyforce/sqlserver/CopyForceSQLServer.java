@@ -20,13 +20,46 @@ import com.aslan.sfdc.extract.IDatabaseBuilder;
 import com.aslan.sfdc.extract.sqlserver.SqlServerDatabaseBuilder;
 
 /**
- * Copy a Salesforce instance to a SQL Server database.
+ * Copy a Salesforce database to a SQL Server, creating the schema on the destination database as required.
  * 
+ * CopyForce copies the schema and data from any Salesforce database to a SQL Server database. Both complete and incremental copying are supported.
+ * <p>
+ * This class only contains that CopyForce details that are specific to the SQL Server implementation. Most documentation and details are contained in the base class
+ * {@link com.aslan.sfdc.copyforce.CopyForce}. However, the SQL Server implementation adds the following command line switches.
+ * 
+ * * <table border="2">
+ * <tr align="left" valign="top">
+ * <th>Command Line Switch</th><th>Description</th>
+ * </tr>
+ * <tr align="left" valign="top"><td>-sqlserver string</td>
+ * <td>Connection string for accessing SQL Server.
+ * Examples:
+ * <ul>
+ * <li>-sqlserver  "//localhost;databaseName=sqlforcetest;username=me;password=caleb&noah;"</li>
+ * </ul>
+ * Internally, the connection string will be passed to the SQL Server <i>DriverManager.getConnection()</i> method (prefixed by <i>jdbc:sqlserver:</i>).
+ * </td>
+ * </tr>
+ * 
+ *  </table>
+ *  <p>
+ *  Example 1: Copy all Salesforce tables to an empty SQL Server database.
+ *  <blockquote>
+ *  java -jar CopyForceSqlServer.jar -salesforce Production,myname@gmail.com,myPassword,SecurityToken 
+ *  -sqlserver "//localhost;databaseName=sqlforcetest;username=me;password=caleb&noah;" -schema -gui
+ *  </blockquote>
+ *  
+ *  <p>
+ *  Example 2: Update existing Account and Contact tables in SQL Server database..
+ *  <blockquote>
+ *  java -jar CopyForceH2.jar -include "Account,Contact" -salesforce Production,myname@gmail.com,myPassword,SecurityToken  -gui 
+ *  -sqlserver "//localhost;databaseName=sqlforcetest;username=me;password=caleb&noah;"
+ *  </blockquote>
  * @author gsmithfarmer@gmail.com
  *
  */
 public class CopyForceSQLServer extends CopyForce {
-	public static final String SW_SQLSERVER = "sqlserver";
+	private static final String SW_SQLSERVER = "sqlserver";
 
 	
 	private static final SwitchDef[]  cmdSwitches = {
@@ -58,7 +91,9 @@ public class CopyForceSQLServer extends CopyForce {
 		return  new SqlServerDatabaseBuilder( connection );
 	}
 	/**
-	 * @param args
+	 * Copy Salesforce to SQL Server.
+	 * 
+	 * @param args parameters controlling the copy.
 	 */
 	public static void main(String[] args) {
 		CopyForceSQLServer copier = new CopyForceSQLServer();

@@ -62,9 +62,11 @@ public class ExtractionManager {
 			this.byReference = byReference;
 		}
 		
+		@SuppressWarnings("unused")
 		public ExtractionRuleset getRuleSet() { return ruleSet; }
 		public TableRule getTableRule() { return tableRule; }
 		public String getTableName() { return tableName; }
+		@SuppressWarnings("unused")
 		public boolean isByReference() { return byReference; }
 		
 		
@@ -96,7 +98,6 @@ public class ExtractionManager {
 	private IDatabaseBuilder builder;
 	private List<String> allTableNames = new ArrayList<String>();
 	private SchemaAnalyzer schemaAnalyzer;
-	private boolean reportRowExtraction = true;
 	private int maxBytesToBuffer = 1*(1024*1024);
 	
 	
@@ -264,7 +265,7 @@ public class ExtractionManager {
 		
 		if( noExportTables.contains(sObjectName.toUpperCase()) || !tableDesc.describeResult.isQueryable()) {
 			monitor.startCopyData(sObjectName);
-			monitor.endCopyData( sObjectName, 0 );
+			monitor.endCopyData( sObjectName, 0, 0, 0 );
 			return;
 		}
 		
@@ -300,10 +301,6 @@ public class ExtractionManager {
 					
 				} catch (Exception e) {
 					e.printStackTrace();
-				}
-				
-				if( reportRowExtraction ) {
-					monitor.reportMessage("....Rows " + (1+nWritten) + " to " + (nWritten + rowBuffer.size()));
 				}
 				
 				rowBuffer.clear();
@@ -349,15 +346,10 @@ public class ExtractionManager {
 		MyCallback callback = new MyCallback();
 		
 		monitor.startCopyData(sObjectName);
-		monitor.reportMessage("Start Extract Data: " + sObjectName 
-				+ (null==rule.getTableRule().getPredicate()?
-						" (All Rows)"
-						:(" (WHERE " + rule.getTableRule().getPredicate() + ")")));
 		
 		(new SObjectQueryHelper()).findRows( session, sql.toString(), callback );
 		
-		monitor.endCopyData( sObjectName, callback.nWritten);
-		monitor.reportMessage("End Extract Data: " + sObjectName + ", " + callback.nWritten + " rows extracted");
+		monitor.endCopyData( sObjectName, callback.nRead, callback.nSkipped, callback.nWritten);
 	}
 	
 	/**
@@ -376,7 +368,7 @@ public class ExtractionManager {
 			extractData( table, monitor );
 			if( monitor.isCancel()) { break; }
 		}
-		monitor.reportMessage("Finished extracting data" + (monitor.isCancel()?": CANCELLED":""));
+		monitor.reportMessage("Finished copying data" + (monitor.isCancel()?": CANCELLED":""));
 	}
 	/**
 	 * Extract the schema for a single object from Salesforce.
@@ -411,11 +403,12 @@ public class ExtractionManager {
 		monitor.reportMessage("Calculating the order in which schema will be extracted"); 
 		List<TableRuleInstance> tables = calculateExtractionList(ruleSet, monitor );
 		
+		monitor.reportMessage("Start Copy of Schema");
 		for( TableRuleInstance rule : tables ) {
 			extractSchema( rule.getTableName(), monitor );
 			if( monitor.isCancel()) { break; }
 		}
-		monitor.reportMessage("Finished extracting schema" + (monitor.isCancel()?": CANCELLED":"")); 
+		monitor.reportMessage("Finished copying schema" + (monitor.isCancel()?": CANCELLED":"")); 
 		
 	}
 }

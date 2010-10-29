@@ -31,7 +31,7 @@ public class OutputStreamExtractionMonitor implements IExtractionMonitor {
 	}
 	
 	public OutputStreamExtractionMonitor() {
-		this(System.err);
+		this(System.out);
 	}
 	
 	private void log( String msg ) {
@@ -40,6 +40,7 @@ public class OutputStreamExtractionMonitor implements IExtractionMonitor {
 		
 		dateFormat.format( new Date(), timeBuffer, fieldPos );
 		logStream.println( timeBuffer.toString() + ": " + msg );
+		logStream.flush();
 	}
 	
 	@Override
@@ -57,11 +58,13 @@ public class OutputStreamExtractionMonitor implements IExtractionMonitor {
 		log( "Create Table - " + name );
 	}
 
-	@Override
-	public void endCopyData(String tableName, int nRowsCopied) {
-		log( "End Copy From - " + tableName + " (" + nRowsCopied + " rows copied)" );
-	}
 
+	@Override
+	public void endCopyData(String tableName, int nRowsRead, int nRowsSkipped,
+			int nRowsCopied) {
+		log( "End Copy From " + tableName + " (" + nRowsRead + " read, "  + nRowsSkipped + " skipped, "+ nRowsCopied + " copied)" );
+	}
+	
 	@Override
 	public void startCopyData(String tableName) {
 		log( "Start Copy From " + tableName );
