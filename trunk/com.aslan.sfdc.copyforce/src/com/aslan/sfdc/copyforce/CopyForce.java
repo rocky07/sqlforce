@@ -26,6 +26,7 @@ import com.aslan.sfdc.extract.ExtractionManager;
 import com.aslan.sfdc.extract.ExtractionRuleset;
 import com.aslan.sfdc.extract.IDatabaseBuilder;
 import com.aslan.sfdc.extract.IExtractionMonitor;
+import com.aslan.sfdc.extract.OutputStreamExtractionMonitor;
 import com.aslan.sfdc.extract.SwingExtractionMonitor;
 import com.aslan.sfdc.extract.ExtractionRuleset.TableRule;
 import com.aslan.sfdc.partner.LoginCredentials;
@@ -44,12 +45,28 @@ public abstract class CopyForce {
 		private CommandLineParser parser;
 		private Exception exception;
 		private IExtractionMonitor monitor;
+		private ExtractionRuleset rules = new ExtractionRuleset();
 
 		CopyThread( CommandLineParser parser, IExtractionMonitor monitor ) {
 			this.parser = parser;
 			this.monitor = monitor;
 		}
 		
+		private void addCommandLineIncludeRules( String arg ) {
+			String newRules[] = arg.split("\\s*,\\s*");
+			
+			for( String rule : newRules ) {
+				rules.includeTable(new TableRule(rule, false));
+			}
+		}
+		
+		private void addCommandLineExcludeRules( String arg ) {
+			String newRules[] = arg.split("\\s*,\\s*");
+			
+			for( String rule : newRules ) {
+				rules.excludeTable(new TableRule(rule, false));
+			}
+		}
 		private void copy() throws Exception {
 			
 			traceMode = parser.isSet( SW_TRACE);
@@ -71,7 +88,6 @@ public abstract class CopyForce {
 			// Determine what should be transferred to the output database.
 			//
 			
-			ExtractionRuleset rules = new ExtractionRuleset();
 			if( parser.isSet(SW_CONFIG)) {
 				trace("Load extraction rules from " + parser.getString(SW_CONFIG));
 				SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
@@ -79,9 +95,18 @@ public abstract class CopyForce {
 				
 				saxParser.parse( parser.getFile(SW_CONFIG), handler);
 				
-			} else { // Copy everything if rules are not specified.
-				trace("Using default extraction rules");
+			} 
+			
+			if( parser.isSet( SW_INCLUDE )) {
+				addCommandLineIncludeRules( parser.getString(SW_INCLUDE));
+			}
+			
+			if( 0 == rules.getIncludedTableRules().size()) {
 				rules.includeTable(new TableRule(".*", false));
+			}
+	
+			if( parser.isSet( SW_EXCLUDE)) {
+				addCommandLineExcludeRules(parser.getString(SW_EXCLUDE));
 			}
 			//
 			// Connect to the destination database.
@@ -113,6 +138,8 @@ public abstract class CopyForce {
 			}
 		}
 	}
+	
+	
 	public static final String SW_SALESFORCE = "salesforce";
 	public static final String SW_LOG = "log";
 	public static final String SW_INIT = "init";
@@ -123,10 +150,14 @@ public abstract class CopyForce {
 	public static final String SW_TRACE = "trace";
 	public static final String SW_TIMEOUT = "timeout";
 	public static final String SW_BUFFER = "buffer";
-	public static final String SW_GUI = "GUI";
+	public static final String SW_GUI = "gui";
+	public static final String SW_INCLUDE = "include";
+	public static final String SW_EXCLUDE = "exclude";
 
 	private static final SwitchDef[]  baseCmdSwitches = {
 		new SwitchDef( "string", SW_SALESFORCE, "profileName OR ConnectionType,Username,Password,SecurityToken")
+		,new SwitchDef( "string", SW_INCLUDE, "", "comma separated list of tables (or regexp) to export from salesforce" )
+		,new SwitchDef( "string", SW_EXCLUDE, "", "comma separated list of tables (or regexp) to exclude from the export from salesforce" )
 		,new SwitchDef( "string", SW_LOG, "error", "info,warning,error:Set the default message level written to stderr" )
 		,new SwitchDef( "xfile", SW_CONFIG, "Description what should be transferred from Salesforce")
 		,new SwitchDef( "none", SW_VERSION, "Print the version number of the program to stderr" )
@@ -257,14 +288,7 @@ public abstract class CopyForce {
 			monitor = new SwingExtractionMonitor();
 			
 		} else {
-			monitor = new DefaultExtractionMonitor() {
-
-				@Override
-				public void reportMessage(String msg) {
-					System.err.println(msg);
-				}
-				
-			};
+			monitor = new OutputStreamExtractionMonitor();
 		}
 		
 		
