@@ -52,7 +52,7 @@ import com.aslan.sfdc.extract.sqlserver.SqlServerDatabaseBuilder;
  *  <p>
  *  Example 2: Update existing Account and Contact tables in SQL Server database..
  *  <blockquote>
- *  java -jar CopyForceH2.jar -include "Account,Contact" -salesforce Production,myname@gmail.com,myPassword,SecurityToken  -gui 
+ *  java -jar CopyForceSqlServer.jar -include "Account,Contact" -salesforce Production,myname@gmail.com,myPassword,SecurityToken  -gui 
  *  -sqlserver "//localhost;databaseName=sqlforcetest;username=me;password=caleb&noah;"
  *  </blockquote>
  * @author gsmithfarmer@gmail.com
