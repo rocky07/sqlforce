@@ -32,8 +32,11 @@ public class DefaultExtractionMonitor implements IExtractionMonitor {
 	public void createTable(String name) {
 	}
 
+	
+
 	@Override
-	public void endCopyData(String tableName, int nRowsCopied) {
+	public void endCopyData(String tableName, int nRowsRead, int nRowsSkipped,
+			int nRowsCopied) {
 	}
 
 	@Override

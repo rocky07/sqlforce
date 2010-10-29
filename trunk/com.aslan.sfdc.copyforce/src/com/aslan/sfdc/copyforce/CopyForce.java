@@ -34,9 +34,114 @@ import com.aslan.sfdc.partner.LoginCredentialsRegistry;
 import com.aslan.sfdc.partner.LoginManager;
 
 /**
- * Copy a Salesforce database to another database.
+ * Copy a Salesforce database to another database, creating the schema on the destination database as required.
  * 
- * @author greg
+ * CopyForce copies the schema and data from any Salesforce database to another database. Both complete and incremental copying are supported.
+ * This particular class contains the parameters and control mechanisms that are common to all instances of CopyForce. There is always a concreted
+ * class that extends this class for each particular designation database (example: CopyForceH2, CopyForceSqlServer).
+ * <p>
+ * The following command line switches are supported by all concrete implementations:
+ *
+ * <table border="2">
+ * <tr align="left" valign="top">
+ * <th>Command Line Switch</th><th>Description</th>
+ * </tr>
+ * <tr align="left" valign="top"><td>-salesforce string</td>
+ * <td>Salesforce database from which data will be copied. This value can be a:
+ * <ul>
+ * <li>Name of a Salesforce profile defined in $HOME/sqlforce.ini</li>
+ * <li>Comma separated string containing [Production||Sandbox],Username,Password,SecurityToken</li>
+ * </ul>
+ * Examples:
+ * <ul>
+ * <li>-salesforce Sandbox</li>
+ * <li>-salesforce Production,gsmithfarmer@gmail.com,holyMoly,99898aasf89asf
+ * </ul>
+ * </td>
+ * </tr>
+ * 
+ *  <tr align="left" valign="top"><td>-schema</td>
+ *  <td>Create the Salesforce schema in the destination databases. Note that if a schema object already exists in the destination then CopyForce
+ *  will skip it automatically.
+ *  </td>
+ *  </tr>
+ *  
+ *  <tr align="left" valign="top"><td>-include string</td>
+ *  <td>Comma separated list of tables (or regular expressions) to copy from Salesforce. By default, all tables all included. Examples:
+ *  <ul>
+ *  <li>-include "Account,Contact"</li>
+ *  <li>-include "Prod.*,Price.*"</li>
+ *  </ul>
+ *  </td>
+ *  </tr>
+ *  
+ *  
+ *  <tr align="left" valign="top"><td>-exclude string</td>
+ *  <td>Comma separated list of tables (or regular expressions) to EXCLUDE from the copy from Salesforce. By default, no tables are excluded. Examples:
+ *  <ul>
+ *  <li>-exclude "Attachment"</li>
+ *  <li>-exclude "Attachment,Software.*"</li>
+ *  </ul>
+ *  </td>
+ *  </tr>
+ *  
+ *  <tr align="left" valign="top"><td>-config file</td>
+ *  <td>XML file that specifies what to copy/exclude from Salesforce. This file should be used when the simple <i>-include</i> and <i>-exclude</i> are insufficient 
+ *  to represent the parameters for the copy. See later in this documentation for the format of a configuration file.
+ *  </td>
+ *  </tr>
+ *  
+ *  <tr align="left" valign="top"><td>-gui</td>
+ *  <td>Display a UI that indicates the progress of the copy. By default, progress is written to stdout.
+ *  </td>
+ *  </tr>
+ *  
+ *  <tr align="left" valign="top"><td>-silent</td>
+ *  <td>Do not display progress messages.
+ *  </td>
+ *  </tr>
+ *  
+ *  <tr align="left" valign="top"><td>-timeout ms</td>
+ *  <td>Set the timeout value for calls to Salesforce. The default is 1,000,000 and rarely needs to changed.
+ *  </td>
+ *  </tr>
+ *  
+ *  <tr align="left" valign="top"><td>-buffer mBytes</td>
+ *  <td>Set the number of megabytes CopyForce will buffer from Salesforce before writing them to the destination database.
+ *  </td>
+ *  </tr>
+ * </table>
+ * <p>
+ * The list of objects copied from Salesforce can optionally be controlled by a configuration file (see the <i>-config</i> command line switch). A configuration file
+ * must be in the following form:
+ * <blockquote>
+ * &lt;CopyForce&gt;<br></br>
+ * 	<blockquote>
+ * 		&lt;include table="nameMatchingPattern" where="optional Where Clause" &gt;
+ * <br></br>
+ * 		&lt;exclude table="nameMatchingPattern" &gt;
+ *
+ *  </blockquote>
+ * &lt;/CopyForce&gt;
+ * </blockquote>
+ * where:
+ * <ul>
+ * <li>The &lt;include&gt; element indicates tables that will be include in the copy. The <i>name</i> attribute is a regular expression that will be used to find matching
+ * table names (a plain table name (like Account) is, of course, a regular expression. The optional <i>where</i> attribute is should be a string that can be appended to a
+ * <i>WHERE</i> clause for SOQL against the table.</li>
+ * <li>The &lt;exclude&gt; element indicates tables that should be excluded from the copy.
+ * </ul>
+ * Example: Copy all tables except Attachments:
+ * <blockquote>
+ * &lt;CopyForce&gt;
+ * <blockquote>
+ * 	&lt;include table=".*"  &gt;
+ * <br></br>
+ * 		&lt;exclude table="Attachment" &gt;
+ * </blockquote>
+ * &lt;/CopyForce&gt;
+ * </blockquote>
+ * @author gsmithfarmer@gmail.com
  *
  */
 public abstract class CopyForce {
@@ -82,6 +187,7 @@ public abstract class CopyForce {
 			}
 			String connectString =  parser.getString(SW_SALESFORCE);
 			trace("Connect to Salesforce - " + connectString );
+			monitor.reportMessage("Connecting to Salesforce");
 			LoginManager.Session session = connectToSalesforce( connectString );
 			
 			//
@@ -111,6 +217,7 @@ public abstract class CopyForce {
 			//
 			// Connect to the destination database.
 			//
+			monitor.reportMessage("Connecting to destination database");
 			IDatabaseBuilder builder = getDatabaseBuilder(parser);
 			
 			//
@@ -127,6 +234,8 @@ public abstract class CopyForce {
 			trace("Start copy of data from Salesforce to target database");
 			mgr.extractData( rules, monitor);
 			trace("Finished");
+			
+			monitor.reportMessage("Copy is Complete");
 		}
 		
 		public void run() {
@@ -140,19 +249,18 @@ public abstract class CopyForce {
 	}
 	
 	
-	public static final String SW_SALESFORCE = "salesforce";
-	public static final String SW_LOG = "log";
-	public static final String SW_INIT = "init";
-	public static final String SW_VERSION = "version";
-	public static final String SW_SCHEMA = "schema";
-	public static final String SW_SILENT = "silent";
-	public static final String SW_CONFIG = "config";
-	public static final String SW_TRACE = "trace";
-	public static final String SW_TIMEOUT = "timeout";
-	public static final String SW_BUFFER = "buffer";
-	public static final String SW_GUI = "gui";
-	public static final String SW_INCLUDE = "include";
-	public static final String SW_EXCLUDE = "exclude";
+	private static final String SW_SALESFORCE = "salesforce";
+	private static final String SW_LOG = "log";
+	private static final String SW_VERSION = "version";
+	private static final String SW_SCHEMA = "schema";
+	private static final String SW_SILENT = "silent";
+	private static final String SW_CONFIG = "config";
+	private static final String SW_TRACE = "trace";
+	private static final String SW_TIMEOUT = "timeout";
+	private static final String SW_BUFFER = "buffer";
+	private static final String SW_GUI = "gui";
+	private static final String SW_INCLUDE = "include";
+	private static final String SW_EXCLUDE = "exclude";
 
 	private static final SwitchDef[]  baseCmdSwitches = {
 		new SwitchDef( "string", SW_SALESFORCE, "profileName OR ConnectionType,Username,Password,SecurityToken")
@@ -215,7 +323,7 @@ public abstract class CopyForce {
 			}
 		}
 	}
-	public CopyForce() {
+	protected CopyForce() {
 		for( SwitchDef s : baseCmdSwitches ) {
 			cmdSwitches.add(s);
 		}
@@ -266,12 +374,19 @@ public abstract class CopyForce {
 	 * 
 	 * @param switchList extra command line switches.
 	 */
-	public void addCmdSwitches( SwitchDef[] switchList ) {
+	protected void addCmdSwitches( SwitchDef[] switchList ) {
 		for( SwitchDef s : switchList ) {
 			cmdSwitches.add(s);
 		}
 	}
 	
+	/**
+	 * Start a copy from Salesforce.
+	 * 
+	 * @param args command line switches controlling the copy.
+	 * 
+	 * @throws Exception if anything goes wrong.
+	 */
 	public void execute( String args[]) throws Exception {
 		CommandLineParser parser = new CommandLineParser(cmdSwitches.toArray( new SwitchDef[0]));
 

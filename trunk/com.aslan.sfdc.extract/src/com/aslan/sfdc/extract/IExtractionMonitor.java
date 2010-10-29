@@ -66,9 +66,11 @@ public interface IExtractionMonitor {
 	 * Report after all rows have been copied to a table.
 	 * 
 	 * @param tableName a table
+	 * @param nRowsRead total number of records read from salesforce.
+	 * @param nRowsSkipped total number of records read but not copied (already up to date).
 	 * @param nRowsCopied total number of rows copied to a table.
 	 */
-	void endCopyData( String tableName, int nRowsCopied );
+	void endCopyData( String tableName, int nRowsRead, int nRowsSkipped, int nRowsCopied );
 	
 	/**
 	 * Report progress to a listener.

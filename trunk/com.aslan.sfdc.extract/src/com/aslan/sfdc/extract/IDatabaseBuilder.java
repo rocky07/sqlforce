@@ -9,7 +9,6 @@
 
 package com.aslan.sfdc.extract;
 
-import java.util.Calendar;
 import java.util.List;
 
 import com.sforce.soap.partner.DescribeSObjectResult;

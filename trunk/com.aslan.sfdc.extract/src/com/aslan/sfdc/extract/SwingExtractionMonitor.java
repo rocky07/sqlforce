@@ -306,14 +306,15 @@ public class SwingExtractionMonitor implements IExtractionMonitor {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see com.aslan.sfdc.extract.IExtractionMonitor#endCopyData(java.lang.String, int)
-	 */
+
 	@Override
-	public void endCopyData(String tableName, int nRowsCopied) {
+	public void endCopyData(String tableName, int nRowsRead, int nRowsSkipped,
+			int nRowsCopied) {
 		SalesforceTable table = getTable(tableName);
 		table.action = "Copied";
 		table.nRowsCopied = nRowsCopied;
+		table.nRowsSkipped = nRowsSkipped;
+		table.nRowsRead = nRowsRead;
 		table.copyEndTime = Calendar.getInstance();
 		
 		if( null != copyTimerThread ) {
@@ -322,7 +323,7 @@ public class SwingExtractionMonitor implements IExtractionMonitor {
 		}
 		refreshTable( table );
 
-
+		
 	}
 
 	/* (non-Javadoc)
