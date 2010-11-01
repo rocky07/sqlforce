@@ -264,8 +264,8 @@ public abstract class CopyForce {
 
 	private static final SwitchDef[]  baseCmdSwitches = {
 		new SwitchDef( "string", SW_SALESFORCE, "profileName OR ConnectionType,Username,Password,SecurityToken")
-		,new SwitchDef( "string", SW_INCLUDE, "", "comma separated list of tables (or regexp) to export from salesforce" )
-		,new SwitchDef( "string", SW_EXCLUDE, "", "comma separated list of tables (or regexp) to exclude from the export from salesforce" )
+		,new SwitchDef( "string", SW_INCLUDE, null, "comma separated list of tables (or regexp) to export from salesforce" )
+		,new SwitchDef( "string", SW_EXCLUDE,  null, "comma separated list of tables (or regexp) to exclude from the export from salesforce" )
 		,new SwitchDef( "string", SW_LOG, "error", "info,warning,error:Set the default message level written to stderr" )
 		,new SwitchDef( "xfile", SW_CONFIG, "Description what should be transferred from Salesforce")
 		,new SwitchDef( "none", SW_VERSION, "Print the version number of the program to stderr" )
