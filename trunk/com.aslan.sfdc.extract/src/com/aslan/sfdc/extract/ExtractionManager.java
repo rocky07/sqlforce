@@ -374,7 +374,7 @@ public class ExtractionManager {
 	 * Extract the schema for a single object from Salesforce.
 	 * 
 	 * @param sObjectName name of the object to extract
-	 * @param monitor TODO
+	 * @param monitor report progress as the schema extraction happens.
 	 * @throws Exception if anything goes wrong.
 	 */
 	private void extractSchema(String sObjectName, IExtractionMonitor monitor ) throws Exception {
