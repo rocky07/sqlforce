@@ -1,0 +1,24 @@
+= Java, SQL, & Salesforce =
+
+What are you interest in finding?
+  * Java packages for working with Salesforce ([JavaHome]).
+  * ANSI SELECT/DELETE/MODIFY/INSERT commands that work with Salesforce ([SQLForceHome]).
+  * Jython module for working with Salesforce ([JythonHome]).
+  * Tools to Copy any Salesforce instance to a local RDBMS ([CopyForceHome]).
+
+All of these tools are part of the *SQLForce* project. 
+
+= Origins of *SQLForce* =
+
+SQLForce was initially created for two reasons:
+  * We needed ANSI SELECT, SELECT DISTINCT, SELECT/UNION, DELETE, MODIFY, and INSERT commands that just worked.
+  * SOQL and Salesforce's record limits made it just too hard to modify a lot of records.
+  * We needed to change all occurences of "United States of America" to "USA" and wanted to use a SQL UPDATE statement.
+
+Overtime, the base java libraries have been used to various other tools including a rich Jython module. We have used the tools, especially the Jython module, for production tasks since 2009. The first time you write a script like:
+{{{
+UPDATE Contact SET MailingCountry="USA" WHERE MailingCountry IN ("United States", "US")
+}}}
+you will be hooked. For any Salesforce administrator, SQLForce simply saves a lot of time.
+
+The java libraries use the partner wsdl and are typically upgraded within a few weeks after Salesforce upgrades. 
