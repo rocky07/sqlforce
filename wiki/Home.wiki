@@ -10,7 +10,7 @@ All of these tools are part of the *SQLForce* project.
 
 = Origins of *SQLForce* =
 
-SQLForce was initially created for two reasons:
+SQLForce was initially created for several reasons:
   * We needed ANSI SELECT, SELECT DISTINCT, SELECT/UNION, DELETE, MODIFY, and INSERT commands that just worked.
   * SOQL and Salesforce's record limits made it just too hard to modify a lot of records.
   * We needed to change all occurences of "United States of America" to "USA" and wanted to use a SQL UPDATE statement.
