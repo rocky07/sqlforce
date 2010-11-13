@@ -1,0 +1,9 @@
+
+<project name="configSetup" >
+	<property name="eclipse.plugin.home" value="C:/bin/eclipse3.5/plugins" />
+	<dirname property="config.script.home" file="${ant.file}" />
+	<dirname property="config.home" file="${config.script.home}" />
+	<dirname property="config.root" file="${config.home}" />
+	<property name="config.release.home" value="${config.home}${file.separator}release" />
+	<property name="config.tmp.home" value="${config.home}${file.separator}tmp" />
+</project>
