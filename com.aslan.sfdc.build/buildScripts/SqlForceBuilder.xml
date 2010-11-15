@@ -1,9 +1,9 @@
 
-<project default="SqlForce" name="build">
+<project default="build" name="build">
 
 	<import file="config.xml" />
 	
-	<target name="SqlForce" depends="jar">
+	<target name="build" depends="jar">
 	</target>
 	 
 	<target name="jar">
@@ -14,7 +14,7 @@
                 <attribute name="Main-Class" value="com.aslan.sfdc.sqlforce.SQLForce"/>
                 <attribute name="Class-Path" value="."/>
             </manifest>
-            <zipfileset excludes="META-INF/*.SF" src="${config.release.home}/partner.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${config.partner.jar.full}"/>
 
             <fileset dir="${config.root}/com.aslan.parser.commandline/bin"/>
             <fileset dir="${config.root}/com.aslan.sfdc.sqlforce/bin"/>

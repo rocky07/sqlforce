@@ -1,0 +1,32 @@
+
+<project default="build" name="build">
+
+	<import file="config.xml" />
+	
+	<target name="build" depends="jar">
+	</target>
+	 
+	<target name="jar">
+
+		<jar destfile="${config.release.home}/CopyForceH2.jar" filesetmanifest="mergewithoutmain">
+			
+            <manifest>
+                <attribute name="Main-Class" value="com.aslan.sfdc.copyforce.h2.CopyForceH2"/>
+                <attribute name="Class-Path" value="."/>
+            </manifest>
+            <zipfileset excludes="META-INF/*.SF" src="${config.partner.jar.full}"/>
+
+			<zipfileset excludes="META-INF/*.SF" src="${config.root}/org.h2/h2-1.2.127.jar"/>
+            <fileset dir="${config.root}/com.aslan.sfdc.extract.h2/bin"/>
+            <fileset dir="${config.root}/com.aslan.sfdc.copyforce.h2/bin"/>
+            
+            <fileset dir="${config.root}/com.aslan.parser.commandline/bin"/>
+            <fileset dir="${config.root}/com.aslan.sfdc.extract/bin"/>
+            
+            <fileset dir="${config.root}/com.aslan.sfdc.copyforce/bin"/>
+            
+            
+		</jar>
+		
+	</target>
+</project>
