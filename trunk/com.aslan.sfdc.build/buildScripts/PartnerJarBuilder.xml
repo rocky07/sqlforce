@@ -1,0 +1,31 @@
+
+<project default="build" name="build">
+
+	<import file="config.xml" />
+	
+	<target name="build">
+
+		<jar destfile="${config.release.home}/partner.jar" filesetmanifest="mergewithoutmain">
+			
+            <manifest>
+                <attribute name="Class-Path" value="."/>
+            </manifest>
+            <zipfileset excludes="META-INF/*.SF" src="${eclipse.plugin.home}/javax.xml.rpc_1.1.0.v200905122109/lib/jaxrpc.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${eclipse.plugin.home}/javax.wsdl_1.5.1.v200806030408.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${eclipse.plugin.home}/javax.xml.soap_1.2.0.v200905122109/lib/saaj.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${eclipse.plugin.home}/org.apache.commons.logging_1.0.4.v201005080501.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${eclipse.plugin.home}/org.apache.commons.discovery_0.2.0.v200905122109/lib/commons-discovery-0.2.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${eclipse.plugin.home}/org.apache.axis_1.4.0.v200905122109/lib/axis.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${eclipse.plugin.home}/org.apache.axis_1.4.0.v200905122109/lib/axis-ant.jar"/>
+            <fileset dir="${eclipse.plugin.home}/org.apache.axis_1.4.0.v200905122109/lib"/>
+            <zipfileset excludes="META-INF/*.SF" src="${eclipse.plugin.home}/org.apache.log4j_1.2.13.v200903072027.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${eclipse.plugin.home}/javax.activation_1.1.0.v200906290531.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${eclipse.plugin.home}/javax.mail_1.4.0.v200905040518.jar"/>
+            
+            <fileset dir="${config.root}/com.sforce.soap.partner/bin"/>
+            <fileset dir="${config.root}/com.aslan.sfdc.partner/bin"/>
+            
+		</jar>
+		
+	</target>
+</project>
