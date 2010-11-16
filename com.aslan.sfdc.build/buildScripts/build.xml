@@ -1,0 +1,22 @@
+<project default="build" name="build">
+
+	<import file="config.xml" />
+	
+	<target name="build" depends="clean,jar">
+	</target>
+
+	<target name="clean">
+		<delete>
+			<fileset dir="${config.release.home}" />
+		</delete>
+	</target>
+	
+	<target name="jar" >
+	
+		<ant antfile="JavaForceBuilder.xml" />
+		<ant antfile="SqlForceBuilder.xml" />
+		<ant antfile="CopyForceH2Builder.xml" />
+		<ant antfile="CopyForceSqlServerBuilder.xml" />
+	
+	</target>
+</project>

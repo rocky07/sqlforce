@@ -7,6 +7,6 @@
 	<property name="config.release.home" value="${config.home}${file.separator}release" />
 	<property name="config.tmp.home" value="${config.home}${file.separator}tmp" />
 	
-	<property name="config.partner.jar" value="${config.release.home}/partner.jar" />
-	<property name="config.partner.jar.full" value="${config.release.home}/partnerFull.jar" />
+	<property name="config.partner.jar" value="${config.release.home}/javaforce.jar" />
+	<property name="config.partner.jar.full" value="${config.release.home}/javaforceFull.jar" />
 </project>
