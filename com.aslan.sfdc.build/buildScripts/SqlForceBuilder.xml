@@ -3,12 +3,38 @@
 
 	<import file="config.xml" />
 	
-	<target name="build" depends="jar">
+	<property name="sqlforce.version" value="1.0.10" />
+	<property name="sqlforce.tmp" value="${config.tmp.home}/sqlforce_${sqlforce.version}" />
+	
+	<target name="build" depends="setup,jar">
+		
+		<copy  todir="${sqlforce.tmp}" >
+			<fileset dir="${config.root}/com.aslan.sfdc.sqlforce" >
+				<include name="doc/**" />
+				<include name="README.txt" />
+			</fileset>
+			
+			<fileset dir="${config.root}/com.aslan.sfdc.sqlforce.jython/src" >
+				<include name="SQLForce.py" />
+			</fileset>
+			
+		</copy>
+		<zip destfile="${config.release.home}/sqlforce_${sqlforce.version}.zip" basedir="${sqlforce.tmp}" />
+		<antcall target="clean" />
+		
 	</target>
 	 
-	<target name="jar">
-
-		<jar destfile="${config.release.home}/SqlForce.jar" filesetmanifest="mergewithoutmain">
+	<target name="setup" >
+		<delete dir="${sqlforce.tmp}" quiet="true" />
+		<mkdir dir="${sqlforce.tmp}" />
+	</target>
+	
+	<target name="clean" >
+		<delete dir="${sqlforce.tmp}" quiet="true" />
+	</target>
+	
+	<target name="jar" >
+		<jar destfile="${sqlforce.tmp}/sqlforce.jar" filesetmanifest="mergewithoutmain">
 			
             <manifest>
                 <attribute name="Main-Class" value="com.aslan.sfdc.sqlforce.SQLForce"/>
