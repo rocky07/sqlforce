@@ -2,21 +2,25 @@
 
 	<import file="config.xml" />
 	
-	<target name="build" depends="clean,jar">
+	<target name="build" depends="clean">
+		<ant antfile="JavaForceBuilder.xml" />
+		<ant antfile="SqlForceBuilder.xml" />
+		<ant antfile="CopyForceH2Builder.xml" />
+		<ant antfile="CopyForceSqlServerBuilder.xml" />
 	</target>
 
 	<target name="clean">
 		<delete>
 			<fileset dir="${config.release.home}" />
+			<dirset dir="${config.release.home}" >
+				<include name="**/*" />
+			</dirset>
+			
+			<fileset dir="${config.tmp.home}" />
+			<dirset dir="${config.tmp.home}" >
+				<include name="**/*" />
+			</dirset>
 		</delete>
 	</target>
 	
-	<target name="jar" >
-	
-		<ant antfile="JavaForceBuilder.xml" />
-		<ant antfile="SqlForceBuilder.xml" />
-		<ant antfile="CopyForceH2Builder.xml" />
-		<ant antfile="CopyForceSqlServerBuilder.xml" />
-	
-	</target>
 </project>
