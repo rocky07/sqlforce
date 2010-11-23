@@ -3,7 +3,15 @@
 
 	<import file="config.xml" />
 	
-
+	<pluginRoot property="javax.xml.rpc" plugin="javax.xml.rpc" />
+	<pluginRoot property="javax.wsdl" plugin="javax.wsdl" />
+	<pluginRoot property="javax.xml.soap" plugin="javax.xml.soap" />
+	<pluginRoot property="org.apache.commons.logging" plugin="org.apache.commons.logging" />
+	<pluginRoot property="org.apache.commons.discovery" plugin="org.apache.commons.discovery" />
+	<pluginRoot property="org.apache.axis" plugin="org.apache.axis" />
+	<pluginRoot property="org.apache.log4j" plugin="org.apache.log4j" />
+	<pluginRoot property="javax.mail" plugin="javax.mail" />
+	<pluginRoot property="javax.activation" plugin="javax.activation" />
 	
 	<target name="build" depends="jar">
 	</target>
@@ -24,17 +32,16 @@
                 <attribute name="Class-Path" value="."/>
             </manifest>
             <zipfileset excludes="META-INF/*.SF" src="${config.partner.jar}"/>
-            <zipfileset excludes="META-INF/*.SF" src="${eclipse.plugin.home}/javax.xml.rpc_1.1.0.v200905122109/lib/jaxrpc.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${eclipse.plugin.home}/javax.wsdl_1.5.1.v200806030408.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${eclipse.plugin.home}/javax.xml.soap_1.2.0.v200905122109/lib/saaj.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${eclipse.plugin.home}/org.apache.commons.logging_1.0.4.v201005080501.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${eclipse.plugin.home}/org.apache.commons.discovery_0.2.0.v200905122109/lib/commons-discovery-0.2.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${eclipse.plugin.home}/org.apache.axis_1.4.0.v200905122109/lib/axis.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${eclipse.plugin.home}/org.apache.axis_1.4.0.v200905122109/lib/axis-ant.jar"/>
-            <fileset dir="${eclipse.plugin.home}/org.apache.axis_1.4.0.v200905122109/lib"/>
-            <zipfileset excludes="META-INF/*.SF" src="${eclipse.plugin.home}/org.apache.log4j_1.2.13.v200903072027.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${eclipse.plugin.home}/javax.activation_1.1.0.v200906290531.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${eclipse.plugin.home}/javax.mail_1.4.0.v200905040518.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${javax.xml.rpc}/lib/jaxrpc.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${javax.wsdl}"/>
+            <zipfileset excludes="META-INF/*.SF" src="${javax.xml.soap}/lib/saaj.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${org.apache.commons.logging}"/>
+            <zipfileset excludes="META-INF/*.SF" src="${org.apache.commons.discovery}/lib/commons-discovery-0.2.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${org.apache.axis}/lib/axis.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${org.apache.axis}/lib/axis-ant.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${org.apache.log4j}"/>
+            <zipfileset excludes="META-INF/*.SF" src="${javax.activation}"/>
+            <zipfileset excludes="META-INF/*.SF" src="${javax.mail}"/>
             
 		</jar>
 		
