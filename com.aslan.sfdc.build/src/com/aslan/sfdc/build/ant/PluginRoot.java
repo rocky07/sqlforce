@@ -95,6 +95,5 @@ public class PluginRoot extends Task {
 		}
 		
 		getProject().setProperty(property, (new File( pluginDir, pluginBase)).toString());
-		
 	}
 }

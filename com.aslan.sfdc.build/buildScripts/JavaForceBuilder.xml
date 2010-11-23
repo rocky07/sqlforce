@@ -3,6 +3,10 @@
 
 	<import file="config.xml" />
 	
+	<property name="my.version" value="1.0.10" />
+	<property name="my.tmp" value="${config.tmp.home}/javaforce" />
+	
+	
 	<pluginRoot property="javax.xml.rpc" plugin="javax.xml.rpc" />
 	<pluginRoot property="javax.wsdl" plugin="javax.wsdl" />
 	<pluginRoot property="javax.xml.soap" plugin="javax.xml.soap" />
@@ -13,7 +17,35 @@
 	<pluginRoot property="javax.mail" plugin="javax.mail" />
 	<pluginRoot property="javax.activation" plugin="javax.activation" />
 	
-	<target name="build" depends="jar">
+	
+	
+	<target name="setup" >
+		<delete dir="${my.tmp}" quiet="true" />
+		<mkdir dir="${my.tmp}" />
+	</target>
+	
+	<target name="clean" >
+		<delete dir="${my.tmp}" quiet="true" />
+	</target>
+	
+	<target name="build" depends="setup,jar,javadoc,doc">
+	
+		<copy file="${config.partner.jar}" todir="${my.tmp}" />
+		<copy file="${config.partner.jar.full}" todir="${my.tmp}" />
+		
+		<zip destfile="${config.release.home}/javaforce_${my.version}.zip" basedir="${my.tmp}" />
+		<antcall target="clean" />
+	</target>
+	
+	<target name="doc" >
+		<copy  file="${config.home}/readme/javaforce.html" tofile="${my.tmp}/README.html" />
+	</target>
+	
+	<target name="javadoc" >
+		<javadoc destdir="${my.tmp}/javadoc">
+			<fileset dir="${config.root}/com.aslan.sfdc.partner/src" />
+			<fileset dir="${config.root}/com.sforce.soap.partner/src" />
+		</javadoc>
 	</target>
 
 	<target name="jar" >

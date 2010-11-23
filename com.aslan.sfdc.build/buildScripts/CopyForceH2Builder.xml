@@ -3,12 +3,38 @@
 
 	<import file="config.xml" />
 	
-	<target name="build" depends="jar">
+	<property name="my.version" value="1.0.2" />
+	<property name="my.tmp" value="${config.tmp.home}/CopyForceH2" />
+	
+	<target name="setup" >
+		<delete dir="${my.tmp}" quiet="true" />
+		<mkdir dir="${my.tmp}" />
 	</target>
-	 
+	
+	<target name="clean" >
+		<delete dir="${my.tmp}" quiet="true" />
+	</target>
+	
+	<target name="build" depends="setup,jar,javadoc,doc">
+	
+		<zip destfile="${config.release.home}/CopyForceH2_${my.version}.zip" basedir="${my.tmp}" />
+		<antcall target="clean" />
+	</target>
+	
+	<target name="doc" >
+		<copy  file="${config.home}/readme/CopyForceH2.html" tofile="${my.tmp}/README.html" />
+	</target>
+	
+	<target name="javadoc" >
+		<javadoc destdir="${my.tmp}/javadoc" public="true">
+			<fileset dir="${config.root}/com.aslan.sfdc.copyforce/src" />
+			<fileset dir="${config.root}/com.aslan.sfdc.copyforce.h2/src" />
+		</javadoc>
+	</target>
+	
 	<target name="jar">
 
-		<jar destfile="${config.release.home}/CopyForceH2.jar" filesetmanifest="mergewithoutmain">
+		<jar destfile="${my.tmp}/CopyForceH2.jar" filesetmanifest="mergewithoutmain">
 			
             <manifest>
                 <attribute name="Main-Class" value="com.aslan.sfdc.copyforce.h2.CopyForceH2"/>

@@ -3,10 +3,13 @@
 	<import file="config.xml" />
 	
 	<target name="build" depends="clean">
-		<ant antfile="JavaForceBuilder.xml" />
-		<ant antfile="SqlForceBuilder.xml" />
-		<ant antfile="CopyForceH2Builder.xml" />
-		<ant antfile="CopyForceSqlServerBuilder.xml" />
+		<ant antfile="JavaForceBuilder.xml" inheritAll="false"/>
+		<ant antfile="SqlForceBuilder.xml"  inheritAll="false"/>
+		<ant antfile="CopyForceH2Builder.xml"  inheritAll="false"/>
+		<ant antfile="CopyForceSqlServerBuilder.xml"  inheritAll="false"/>
+		<delete >
+			<fileset dir="${config.release.home}" includes="**/*.jar" />
+		</delete>
 	</target>
 
 	<target name="clean">
