@@ -2,6 +2,11 @@
 <head></head>
 <body>
 Copy schema and data from Salesforce to another database (See concrete classes for specific database support).
+<p>
+CopyForce is the root package for all concrete classes that introspect Salesforce and copy schema and data to another database.
+The base class, {@link com.aslan.sfdc.copyforce.CopyForce}, defines the command line switches/options supported by all concrete implementations.
+A concrete typically only adds additional options for connecting to a particular database.
+</p>
 </body>
 </html>
 
