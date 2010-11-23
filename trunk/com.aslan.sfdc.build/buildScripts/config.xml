@@ -1,6 +1,7 @@
 
 <project name="configSetup" >
-	<property name="eclipse.plugin.home" value="C:/bin/eclipse3.5/plugins" />
+	<typedef name="pluginRoot" classname="com.aslan.sfdc.build.ant.PluginRoot" classpath="../bin" />
+
 	<dirname property="config.script.home" file="${ant.file}" />
 	<dirname property="config.home" file="${config.script.home}" />
 	<dirname property="config.root" file="${config.home}" />

@@ -5,3 +5,4 @@ Bundle-SymbolicName: com.aslan.sfdc.build
 Bundle-Version: 1.0.0
 Bundle-Vendor: Aslan Technologies
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.apache.ant;bundle-version="1.7.1"
