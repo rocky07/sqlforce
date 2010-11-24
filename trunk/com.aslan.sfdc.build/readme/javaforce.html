@@ -3,9 +3,35 @@
 <body>
 <H1>JavaForce -- Java Bindings to Salesforce</H1>
 <p>
-JavaForce is a java binding to the Salesforce partner WSDL. 
+<i>JavaForce</i> is a java binding the to the Salesforce partner WSDL that hides much the SObject and governor limitations imposed by Salesforce.
+The <i>JavaForce</i> bindings have are the foundation of several open source projects:
+<ul>
+<li><a href="http://code.google.com/p/sqlforce">SQLForce</a> -- Jython module and a command line tool that add ANSI INSERT/UPDATE/DELTE/SELECT UNION/SELECT DISTINCT options to SOQL.</li>
+<li><a href="http://code.google.com/p/sqlforce">CopyForce</a> -- Copy any Salesforce database to a local database (full or incremental; create local schema by introspecting Salesforce).</li>
+</ul>
+<p>
+We have found that SQLForce and Jython is more than sufficient for managing Salesforce. However, when Jython is not enough, we use JavaForce jars directly.
+Examples:
+<ul>
+<li>Create a servlet that builds an Excel spreadsheet using the Apache/POI project.</li>
+<li>Create a web service that will create an invoice in Oracle Financials from a Salesforce Opportunity</li>
+</ul>
 </p>
-
+<p>
+To get started:
+<ul>
+<li>Pick the <i>JavaForce</i> jar that is right for you. 
+<ul><li>The <i>javaforceFull.jar</i> contains <i>JavaForce</i> and all the required network/SOAP classes. Put <i>javaforceFull.jar</i> into your path
+and you can get started right away.</li>
+<li>The <i>javaforce.jar</i> contains <i>JavaForce</i> and the code generated from the Salesforce partner WSDL. To use this jar you will need to include the
+following in your class path.
+<ul><li>javax.xml.rpc</li><li>javax.wsdl</li><li>javax.xml.soap</li><li>org.apache.commons.logging</li>
+<li>org.apache.commons.discovery</li><li>org.apache.axis</li><li>org.apache.log4j</li><li>javax.mail</li><li>javax.activation</li></ul></li>
+</ul> </li>
+<li>Look at the <a href="src/com/aslan/sfdc/partner/example/index.html">sample code</a>.</li>
+<li>Look at the <a href="javadoc/index.html">javadoc</a> starting with the package com.aslan.sfdc.partner.</li>
+</ul>
+</p>
 
 <p>
 If you have any problems or suggestions drop me a note at 
