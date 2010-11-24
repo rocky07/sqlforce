@@ -22,6 +22,7 @@
 	<target name="setup" >
 		<delete dir="${my.tmp}" quiet="true" />
 		<mkdir dir="${my.tmp}" />
+		<mkdir dir="${my.tmp}/src" />
 	</target>
 	
 	<target name="clean" >
@@ -39,12 +40,16 @@
 	
 	<target name="doc" >
 		<copy  file="${config.home}/readme/javaforce.html" tofile="${my.tmp}/README.html" />
+		<copy todir="${my.tmp}/src" >
+			<fileset dir="${config.root}/com.aslan.sfdc.partner.doc/src" />
+		</copy>
 	</target>
 	
 	<target name="javadoc" >
 		<javadoc destdir="${my.tmp}/javadoc">
 			<fileset dir="${config.root}/com.aslan.sfdc.partner/src" />
 			<fileset dir="${config.root}/com.sforce.soap.partner/src" />
+			<fileset dir="${config.root}/com.aslan.sfdc.partner.doc/src" />
 		</javadoc>
 	</target>
 
