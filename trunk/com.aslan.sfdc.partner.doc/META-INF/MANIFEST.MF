@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Examples for com.aslan.sfdc.partner library
+Bundle-SymbolicName: com.aslan.sfdc.partner.doc
+Bundle-Version: 1.0.0
+Bundle-Vendor: Aslan Technology
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: com.aslan.sfdc.partner;bundle-version="1.0.0"
