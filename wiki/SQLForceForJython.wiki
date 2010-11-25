@@ -1,10 +1,11 @@
 #labels Featured
-#Jython Integration
 
 = SQLForce.py -- a Jython module for SQLForce =
 
-SQLForce includes a Jython module (SQLForce.py) that brings every SQLForce capability into  Jython.
-Using it is easy:
+The SQLForce.py module brings ANSI INSERT, UPDATE, DELETE, SELECT, SELECT UNION, and SELECT DISTINCT for Salesforce into Jython. SQLForce.py is built on the core SQLForce project. We use it everyday.
+
+Getting started is easy.:
+  * Download the most recent sqlforce.zip distribution.
   * Add sqlforce.jar to your java CLASSPATH
   * Import the SQLForce module
 
@@ -33,8 +34,13 @@ import SQLForce
 session = SQLForce.Session()
 session.connect( "PRODUCTION", "gsmithfarmer@mail.com", "***", "securityToken" )
 
+## Return one array per row
 for c in session.select("SELECT LastName, FirstName, MailingCountry FROM Contact"):
-    print c
+    print "Last Name:", c[0], "First Name: ", c[1]
+
+## Return one python object per row
+for rec in session.selectRecords("SELECT LastName, FirstName, MailingCountry FROM Contact"):
+   print rec.LastName, rec.FirstName, rec.MailingCountry
 }}}
 
 = Example: Selects Rows with a Callback =
