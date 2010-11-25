@@ -23,6 +23,7 @@
 		<delete dir="${my.tmp}" quiet="true" />
 		<mkdir dir="${my.tmp}" />
 		<mkdir dir="${my.tmp}/src" />
+		<mkdir dir="${my.tmp}/doc" />
 	</target>
 	
 	<target name="clean" >
@@ -46,7 +47,7 @@
 	</target>
 	
 	<target name="javadoc" >
-		<javadoc destdir="${my.tmp}/javadoc">
+		<javadoc destdir="${my.tmp}/doc/javadoc" classpath="${config.partner.jar.full}">
 			<fileset dir="${config.root}/com.aslan.sfdc.partner/src" />
 			<fileset dir="${config.root}/com.sforce.soap.partner/src" />
 			<fileset dir="${config.root}/com.aslan.sfdc.partner.doc/src" />

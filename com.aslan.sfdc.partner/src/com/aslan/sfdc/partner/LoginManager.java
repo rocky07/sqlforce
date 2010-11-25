@@ -217,7 +217,7 @@ public class LoginManager {
 		/**
 		 * Return the list of owners that own objects of a particular type.
 		 * 
-		 * @param look at this object.
+		 * @param sObjectName look at this object.
 		 * @return list of user ids (zero length if no records).
 		 * @throws Exception if SFDC fails.
 		 */
@@ -272,7 +272,8 @@ public class LoginManager {
 		
 		/**
 		 * Determine if the session is running in a sandbox.
-		 * @return
+		 * 
+		 * @return true if running in a sandbox, else false.
 		 */
 		public boolean isSandbox() {
 			return !(null==sandboxName);

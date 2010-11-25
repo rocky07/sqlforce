@@ -69,7 +69,7 @@ abstract public class AbstractSObjectRecord implements ISObjectRecord {
 	 * Grab the currrent value for any field given its name.
 	 * 
 	 * If a caller has ever set the value of a field using {@link #setAnyField(String, String)} then this will be returned
-	 * as the current value. Otherwise, the value in the SObject passed to the constructor {@link #AbstractRecord(SObject)}
+	 * as the current value. Otherwise, the value in the SObject passed to the constructor {@link #AbstractSObjectRecord(SObject)}
 	 * will be searched. If the field cannot be found, then null is returned.
 	 * 
 	 * @param fieldName look for the value in this field.
