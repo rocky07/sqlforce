@@ -5,8 +5,8 @@ This site contains source and distributions for several tools based on the <i>Ja
 What are you interest in doing?
 || *Project* || Description ||
 || JavaForce || Core jar for communicating with Salesforce. ||
-|| SQLForce || ANSI SELECT/DELETE/MODIFY//INSERT commands that work with Salesforce. ||
-|| SQLForce/Jython || Jython module with ANSI SELECT/DELETE/MODIFY/INSERT commands that work Salesforce ||
+|| [SQLForce] || ANSI SELECT/DELETE/MODIFY//INSERT commands that work with Salesforce. ||
+|| [SQLForceForJython] || Jython module with ANSI SELECT/DELETE/MODIFY/INSERT commands that work Salesforce ||
 || CopyForce || Copy a Salesforce instance to a local RDBMS ||
 
 
