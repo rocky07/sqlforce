@@ -1,13 +1,13 @@
-= Java, SQL, & Salesforce =
+= Java, SQL, Jython, Backups & Salesforce =
 
 This site contains source and distributions for several tools based on the <i>JavaForce<i>  library.
 
 What are you interest in doing?
-|| *Project* || Description ||
-|| JavaForce || Core jar for communicating with Salesforce. ||
-|| [SQLForce] || ANSI SELECT/DELETE/MODIFY//INSERT commands that work with Salesforce. ||
-|| [SQLForceForJython] || Jython module with ANSI SELECT/DELETE/MODIFY/INSERT commands that work Salesforce ||
-|| CopyForce || Copy a Salesforce instance to a local RDBMS ||
+|| *Project* || Audience || Description ||
+|| JavaForce || Java Programmer || Core jar for communicating with Salesforce. ||
+|| [SQLForce] || Salesforce Admin|| ANSI SELECT/DELETE/MODIFY//INSERT commands that work with Salesforce. ||
+|| [SQLForceForJython] || Salesforce Admin || Jython module with ANSI SELECT/DELETE/MODIFY/INSERT commands that work Salesforce ||
+|| CopyForce || Salesforce Admin || Copy a Salesforce instance to a local RDBMS ||
 
 
 All of these tools are part of the *SQLForce* project. 
@@ -19,10 +19,13 @@ SQLForce was initially created for several reasons:
   * SOQL and Salesforce's record limits made it just too hard to modify a lot of records.
   * We needed to change all occurences of "United States of America" to "USA" and wanted to use a SQL UPDATE statement.
 
-Overtime, the base java libraries have been used to various other tools including a rich Jython module. We have used the tools, especially the Jython module, for production tasks since 2009. The first time you write a script like:
+Overtime, the base java libraries have been used to various other tools including a rich Jython module. We have used the tools, especially the Jython module, for production tasks since early 2009. The first time you write a script like:
 {{{
 UPDATE Contact SET MailingCountry="USA" WHERE MailingCountry IN ("United States", "US")
 }}}
 you will be hooked. For any Salesforce administrator, SQLForce simply saves a lot of time.
 
+Later we started worrying about what would happen if a Salesforce user deleted a lot of data and emptied their recycle bin. [CopyForce] was born. [CopyForce] copies all or part
+of a Salesforce instance to a local RDBMS.
+ 
 The java libraries use the partner wsdl and are typically upgraded within a few weeks after Salesforce upgrades. 
