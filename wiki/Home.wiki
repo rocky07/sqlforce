@@ -1,10 +1,14 @@
 = Java, SQL, & Salesforce =
 
-What are you interest in finding?
-  * Java packages for working with Salesforce ([JavaHome]).
-  * ANSI SELECT/DELETE/MODIFY/INSERT commands that work with Salesforce ([SQLForceHome]).
-  * Jython module for working with Salesforce ([JythonHome]).
-  * Tools to Copy any Salesforce instance to a local RDBMS ([CopyForceHome]).
+This site contains source and distributions for several tools based on the <i>JavaForce<i>  library.
+
+What are you interest in doing?
+|| *Project* || Description ||
+|| JavaForce || Core jar for communicating with Salesforce. ||
+|| SQLForce || ANSI SELECT/DELETE/MODIFY//INSERT commands that work with Salesforce. ||
+|| SQLForce/Jython || Jython module with ANSI SELECT/DELETE/MODIFY/INSERT commands that work Salesforce ||
+|| CopyForce || Copy a Salesforce instance to a local RDBMS ||
+
 
 All of these tools are part of the *SQLForce* project. 
 
