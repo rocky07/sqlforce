@@ -1,0 +1,25 @@
+= JavaForce -- Java Bindings for Salesforce =
+
+<i>JavaForce</i> is a java binding the to the Salesforce partner WSDL that hides much the SObject and governor limitations imposed by Salesforce. It is the core jar that the applications [SQLForce], [CopyForce], and [SQLForceForJython] rely upon.
+
+To get started:
+ * Download the current version of sqlforce*.zip
+ * Look at the README.html file in the root directory.
+
+= Code Snippet - SELECT with callback =
+
+{{{
+LoginCredentials credentials = LoginCredentialsRegistry.getInstance().getCredentials("javaforce");
+
+ISObjectQuery2Callback callback = new DefaultSObjectQuery2Callback() {
+
+  @Override
+  public void addRow(int rowNumber, String[] data) {
+    System.err.println("Callback: Row " + rowNumber + " : " + data[0] + ", " + data[1] );
+  }
+};
+
+String sql = "SELECT id, name FROM User";
+
+new SObjectQueryHelper().findRows( session, sql, callback);
+}}}
