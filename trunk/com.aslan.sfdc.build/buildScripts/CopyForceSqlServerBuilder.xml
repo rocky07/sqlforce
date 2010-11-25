@@ -5,10 +5,12 @@
 	
 	<property name="my.version" value="1.0.2" />
 	<property name="my.tmp" value="${config.tmp.home}/CopyForceSqlServer" />
+	<property name="my.jar" value="${my.tmp}/CopyForceSqlServer.jar" />
 	
 	<target name="setup" >
 		<delete dir="${my.tmp}" quiet="true" />
 		<mkdir dir="${my.tmp}" />
+		<mkdir dir="${my.tmp}/doc" />
 	</target>
 	
 	<target name="clean" >
@@ -24,15 +26,17 @@
 	<target name="doc" >
 		<copy  file="${config.home}/readme/CopyForceSqlServer.html" tofile="${my.tmp}/README.html" />
 	</target>
+	
 	<target name="javadoc" >
-		<javadoc destdir="${my.tmp}/javadoc" public="true">
+		<javadoc destdir="${my.tmp}/doc/javadoc" public="true" classpath="${my.jar}">
 			<fileset dir="${config.root}/com.aslan.sfdc.copyforce/src" />
 			<fileset dir="${config.root}/com.aslan.sfdc.copyforce.sqlserver/src" />
 		</javadoc>
 	</target>
+	
 	<target name="jar">
 
-		<jar destfile="${my.tmp}/CopyForceSqlServer.jar" filesetmanifest="mergewithoutmain">
+		<jar destfile="${my.jar}" filesetmanifest="mergewithoutmain" >
 			
             <manifest>
                 <attribute name="Main-Class" value="com.aslan.sfdc.copyforce.sqlserver.CopyForceSQLServer"/>

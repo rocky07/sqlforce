@@ -3,12 +3,29 @@
 
 	<import file="config.xml" />
 	
-	<property name="sqlforce.version" value="1.0.10" />
-	<property name="sqlforce.tmp" value="${config.tmp.home}/sqlforce_${sqlforce.version}" />
+	<property name="my.version" value="1.0.10" />
+	<property name="my.tmp" value="${config.tmp.home}/sqlforce_${my.version}" />
+	<property name="my.jar" value="${my.tmp}/sqlforce.jar" />
 	
-	<target name="build" depends="setup,jar">
+	<target name="build" depends="setup,jar,doc">
 		
-		<copy  todir="${sqlforce.tmp}" >
+		
+		<zip destfile="${config.release.home}/sqlforce_${my.version}.zip" basedir="${my.tmp}" />
+		<antcall target="clean" />
+		
+	</target>
+	 
+	<target name="setup" >
+		<delete dir="${my.tmp}" quiet="true" />
+		<mkdir dir="${my.tmp}" />
+	</target>
+	
+	<target name="clean" >
+		<delete dir="${my.tmp}" quiet="true" />
+	</target>
+	
+	<target name="doc" >
+		<copy  todir="${my.tmp}" >
 			<fileset dir="${config.root}/com.aslan.sfdc.sqlforce" >
 				<include name="doc/**" />
 				<include name="README.txt" />
@@ -19,22 +36,10 @@
 			</fileset>
 			
 		</copy>
-		<zip destfile="${config.release.home}/sqlforce_${sqlforce.version}.zip" basedir="${sqlforce.tmp}" />
-		<antcall target="clean" />
-		
-	</target>
-	 
-	<target name="setup" >
-		<delete dir="${sqlforce.tmp}" quiet="true" />
-		<mkdir dir="${sqlforce.tmp}" />
-	</target>
-	
-	<target name="clean" >
-		<delete dir="${sqlforce.tmp}" quiet="true" />
 	</target>
 	
 	<target name="jar" >
-		<jar destfile="${sqlforce.tmp}/sqlforce.jar" filesetmanifest="mergewithoutmain">
+		<jar destfile="${my.jar}" filesetmanifest="mergewithoutmain">
 			
             <manifest>
                 <attribute name="Main-Class" value="com.aslan.sfdc.sqlforce.SQLForce"/>
