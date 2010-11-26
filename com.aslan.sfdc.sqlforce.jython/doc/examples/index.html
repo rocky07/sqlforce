@@ -1,0 +1,87 @@
+<html>
+<head>
+<style type="text/css">
+
+h1
+{
+background-color: lightblue;
+}
+table
+{
+
+border-collapse: collapse;
+}
+table, th, td
+{
+border: 1px solid black;
+}
+
+th
+{
+text-align: left;
+background-color: blue;
+color: white;
+
+}
+</style>
+</head>
+<body>
+<h1>SQLForce for Jython -- Examples</h1>
+<p>
+If you are already a Python/Jython programmer, the examples on this page will quickly teach you <i>SQLForce for Jython</i>.
+</p>
+<p>
+Start with the <a href="Connect.py">Connect</a> example to learn how to establish a connection to Salesforce. Once you understand and
+can run the <a href="Connect.py">Connect</a>, all of the other examples will run.
+</p>
+<p>
+To run any example but <a href="Connect.py">Connect</a>, you will need a file named <i>sqlforce.ini</i> in your $HOME (or %USERPFOFILE% on Windows) directory that looks like:
+<pre  >
+  &lt;sqlforce&gt;
+        &lt;connection 
+            name="javaforce"
+            type="Production"
+            username="gsmithfarmer@gmail.com"
+            password="yourpassword"
+            token="yoursecuritytokenfromsalesforce"
+        /&gt;
+  &lt;/sqlforce&gt;
+</pre>
+where the username, password, and token are replaced with your local values.
+</p>
+<table>
+	<tr>
+		<th>Script</th>
+		<th>Description</th>
+	</tr>
+	<tr>
+		<td><a href="Connect.py">Connect.py</a></td>
+		<td>Connect to a Salesforce database from SQLForce.</td>
+	</tr>
+	<tr>
+		<td><a href="Select.py">Select.py</a></td>
+		<td>Select records using SOQL.</td>
+	</tr>
+	<tr>
+		<td><a href="SelectDistinct.py">SelectDistinct.py</a></td>
+		<td>Select DISTINCT records using an ANSI extension to SOQL.</td>
+	</tr>
+	<tr>
+		<td><a href="SelectUnion.py">SelectUnion.py</a></td>
+		<td>Combine the results of several SOQL statements using an ANSI SELECT/UNION extension to SOQL.</td>
+	</tr>
+	<tr>
+		<td><a href="Insert.py">Insert.py</a></td>
+		<td>Insert new records using an ANSI INSERT extension to SOQL.</td>
+	</tr>
+	<tr>
+		<td><a href="Update.py">Update.py</a></td>
+		<td>Update records using an ANSI UPDATE extension to SOQL.</td>
+	</tr>
+	<tr>
+		<td><a href="Delete.py">Delete.py</a></td>
+		<td>Delete records using an ANSI DELETE extension to SOQL.</td>
+	</tr>
+</table>
+</body>
+</html>
