@@ -41,6 +41,7 @@
 	
 	<target name="doc" >
 		<copy  file="${config.home}/readme/javaforce.html" tofile="${my.tmp}/README.html" />
+		<copy  file="${config.home}/readme/CredentialSetup.html" todir="${my.tmp}/doc" />
 		<copy todir="${my.tmp}/src" >
 			<fileset dir="${config.root}/com.aslan.sfdc.partner.doc/src" />
 		</copy>
