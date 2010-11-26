@@ -1,0 +1,54 @@
+<html>
+<head></head>
+<body>
+<H1><i>SQLForce Classic</i> -- ANSI SQL for Salesforce</H1>
+<p>
+<i>SQLForce Classic</i> is a command line interpreter that provides ANSI like extensions to SOQL and hides much of the governor limitations imposed by Salesforce.
+</p>
+<p>
+In addition to SOQL, <i>SQLForce Classic</i> adds support for the full range of base ANSI SQL commands.
+</p>
+<ul>
+<li>SELECT</li>
+<li>SELECT DISTINCT</li>
+<li>SELECT .. UNION SELECT</li>
+<li>UPDATE</li>
+<li>INSERT</li>
+<li>DELETE</li>
+</ul>
+
+<p>
+To get started:
+<ul>
+<li>Type <i>java -jar sqlforce.jar</i> on a command line.</li>
+<li>Type <i>HELP</i> on the command line prompt to get a list of available commands.</li>
+<li>Type <i>HELP CONNECT</i> to learn how to connect to a Salesforce instance.</li>
+<li>Explore the documentation for each command by typing <i>HELP &lt;Command Name&gt;</i>.</li>
+<li>Optionally, read how to create a <a href="doc/CredentialSetup.html">Salesforce Credentials Registry</a></li>
+</ul>
+</p>
+
+<h2>Recommendations</h2>
+<p>
+For most administration tasks <a href="../README.html">SQLForce for Jython</a> is the best tool to use. <a href="../README.html">SQLForce for Jython</a> combines all
+of power of <i>SQLForce Classic</i> with Jython. However, there are a few tasks where <i>SQLForce Classic</i> is extremely useful.
+<ul>
+<li>Quickly run and iteratively refine a bit of SOQL. Unlike the FORCE Eclipse plugin, <i>SQLForce Classic</i> shows the values from all columns
+in the order they appear in the SELECT statement.</li>
+<li>Look up the Apex names for all columns in a table. See the <i>DESCRIBE tableName</i> command.</li>
+</ul>
+</p>
+<h2>Final Notes</h2>
+<p>
+The <i>sqlforce.jar</i> was built using Java 1.6 and includes all required java classes (e.g. the SOAP classes for chatting with Salesforce). If you need a different version
+or cannot use Java 1.6 then <a href="http://code.google.com/p/sqlforce/source/checkout">check out the source</a> and rebuild it in Eclipse.
+</p>	
+
+<p>
+If you have any problems or suggestions drop me a note at 
+<a href="mailto:gsmithfarmer@gmail.com">gsmithfarmer@gmail.com</a>
+</p>
+</body>
+</html>
+
+

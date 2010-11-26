@@ -25,6 +25,7 @@
 	
 	<target name="doc" >
 		<copy  file="${config.home}/readme/CopyForceH2.html" tofile="${my.tmp}/README.html" />
+		<copy  file="${config.home}/readme/CredentialSetup.html" todir="${my.tmp}/doc" />
 	</target>
 	
 	<target name="javadoc" >

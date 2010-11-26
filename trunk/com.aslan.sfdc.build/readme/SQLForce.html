@@ -1,0 +1,50 @@
+<html>
+<head></head>
+<body>
+<H1><i>SQLForce for Jython</i> -- ANSI SQL for Salesforce</H1>
+<p>
+<i>SQLForce for Jython</i> is a Jython module that provides ANSI like extensions to SOQL and hides much of the governor limitations imposed by Salesforce.
+<p>
+<i>SQLForce for Jython</i> adds the power of Jython and SOQL level support for the full range of base ANSI SQL commands.
+</p>
+<ul>
+<li>SELECT</li>
+<li>SELECT DISTINCT</li>
+<li>SELECT .. UNION SELECT</li>
+<li>UPDATE</li>
+<li>INSERT</li>
+<li>DELETE</li>
+</ul>
+
+<p>
+To get started:
+<ul>
+<li>Download the current version of <a href="http://jython.org/downloads.html">Jython</a> and install it.</li>
+<li>Put <i>sqlforce.jar</i> on your CLASSPATH.</li>
+<li>Put <i>SQLForce.py</i> somewhere where Jython will pick it up. The Jython directory <i>Lib/site-packages</i> is often a good place</li>
+<li>Look at the <a href="doc/examples/index.html"><i>SQLForce for Jython</i> examples.</a></li>
+<li>Optionally, read how to create a <a href="doc/CredentialSetup.html">Salesforce Credentials Registry</a></li>
+</ul>
+</p>
+
+<p>
+The <i>sqlforce.jar</i> jar distributed with <i>SQLForce for Jython</i> is an executable jar that can be ran without Jython using the syntax:
+<pre>
+	java -jar sqlforce.jar
+</pre>
+This command line approach to using <i>SQLForce</i> pre-dates integration with Jython and is generally not used. However it is fully supported since
+<i>SQLForce for Jython</i> is built on it. See <a href="doc/SQLForceWithoutJython.html">SQLForce Without Jython</a> for documentation.
+</p>
+<p>
+The <i>sqlforce.jar</i> was built using Java 1.6 and includes all required java classes (e.g. the SOAP classes for chatting with Salesforce). If you need a different version
+or cannot use Java 1.6 then <a href="http://code.google.com/p/sqlforce/source/checkout">check out the source</a> and rebuild it in Eclipse.
+</p>	
+
+<p>
+If you have any problems or suggestions drop me a note at 
+<a href="mailto:gsmithfarmer@gmail.com">gsmithfarmer@gmail.com</a>
+</p>
+</body>
+</html>
+
+

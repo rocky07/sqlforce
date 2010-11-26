@@ -7,7 +7,7 @@
 	<property name="my.tmp" value="${config.tmp.home}/sqlforce_${my.version}" />
 	<property name="my.jar" value="${my.tmp}/sqlforce.jar" />
 	
-	<target name="build" depends="setup,jar,doc">
+	<target name="build" depends="setup,jar,jython,doc">
 		
 		
 		<zip destfile="${config.release.home}/sqlforce_${my.version}.zip" basedir="${my.tmp}" />
@@ -18,6 +18,7 @@
 	<target name="setup" >
 		<delete dir="${my.tmp}" quiet="true" />
 		<mkdir dir="${my.tmp}" />
+		<mkdir dir="${my.tmp}/doc" />
 	</target>
 	
 	<target name="clean" >
@@ -25,12 +26,16 @@
 	</target>
 	
 	<target name="doc" >
+		<copy  todir="${my.tmp}/doc" >
+			<fileset dir="${config.root}/com.aslan.sfdc.sqlforce.jython/doc" />
+		</copy>
+		<copy  file="${config.home}/readme/SQLForce.html" tofile="${my.tmp}/README.html" />
+		<copy  file="${config.home}/readme/SQLForceWithoutJython.html" todir="${my.tmp}/doc" />
+		<copy  file="${config.home}/readme/CredentialSetup.html" todir="${my.tmp}/doc" />
+	</target>
+	
+	<target name="jython" >
 		<copy  todir="${my.tmp}" >
-			<fileset dir="${config.root}/com.aslan.sfdc.sqlforce" >
-				<include name="doc/**" />
-				<include name="README.txt" />
-			</fileset>
-			
 			<fileset dir="${config.root}/com.aslan.sfdc.sqlforce.jython/src" >
 				<include name="SQLForce.py" />
 			</fileset>
