@@ -20,17 +20,15 @@ Select unique countries from Contacts and Accounts.
 
 '''
 sql = '''
-    SELECT  MailingCountry FROM Contact WHERE MailingCountry!=null
+    SELECT  DISTINCT MailingCountry FROM Contact WHERE MailingCountry!=null
     UNION SELECT  ShippingCountry FROM Account WHERE ShippingCountry!=null
     UNION SELECT  BillingCountry FROM Account WHERE BillingCountry!=null
 '''
 
 countryRecords = session.selectRecords(sql);
 
-uniqueCountries = {}
 for rec in countryRecords:
-    if not rec.MailingCountry in uniqueCountries.keys():
-        print rec.MailingCountry
-        uniqueCountries[rec.MailingCountry] = True
+    print rec.MailingCountry
+
 
 
