@@ -7,6 +7,8 @@ Both incremental and complete copies are supported.
 
 To get started:
   * Download the CopyForce zip file that matches the RDBMS into which you want to copy Salesforce.
+    * CopyForceSqlServer.zip will copy Salesforce into Microsoft [http://www.microsoft.com/sqlserver SQL Server].
+    * CopyForceH2.zip will copy Salesforce into [http://www.h2database.com/html/main.html H2]
   * Open the README.html file in the root directory.
 
 == How Is CopyForce Used? ==
