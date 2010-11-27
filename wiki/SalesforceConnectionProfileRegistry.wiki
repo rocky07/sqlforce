@@ -1,4 +1,3 @@
-#labels Featured
 #Salesforce Connection Profile Registry
 
 = SQLForce Connection Profile Registry =
