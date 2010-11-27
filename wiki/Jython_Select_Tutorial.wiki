@@ -1,4 +1,3 @@
-#labels Featured
 #Jython SELECT Tutorial
 
 = Jython SELECT Tutorial=
