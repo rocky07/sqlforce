@@ -23,3 +23,33 @@ For most administration tasks [SQLForceForJython] is the best tool to use. [SQLF
 However, there are a few tasks where <i>SQLForce Classic</i> is extremely useful.
   * Quickly run and iteratively refine a bit of SOQL. Unlike the FORCE Eclipse plugin, <i>SQLForce Classic</i> shows the values from all columns in the order they appear in the SELECT statement.
   * Look up the Apex names for all columns in a table. See the DESCRIBE tableName command.
+
+= Code Snippet - Find all Unique Country Names in Contacts and Accounts ==
+
+{{{
+SELECT DISTINCT MailingCountry FROM Contact
+  UNION SELECT OtherCountry FROM Contact
+  UNION SELECT ShippingCountry FROM Account
+  UNION SELECT BillingCountry FROM Account
+  OUTPUT "/tmp/UniqueCountryNames.txt"
+;
+}}}
+
+= Code Snippet - Normalize USA Spelling for Contacts =
+{{{
+UPDATE Contact SET MailingCountry='USA'
+WHERE MailingCountry IN ('United States', 'US', 'United States of America', 'America');
+}}}
+
+= Code Snippet - Insert Account Records =
+{{{
+INSERT INTO Account (Name, BillingState, BillingCountry)
+  VALUES( "Walmart", "Arkansas", "USA")
+  , ("Monsanto", "Missouri", "USA")
+  ;
+}}}
+
+= Code Snippet - Insert Contacts from Another Table =
+{{{
+INSERT INTO Contact (AccountId, FirstName, LastName) SELECT Acct, N1, N2 FROM CustomObject__c;
+}}}
