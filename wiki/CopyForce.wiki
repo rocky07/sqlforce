@@ -1,6 +1,6 @@
 = CopyForce -- Copy an Instance of Salesforce to an RDBMS =
 
-CopyForce contains tools for copying full or partial Salesforce instances to a relational database. Several target databases are supported out of the box:
+CopyForce is an application for copying full or partial Salesforce instances to a relational database. Several target databases are supported out of the box:
   * Microsoft SQL Server
   * H2
 Both incremental and complete copies are supported.
