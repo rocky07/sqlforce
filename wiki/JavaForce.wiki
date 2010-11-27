@@ -5,6 +5,7 @@
 To get started:
  * Download the current version of sqlforce*.zip
  * Look at the README.html file in the root directory.
+ * Review the sample code and javadoc referenced in the README.html file.
 
 = Code Snippet - SELECT with callback =
 
@@ -22,4 +23,27 @@ ISObjectQuery2Callback callback = new DefaultSObjectQuery2Callback() {
 String sql = "SELECT id, name FROM User";
 
 new SObjectQueryHelper().findRows( session, sql, callback);
+}}}
+
+= Code Snippet - INSERT an Account =
+{{{
+AccountRecord account = new AccountRecord();
+		
+account.setName("My Sample Account");
+account.setBillingCountry("USA");
+account.setStringField("ShippingCountry", "USA"); // Another way to set a field. Good technique for custom fields.
+		
+
+SaveResult result = new SObjectCreateHelper().create(session, account);
+}}}
+
+= Code Snippet - SELECT into a List =
+{{{
+String sql = "SELECT id, name FROM User";
+		
+List<String[]> results = new SObjectQueryHelper().runQuery2(session, sql);
+		
+for( String[] record : results ) {
+  System.err.println("Array: Row: " + record[0] + "," + record[1] );
+}
 }}}
