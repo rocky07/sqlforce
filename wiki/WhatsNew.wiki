@@ -1,6 +1,11 @@
 #labels Featured
 = What's New =
 
+27-Nov-10
+  * Added JavaForce.zip -- core library used by all other tools.
+  * Added CopyForce set of programs
+  * Lots of usage documentation added to all components.
+
 15-Oct-10
   * Upgrade to Winter'11 (version 20.0) protocol.
 
