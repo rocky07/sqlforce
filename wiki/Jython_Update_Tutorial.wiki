@@ -1,4 +1,3 @@
-#labels Featured
 #Tutorial on how to use the SQLForce Jython update() method.
 
 = How to Use the SQLForce.update() Jython method =
