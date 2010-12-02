@@ -19,6 +19,7 @@ import com.aslan.sfdc.partner.LoginCredentials;
 import com.aslan.sfdc.partner.LoginManager;
 import com.aslan.sfdc.partner.record.ProfileRecord;
 import com.aslan.sfdc.partner.record.UserRecord;
+import com.sforce.soap.partner.Field;
 
 
 import junit.framework.TestCase;
@@ -129,6 +130,17 @@ public class LoginManagerTest extends TestCase {
 		}
 		
 		assertNotNull( testSession.getDescribeSObjectResult("Contact"));
+		
+		//
+		// Look for timestamp fields
+		//
+		Field f = testSession.getLastModifiedField("Contact");
+		assertEquals( "SystemModstamp", f.getName());
+	
+		
+		f = testSession.getLastModifiedField("AccountShare");
+		assertEquals( "LastModifiedDate", f.getName());
+
 	}
 
 }

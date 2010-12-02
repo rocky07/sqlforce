@@ -68,12 +68,13 @@ public interface IDatabaseBuilder {
 	 * If the data is already in the database, then update it if it is newer.
 	 * 
 	 * @param sfdcTable insert into this table
+	 * @param lastModifiedDateField TODO
 	 * @param fields the fields to insert.
 	 * @param dataRows rows to insert. data in the same order as fields in table.
 	 * @return number of rows that were skipped (maybe already in the destination database).
 	 * @throws Exception if anything fails.
 	 */
-	int insertData( DescribeSObjectResult sfdcTable, Field[] fields, List<String[]> dataRows ) throws Exception;
+	int insertData( DescribeSObjectResult sfdcTable, Field lastModifiedDateField, Field[] fields, List<String[]> dataRows ) throws Exception;
 	
 
 		

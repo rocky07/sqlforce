@@ -40,7 +40,7 @@ public class ConnectTest extends TestCase {
 		SQLForceSession session = SQLForceFactory.getForceSession();
 		
 		//
-		// Try a successful login.
+		// Try a successful login with 4 tokens.
 		//
 		session.runCommands("CONNECT " 
 				+ " " + cred.getConnectionType().name()
@@ -48,6 +48,13 @@ public class ConnectTest extends TestCase {
 				+ " " + cred.getPassword()
 				+ " " + cred.getSecurityToken());
 		
+		//
+		// Try a successful login with 3 tokens.
+		//
+		session.runCommands("CONNECT " 
+				+ " " + cred.getConnectionType().name()
+				+ " " + cred.getUsername()
+				+ " " + cred.getPassword()+ cred.getSecurityToken());
 		//
 		// Fail because of a bad security token
 		//

@@ -32,7 +32,7 @@ public class SQLForce {
 	public static final String SW_SILENT = "silent";
 
 	private static final String[] cmdSwitches = {
-		"connect:string:::profileName OR ConnectionType,Username,Password,SecurityToken",
+		"connect:string:::profileName OR ConnectionType,Username,Password[,SecurityToken]",
 		"log:string:error:info,warning,error:Set the default message level written to stderr",
 		"init:xfile:::SQL Force commands to run before processing additional user input",
 		"version:none:::Print the version number of the program to stderr",
@@ -117,18 +117,18 @@ public class SQLForce {
 						+ "PROFILE " + connectParams[0] );
 				
 				env.log("Connecting to Salesforce using profile " + connectParams[0] );
-			} else if( 4 == connectParams.length ) {
+			} else if( connectParams.length >=3 &&  connectParams.length <=4) {
 				lex.include( "CONNECT " 
 						+ connectParams[0]
 						                + " " + connectParams[1]
 						                + " " + connectParams[2]
-						                + " " + connectParams[3]
+						                + (4==connectParams.length?(" " + connectParams[3]):"")
 				);
 				env.log("Connecting to Salesforce using " + connectParams[1] );
 			} else {
 				throw new IllegalArgumentException("The " + SW_CONNECT
 						+ " must be in the form: '-connect PROFILE profileName' "
-						+ " or '-connect [Production|Sandbox],Username,Password,SecurityToken'"
+						+ " or '-connect [Production|Sandbox],Username,Password[,SecurityToken]'"
 						
 				);
 

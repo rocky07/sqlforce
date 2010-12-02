@@ -6,8 +6,6 @@
 -->
 	<NoDataExport name="Vote" />
 	<NoDataExport name="UserProfileFeed" />
-	<NoDataExport name="EntitySubscription" />
-	<NoDataExport name="AccountShare" />
 
 <!-- Table/Column names that should given another name in the external database.
      Salesforce uses ANSI SQL keywords in a few places.

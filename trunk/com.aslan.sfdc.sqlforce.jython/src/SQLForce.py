@@ -149,7 +149,7 @@ class Session:
         self.runCommands("CONNECT PROFILE " + profileName)
         return self.getenv("STATUS")
       
-    def connect(self, sessionType, username, password, securityToken):
+    def connect(self, sessionType, username, password, securityToken = ""):
         '''
         Connect to a Salesforce session.
 
