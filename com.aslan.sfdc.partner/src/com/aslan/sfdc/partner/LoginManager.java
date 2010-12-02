@@ -344,6 +344,28 @@ public class LoginManager {
 		}
 		
 		/**
+		 * Return the field that can be used the most recent modification time for a table.
+		 * 
+		 * @param sObjectName look in this SObject.
+		 * 
+		 * @return a field or null if not such field can be found.
+		 * @throws Exception if a suitable field is not found.
+		 */
+		public Field getLastModifiedField(String sObjectName) throws Exception {
+			
+			
+			cacheSObject(sObjectName);
+		
+			for( String name : new String[] {"SystemModstamp", "LastModifiedDate", "CreatedDate"}) {
+				
+				Field field = fieldMap.get(sObjectName.toLowerCase() + "." + name.toLowerCase());
+				if( null != field) { return field; }
+			}
+			
+			throw new Exception(sObjectName + " does not have a field suitable for LastModifiedDate");
+		}
+		
+		/**
 		 * Determine if all fields in a list of fields is available to the current session.
 		 * 
 		 * @param sObjectName look in this SObject. 

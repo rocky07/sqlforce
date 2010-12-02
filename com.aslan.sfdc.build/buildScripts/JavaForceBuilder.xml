@@ -3,7 +3,7 @@
 
 	<import file="config.xml" />
 	
-	<property name="my.version" value="1.0.10" />
+	<property name="my.version" value="1.1.0" />
 	<property name="my.tmp" value="${config.tmp.home}/javaforce" />
 	
 	

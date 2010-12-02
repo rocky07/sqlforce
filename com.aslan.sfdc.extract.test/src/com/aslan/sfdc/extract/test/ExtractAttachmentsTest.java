@@ -39,8 +39,8 @@ public class ExtractAttachmentsTest extends TestCase {
 		}
 
 		@Override
-		public int insertData(DescribeSObjectResult sfdcTable, Field[] fields,
-				List<String[]> dataRows) throws Exception {
+		public int insertData(DescribeSObjectResult sfdcTable, Field lastModifiedDateField,
+				Field[] fields, List<String[]> dataRows) throws Exception {
 			for( String[] row : dataRows ) {
 				System.err.println(recNo++ + " : " + row[0] + " : " + sfdcTable.getName() );
 			}

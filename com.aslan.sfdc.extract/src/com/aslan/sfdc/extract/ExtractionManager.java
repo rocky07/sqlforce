@@ -54,12 +54,19 @@ public class ExtractionManager {
 		private TableRule tableRule;
 		private String tableName;
 		private boolean byReference;
+		private Field lastModifiedDateField;
 		
 		TableRuleInstance( ExtractionRuleset ruleSet, TableRule tableRule, String tableName, boolean byReference ) {
 			this.ruleSet = ruleSet;
 			this.tableRule = tableRule;
 			this.tableName = tableName;
 			this.byReference = byReference;
+			
+			try {
+				lastModifiedDateField = session.getLastModifiedField(tableName);
+			} catch (Exception e) {
+				lastModifiedDateField = null;
+			}
 		}
 		
 		@SuppressWarnings("unused")
@@ -68,6 +75,7 @@ public class ExtractionManager {
 		public String getTableName() { return tableName; }
 		@SuppressWarnings("unused")
 		public boolean isByReference() { return byReference; }
+		public Field getLastModifiedDateField() { return lastModifiedDateField; }
 		
 		
 	}
@@ -257,11 +265,12 @@ public class ExtractionManager {
 	 * @param monitor
 	 * @throws Exception if anything goes wrong.
 	 */
-	private void extractData(TableRuleInstance rule, final IExtractionMonitor monitor ) throws Exception {
+	private void extractData(final TableRuleInstance rule, final IExtractionMonitor monitor ) throws Exception {
 		
 
 		final String sObjectName = rule.getTableName();
 		final TableDescriptor tableDesc = getTableDescriptor( sObjectName );
+
 		
 		if( noExportTables.contains(sObjectName.toUpperCase()) || !tableDesc.describeResult.isQueryable()) {
 			monitor.startCopyData(sObjectName);
@@ -296,7 +305,7 @@ public class ExtractionManager {
 				int skippedThisTime = 0;
 				int writtenThisTime = 0;
 				try {
-					skippedThisTime = builder.insertData( tableDesc.describeResult, fields, rowBuffer);
+					skippedThisTime = builder.insertData( tableDesc.describeResult, rule.getLastModifiedDateField(), fields, rowBuffer);
 					writtenThisTime = rowBuffer.size() - skippedThisTime;
 					
 				} catch (Exception e) {

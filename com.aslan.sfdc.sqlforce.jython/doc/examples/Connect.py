@@ -33,6 +33,8 @@ Where:
     username - the salesforce username to use.
     password - the password to use
     token - the security token provided by salesforce
+    
+If your organization does not need a security token, use a blank string.
 '''
 
 session = SQLForce.Session("javaforce")
@@ -46,6 +48,7 @@ Case 2: Pass user credentials directly into the session creation method.
 If the profile system in SQLForce is not sufficient for you environment then
 this is the technique you will need to use.
 
+If your organization does not use security tokens skip the parameter or pass in a blank.
 '''
 connectionType = "Production"
 username = "gsmithfarmer@gmail.com"

@@ -32,7 +32,7 @@ import com.aslan.sfdc.sqlforce.SQLForceEnvironment;
  */
 public class Connect extends AbstractSQLForceCommand {
 
-	private final String helpMessage = "CONNECT [PRODUCTION|SANDBOX] username password activationKey";
+	private final String helpMessage = "CONNECT [PRODUCTION|SANDBOX] username password [activationKey]";
 	private final String usageMessage = "Usage: " + helpMessage;
 	private final String PRODUCTION = "PRODUCTION";
 	private final String SANDBOX = "SANDBOX";
@@ -49,7 +49,15 @@ public class Connect extends AbstractSQLForceCommand {
 		return lex.stripQuotes(token.getValue());
 	}
 
-
+	private String getOptionalToken( LexicalAnalyzer lex ) throws Exception {
+		LexicalToken token = lex.getNonBlankToken();
+		
+		if( null == token || LexicalToken.Type.END_OF_LINE==token.getType()) {
+			return "";
+		}
+		
+		return lex.stripQuotes(token.getValue());
+	}
 	
 	@Override
 	public String getOneLineHelp() {
@@ -83,7 +91,7 @@ public class Connect extends AbstractSQLForceCommand {
 		} else {
 			String username = getToken(lex);
 			String password = getToken(lex);
-			String securityKey = getToken(lex);
+			String securityKey = getOptionalToken(lex);
 			
 			LoginCredentials.ConnectionType cType = null;
 			if( PRODUCTION.equalsIgnoreCase(connectionType)) {

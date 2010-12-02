@@ -30,6 +30,14 @@ public class LoginCredentials {
 	private String password;
 	private String securityToken;
 
+	/**
+	 * Register credentials that can be used to connect to Salesforce.
+	 * 
+	 * @param connectionType Production or Sandbox
+	 * @param username your username
+	 * @param password your password
+	 * @param securityToken the token provided by salesforce or null (or blank) if you organization does not need one.
+	 */
 	public LoginCredentials( ConnectionType connectionType, String username, String password, String securityToken ) {
 		this.connectionType = connectionType;
 		this.username = username;
@@ -37,6 +45,19 @@ public class LoginCredentials {
 		this.securityToken = securityToken;
 	}
 
+	/**
+	 * Register credentials that can be used to connect to Salesforce when a security token is not required
+	 * or the token is already appended to the password.
+	 * 
+	 * @param connectionType Production or Sandbox
+	 * @param username your username
+	 * @param password your password
+	 */
+	public LoginCredentials( ConnectionType connectionType, String username, String password ) {
+		this( connectionType, username, password, "");
+
+	}
+	
 	public ConnectionType getConnectionType() { return connectionType; }
 	public String getUsername() { return username; }
 	public String getPassword() { return password; }

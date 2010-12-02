@@ -1,4 +1,4 @@
-CONNECT [PRODUCTION|SANDBOX] username password securityKey
+CONNECT [PRODUCTION|SANDBOX] username password [securityKey]
 CONNECT PROFILE profileName
 
 Connect to a SalesForce instance closing any existing SalesForce connection.
@@ -9,7 +9,7 @@ be entered.
 PRODUCTION|SANDBOX        -- the type of SalesForce to connect (determines URL)
 username                  -- something like myname@gmail.com
 password                  -- salesforce password
-securityKey               -- magic key provided by Salesforce for non-UI logins.
+securityKey               -- magic key provided by Salesforce for non-UI logins. Optional if your org does not need it.
 
 The second form on the CONNECT command grabs connection parameters from a previously registered
 profile.

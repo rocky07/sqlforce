@@ -388,8 +388,8 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 	}
 	
 	@Override
-	public int insertData(DescribeSObjectResult sfdcTable, Field[] fields,
-			List<String[]> dataRows) throws Exception {
+	public int insertData(DescribeSObjectResult sfdcTable, Field lastModifiedDateField,
+			Field[] fields, List<String[]> dataRows) throws Exception {
 		
 		StringBuffer sql = new StringBuffer();
 		sql.append("INSERT INTO " + getExportedName(sfdcTable.getName()) + "(");
@@ -411,7 +411,7 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 			for( int n = 0; n < dataRows.size(); n ++ ) {
 				String[] row = dataRows.get(n);
 
-				java.util.Date lastModDate = getLastModifiedDate( sfdcTable, row[0] );
+				java.util.Date lastModDate = getLastModifiedDate( sfdcTable, lastModifiedDateField, row[0] );
 				if( null != lastModDate ) {
 					if( isUpdateNecessary( sfdcTable, fields, row, lastModDate )) { 
 						updateData( sfdcTable, fields, row );
@@ -443,7 +443,7 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 				String[] row = dataRows.get(n);
 				sql.setLength(0);
 				sql.append( sqlPrefix );
-				java.util.Date lastModDate = getLastModifiedDate( sfdcTable, row[0] );
+				java.util.Date lastModDate = getLastModifiedDate( sfdcTable, lastModifiedDateField, row[0] );
 				if( null != lastModDate ) {
 					if( isUpdateNecessary( sfdcTable, fields, row, lastModDate )) { 
 						updateData( sfdcTable, fields, row );
@@ -529,7 +529,10 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 
 	}
 	
-	private java.util.Date getLastModifiedDate(DescribeSObjectResult sfdcTable, String id ) throws Exception {
+	private java.util.Date getLastModifiedDate(DescribeSObjectResult sfdcTable, Field lastModifiedDateField, String id ) throws Exception {
+		
+		if( null == lastModifiedDateField) { return null; }
+		
 		Statement stmt = null;
 		ResultSet result = null;
 		java.util.Date lastModDate = null;
@@ -538,7 +541,7 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 		
 		try {
 			stmt = connection.createStatement();
-			result = stmt.executeQuery("SELECT " + getExportedName(F_SYSTEMMODSTAMP) + " FROM " + getExportedName(sfdcTable.getName()) + " WHERE id='" + id + "'");
+			result = stmt.executeQuery("SELECT " + getExportedName(lastModifiedDateField.getName()) + " FROM " + getExportedName(sfdcTable.getName()) + " WHERE id='" + id + "'");
 			if( result.next()) {
 				long gmtModTime = result.getTimestamp(1).getTime();
 				

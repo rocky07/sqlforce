@@ -11,7 +11,6 @@ package com.aslan.sfdc.extract.ansi;
 
 import java.io.OutputStream;
 import java.sql.Connection;
-import java.util.Calendar;
 
 import com.sforce.soap.partner.DescribeSObjectResult;
 
