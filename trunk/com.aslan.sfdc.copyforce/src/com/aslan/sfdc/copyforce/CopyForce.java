@@ -263,7 +263,7 @@ public abstract class CopyForce {
 	private static final String SW_EXCLUDE = "exclude";
 
 	private static final SwitchDef[]  baseCmdSwitches = {
-		new SwitchDef( "string", SW_SALESFORCE, "profileName OR ConnectionType,Username,Password,SecurityToken")
+		new SwitchDef( "string", SW_SALESFORCE, "profileName OR ConnectionType,Username,Password[,SecurityToken]")
 		,new SwitchDef( "string", SW_INCLUDE, null, "comma separated list of tables (or regexp) to export from salesforce" )
 		,new SwitchDef( "string", SW_EXCLUDE,  null, "comma separated list of tables (or regexp) to exclude from the export from salesforce" )
 		,new SwitchDef( "string", SW_LOG, "error", "info,warning,error:Set the default message level written to stderr" )
@@ -348,11 +348,11 @@ public abstract class CopyForce {
 			if( null == credentials ) {
 				throw new Exception("A Profile with the name '" + profile + "' was not found in the credentials registry");
 			}
-		} else if( 4 == tokens.length ) {
+		} else if( tokens.length >=3 || tokens.length <= 4 ) {
 			String connectionType = tokens[0].trim();
 			String username = tokens[1].trim();
 			String password = tokens[2].trim();
-			String securityKey = tokens[3].trim();
+			String securityKey = (4==tokens.length?tokens[3].trim():"");
 			
 			LoginCredentials.ConnectionType cType = null;
 			if( "PRODUCTION".equalsIgnoreCase(connectionType)) {
