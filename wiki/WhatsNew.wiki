@@ -1,5 +1,10 @@
 #labels Featured
 = What's New =
+
+4-Dec-10
+  * Discovered that non-admins could not extract two tables (example NewsFeed). Changed extraction code to ignore these tables if the user is not an administrator.
+  * Changed build environment to Eclipse/Helios (about time!).
+
 2-Dec-10
   * Made security token optional in all forms of connections.
   * In CopyForce, logic to that finds "LastModifiedDate" field cleaned up to look in more places.
