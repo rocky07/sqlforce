@@ -86,8 +86,11 @@ public class ExtractionManager {
 	 */
 	private class ConfigHandler extends DefaultHandler
 	{
-
-		ConfigHandler( ) {}
+		private boolean isAdminUser;
+		
+		ConfigHandler( boolean isAdminUser) {
+			this.isAdminUser = isAdminUser;
+		}
 
 		@Override
 		public void startElement(String uri, String localName, String qName,
@@ -95,7 +98,11 @@ public class ExtractionManager {
 			
 			if( "NoDataExport".equals(qName)) {
 				String name = attributes.getValue("name");
-				noExportTables.add(name.toUpperCase());
+				String adminOK = attributes.getValue("adminOK");
+				boolean canAdminExport = (isAdminUser && (null!=adminOK && "true".equals(adminOK)));
+				if( !canAdminExport ) {
+					noExportTables.add(name.toUpperCase());
+				}
 			}
 			
 		}
@@ -122,7 +129,7 @@ public class ExtractionManager {
 		try {
 			inStream = ExtractionManager.class.getResourceAsStream("ExtractionManagerConfig.xml");
 			SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
-			ConfigHandler handler = new ConfigHandler();
+			ConfigHandler handler = new ConfigHandler(session.isAdministrator());
 			parser.parse(inStream, handler );
 			
 		} finally {
