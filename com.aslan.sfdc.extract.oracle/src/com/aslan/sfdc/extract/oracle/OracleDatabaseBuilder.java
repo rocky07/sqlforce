@@ -7,7 +7,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.aslan.sfdc.extract.ansi.AnsiDatabaseBuilder;
@@ -29,14 +32,13 @@ public class OracleDatabaseBuilder extends AnsiDatabaseBuilder {
 	
 	public OracleDatabaseBuilder(  Connection connection ) throws Exception {
 		this.connection = connection;
-		System.err.println(connection);
 	}
 	
 	/**
 	 * Oracle limits table/column names to 30 characters. 
 	 */
 	@Override
-	protected String getExportedName(String columnOrTableName) {
+	public String getExportedName(String columnOrTableName) {
 		
 		if( columnOrTableName.length() > 30 ) {
 			return columnOrTableName.substring(0, 30);
@@ -189,7 +191,7 @@ public class OracleDatabaseBuilder extends AnsiDatabaseBuilder {
 		if( sql.endsWith(";")) {
 			sql = sql.substring( 0, sql.length() - 1 );
 		}
-System.err.println(sql);
+
 		try {
 			stmt = connection.createStatement();
 			stmt.executeUpdate(sql);
@@ -206,121 +208,235 @@ System.err.println(sql);
 		return connection;
 	}
 	
+	private int findSqlType( Field field ) throws Exception {
+		FieldType fieldType = field.getType();
+		String fieldTypeName = fieldType.getValue();
+		int fieldLength = field.getByteLength();
+
+		
+		if( FIELDTYPE_ID.equals(fieldTypeName)) {
+			return java.sql.Types.CHAR;
+			
+		} 
+		if( isVarcharField( field )) {
+			if( fieldLength > 4000 ) { return java.sql.Types.CLOB; }
+			return java.sql.Types.VARCHAR;
+		}
+
+		if( FIELDTYPE_INT.equals( fieldTypeName)) {
+			return java.sql.Types.INTEGER;
+		
+		} 
+		
+		if( FIELDTYPE_DOUBLE.equals(fieldTypeName)
+				|| FIELDTYPE_PERCENT.equals(fieldTypeName)
+				|| FIELDTYPE_CURRENCY.equals(fieldTypeName)){
+			
+			return java.sql.Types.DECIMAL;
+		
+		} 
+		
+		if( FIELDTYPE_BOOLEAN.equals(fieldTypeName)) {
+			return java.sql.Types.INTEGER;
+		}
+		
+		if( FIELDTYPE_REFERENCE.equals(fieldTypeName)) {
+			
+			return java.sql.Types.CHAR;
+			
+		}
+
+		if( FIELDTYPE_DATETIME.equals(fieldTypeName)) {
+			
+			return java.sql.Types.TIMESTAMP;
+			
+		} 
+		
+		if( FIELDTYPE_DATE.equals(fieldTypeName)) {
+			
+			return java.sql.Types.TIMESTAMP;
+			
+		} 
+		
+		if( FIELDTYPE_TIME.equals(fieldTypeName)) {
+			
+			return java.sql.Types.TIMESTAMP;
+			
+		}
+		if( FIELDTYPE_ANYTYPE.equals(fieldTypeName)) {
+			
+			return java.sql.Types.CLOB;
+			
+		}
+		if( FIELDTYPE_BASE64.equals(fieldTypeName)) {
+			
+			return java.sql.Types.CLOB;
+			
+		}
+		throw new Exception("Unrecognized field type: " + fieldTypeName );
+
+		
+		
+	}
+	
+	private static SimpleDateFormat sfdcDateTimeParser = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'");
+	private static SimpleDateFormat sfdcDateParser = new SimpleDateFormat("yyyy-MM-dd");
+	private static SimpleDateFormat sfdcTimeParser = new SimpleDateFormat("hh:mm:ss.SSS'Z'");
+	private Timestamp sfdcDateTimeToTimestamp(String sfdcDateTime) throws Exception {
+		
+		if( sfdcDateTime.endsWith("Z")) {
+			if( sfdcDateTime.contains("T")) {
+				return new Timestamp(sfdcDateTimeParser.parse(sfdcDateTime).getTime());
+			} else {
+				return new Timestamp(sfdcTimeParser.parse(sfdcDateTime).getTime());
+			}
+		}
+		return new Timestamp(sfdcDateParser.parse(sfdcDateTime).getTime());
+	
+	}
+	private void setStatementValue( PreparedStatement pstmt, Field field, String value, int index ) throws Exception{
+		
+		int sqlType = findSqlType(field);
+		if( null==value || 0==value.trim().length()) {
+			pstmt.setNull( index, sqlType, (String)null);
+			return;
+		}
+		
+		FieldType fieldType = field.getType();
+		String fieldTypeName = fieldType.getValue();
+		
+		switch( sqlType ) {
+		case java.sql.Types.CLOB: 
+		case java.sql.Types.CHAR:
+		case java.sql.Types.VARCHAR:
+		{
+			pstmt.setString( index, value);
+		} break;
+		
+		case java.sql.Types.INTEGER: {
+			
+			if( FIELDTYPE_BOOLEAN.equals(fieldTypeName)) {
+				pstmt.setInt(index, "true".equalsIgnoreCase(value)?1:0);
+			} else {
+				pstmt.setInt(index, Integer.parseInt(value));
+			}
+		} break;
+		
+		case java.sql.Types.DECIMAL: {
+			pstmt.setDouble( index,Double.parseDouble(value));
+		} break;
+		
+		case java.sql.Types.TIMESTAMP: {
+			pstmt.setTimestamp( index, sfdcDateTimeToTimestamp(value));
+		} break;
+		
+		default: {
+			throw new Exception("Internal logic error. Unrecognized java.sql.Types of " + sqlType + " for field type " + field.getType().getValue());
+		}
+		}
+		
+	}
 	@Override
 	public int insertData(DescribeSObjectResult sfdcTable, Field lastModifiedDateField,
 			Field[] fields, List<String[]> dataRows) throws Exception {
 		
-		StringBuffer sql = new StringBuffer();
-		StringBuffer valueMarkers = new StringBuffer();
-		sql.append("INSERT INTO " + getExportedName(sfdcTable.getName()) + "(");
-		IValueMaker valueMakers[] = getValueMakers(fields);
+	
 		int nSkipped = 0;
-		List<Integer> clobFields = new ArrayList<Integer>();
-		
-		int nFieldsFound = 0;
-		for( int n = 0; n < fields.length; n++ ) {
-			Field field = fields[n];
-			
-			sql.append( (nFieldsFound>0?",":"") + getExportedName(field.getName()));
-			valueMarkers.append((nFieldsFound>0?",":"") + "?");
-			nFieldsFound++;
-		}
-		sql.append( ") VALUES(" + valueMarkers.toString() + ")");
-		String preparedSql = sql.toString();
-		
-		String sqlPrefix = sql.toString();
-		
+		List<Integer> insertRows = new ArrayList<Integer>();
+		List<Integer> updateRows = new ArrayList<Integer>();
 		Connection conn = getConnection();
 		PreparedStatement pstmt = null;
-		try {
-			for( int n = 0; n < dataRows.size(); n ++ ) {
-				String[] row = dataRows.get(n);
-				sql.setLength(0);
-				sql.append( sqlPrefix );
-				java.util.Date lastModDate = getLastModifiedDate( sfdcTable, lastModifiedDateField, row[0] );
-				if( null != lastModDate ) {
-					if( isUpdateNecessary( sfdcTable, fields, row, lastModDate )) { 
-						updateData( sfdcTable, fields, clobFields, row );
-					} else {
-						nSkipped++;
-					}
-					continue;
+		
+		/**
+		 * Figure out which rows are updates and which are inserts.
+		 */
+		for( int n = 0; n < dataRows.size(); n++ ) {
+			String[] row = dataRows.get(n);
+			java.util.Date lastModDate = getLastModifiedDate( sfdcTable, lastModifiedDateField, row[0] );
+			if( null != lastModDate ) {
+				if( isUpdateNecessary( sfdcTable, fields, row, lastModDate )) { 
+					updateRows.add(n);
+				} else {
+					nSkipped++;
 				}
-
-
-				sql.append("(");
-				pstmt = conn.prepareStatement(preparedSql );
-				for( int k = 0; k < row.length; k++ ) {
-					Field field = fields[k];
-
-					String value = row[k];
-					if( null==value || 0==value.trim().length()) {
-						continue;
-					}
-					value = valueMakers[k].makeValue(value);
-					if( value.startsWith("'") && value.endsWith("'")) {
-						pstmt.setString( k+1, value.substring(1, value.length() - 1));
-						continue;
-					}
-					
-					if( isIntegerField(field) ) {
-						pstmt.setInt(k+1, Integer.parseInt(value));
-						continue;
-					}
-					
-					if( isDoubleField(field)) {
-						pstmt.setDouble(k+1, Double.parseDouble(value));
-						continue;
-					}
-					
-					//TODO: Special Case other field types
-	
-				}
-				sql.append(")");
-				//
-				// TODO: pstmt.executeUpdate() AND add batching support.
-				executeSQL(sql.toString());
+				continue;
+			} else {
+				insertRows.add(n);
 			}
-		} finally {
-			if( null != pstmt ) {
+		}
+		
+		//
+		// Do inserts first.
+		//
+		if( 0 != insertRows.size() ) {
+			StringBuffer colNames = new StringBuffer();
+			StringBuffer paramMarkers = new StringBuffer();
+			
+			for( int n = 0; n < fields.length; n++ ) {
+				
+				colNames.append( (n>0?",":"") + getExportedName(fields[n].getName()));
+				paramMarkers.append(n>0?",?":"?");
+				
+			}
+			pstmt = conn.prepareStatement("INSERT INTO " + getExportedName(sfdcTable.getName()) + "(" + colNames.toString() + ") VALUES (" + paramMarkers.toString() + ")" );
+			
+			try {
+				for( int n = 0; n < dataRows.size(); n ++ ) {
+					String[] row = dataRows.get(n);
+					for( int k = 0; k < row.length; k++ ) {
+						Field field = fields[k];
+						setStatementValue( pstmt, field, row[k], k+1);
+					}
+					pstmt.addBatch();
+				}
+				pstmt.executeBatch();
+			} finally {
 				pstmt.close();
 			}
 		}
+		
+		//
+		// Do Updates next.
+		//
+		if( 0 != updateRows.size()) {
+			StringBuffer colNames = new StringBuffer();
+
+			for( int n = 1; n < fields.length; n++ ) {
+				colNames.append( (n>1?",":"") + getExportedName(fields[n].getName()) + "=?");
+			}
+			
+			pstmt = conn.prepareStatement("UPDATE " + getExportedName(sfdcTable.getName()) 
+					+ " SET " + colNames.toString()
+					+ " WHERE id=?" );
+
+			try {
+				for( int n = 0; n < dataRows.size(); n ++ ) {
+					String[] row = dataRows.get(n);
+					//
+					// Set the ID on the WHERE Clause.
+					//
+					setStatementValue( pstmt, fields[0], row[0], row.length );
+					
+					//
+					// Set all other parameters.
+					//
+					for( int k = 1; k < row.length; k++ ) {
+						Field field = fields[k];
+						setStatementValue( pstmt, field, row[k], k);
+					}
+					
+					pstmt.addBatch();
+				}
+				pstmt.executeBatch();
+			} finally {
+				pstmt.close();
+			}
+		
+		}
+
+		
 		return nSkipped;
 	}
 	
-	private void updateData(DescribeSObjectResult sfdcTable, Field[] fields, List<Integer> clobFields,
-			String[] row) throws Exception {
 
-		IValueMaker valueMakers[] = getValueMakers(fields);
-		QuotedValueMaker quoteMaker = new QuotedValueMaker();
-
-
-		StringBuffer sql = new StringBuffer();
-		sql.append( "UPDATE " + getExportedName(sfdcTable.getName()) + " SET " );
-		String id = row[0];
-		boolean firstValue = true;
-		for( int n = 1; n < row.length; n++ ) {
-			if( valueMakers[n] instanceof SkipValueMaker ) { continue; }
-			if( isCLOBField( fields[n])) { continue; }
-			String value = row[n];
-			if( null==value || 0==value.trim().length()) {
-				value = "null";
-			} else {
-				value = valueMakers[n].makeValue(value);
-			}
-			sql.append((firstValue?"":",") + getExportedName(fields[n].getName()) + "=" + value);
-			firstValue = false;
-		}
-		sql.append(" WHERE id=" + quoteMaker.makeValue(id));
-
-		sql.append(";");
-		executeSQL( sql.toString());
-		
-		for( int k : clobFields ) {
-			System.err.println("Update CLOB " + fields[k].getName());
-		}
-		
-
-	}
 }

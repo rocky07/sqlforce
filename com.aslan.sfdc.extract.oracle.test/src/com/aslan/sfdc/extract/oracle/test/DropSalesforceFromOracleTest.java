@@ -11,6 +11,8 @@ package com.aslan.sfdc.extract.oracle.test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import junit.framework.TestCase;
@@ -27,18 +29,35 @@ import com.aslan.sfdc.partner.LoginManager;
 import com.aslan.sfdc.partner.test.JDBCTestEnvironment;
 import com.aslan.sfdc.partner.test.JDBCTestEnvironment.Credentials;
 import com.aslan.sfdc.partner.test.SfdcTestEnvironment;
+import com.sforce.soap.partner.DescribeGlobalResult;
+import com.sforce.soap.partner.DescribeGlobalSObjectResult;
 
 /**
- * Verify that an all SFDC tables can be extracted.
+ * Drop all salesforce tables from an existing oracle instance.
  * 
  * @author greg
  * 
  */
-public class FullDatabaseExtractTest extends TestCase {
+public class DropSalesforceFromOracleTest extends TestCase {
 
 	IExtractionMonitor monitor;
 
-	public void testExtractFullSchema() throws Exception {
+	List<String> allTableNames = new ArrayList<String>();
+	
+	private List<String> getAllTableNames(LoginManager.Session session) throws Exception {
+		if( 0 == allTableNames.size()) {
+			DescribeGlobalResult describeGlobalResult = session.getBinding().describeGlobal();
+			
+			DescribeGlobalSObjectResult resultList[] = describeGlobalResult.getSobjects();
+			for( DescribeGlobalSObjectResult result : resultList ) {
+				allTableNames.add( result.getName());
+
+			}
+		}
+		
+		return allTableNames;
+	}
+	public void testDropSalesforceTablesFromOracle() throws Exception {
 		Connection connection = null;
 
 		try {
@@ -61,19 +80,19 @@ public class FullDatabaseExtractTest extends TestCase {
 			connection = JDBCTestEnvironment.getInstance().getConnection("copyforce.oracle");
 
 			LoginManager.Session session = SfdcTestEnvironment.getTestSession();
-			IDatabaseBuilder builder = new OracleDatabaseBuilder( connection );
+			OracleDatabaseBuilder builder = new OracleDatabaseBuilder( connection );
 			
-			ExtractionManager mgr = new ExtractionManager(session, builder);
-			
-			ExtractionRuleset rules = new ExtractionRuleset();
-			
-			rules.includeTable(new TableRule(".*", false));
-
-		
-			monitor =  new SwingExtractionMonitor();
-			//monitor = new OutputStreamExtractionMonitor( System.err );
-			mgr.extractSchema( rules, monitor);
-			mgr.extractData( rules, monitor);
+			for( String sfdcTable : getAllTableNames(session)) {
+				try {
+					String name = builder.getExportedName(sfdcTable);
+				
+					System.err.println("Dropping: " + sfdcTable );
+					builder.executeSQL("DROP TABLE " + name );
+				} catch(Exception e ) {
+					System.err.println("Failed to drop: " + sfdcTable );
+				}
+			}
+	
 	
 			
 		} finally {
