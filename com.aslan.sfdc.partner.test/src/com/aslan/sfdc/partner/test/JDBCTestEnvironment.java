@@ -31,8 +31,8 @@ public class JDBCTestEnvironment {
 
 	
 	public class Credentials {
-		private String name, url, username, password, driver;
-		private Connection connection = null;
+		public String name, url, username, password, driver;
+		public Connection connection = null;
 		
 		private Credentials() {}
 	}
