@@ -228,11 +228,11 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 				|| FIELDTYPE_CURRENCY.equals(fieldTypeName)
 			;
 	}
-	private interface IValueMaker {
+	public interface IValueMaker {
 		String makeValue( String value );
 	}
 	
-	private class QuotedValueMaker implements IValueMaker {
+	public class QuotedValueMaker implements IValueMaker {
 
 		@Override
 		public String makeValue(String value) {
@@ -290,7 +290,7 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 			return getNativeDateTime(value);
 		}
 	}
-	private class SkipValueMaker implements IValueMaker {
+	public class SkipValueMaker implements IValueMaker {
 
 		@Override
 		public String makeValue(String value) {
@@ -388,7 +388,7 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 		executeSQL( sql.toString());
 	}
 	
-	private IValueMaker[] getValueMakers( Field[] fields ) {
+	protected IValueMaker[] getValueMakers( Field[] fields ) {
 		IValueMaker valueMakers[] = new IValueMaker[fields.length];
 		for( int n = 0; n < fields.length; n++ ) {
 			Field field = fields[n];
@@ -508,7 +508,7 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 	 * @return
 	 * @throws Exception
 	 */
-	private boolean isUpdateNecessary(DescribeSObjectResult sfdcTable, Field[] fields, String[] row, java.util.Date lastModDate ) throws Exception {
+	protected boolean isUpdateNecessary(DescribeSObjectResult sfdcTable, Field[] fields, String[] row, java.util.Date lastModDate ) throws Exception {
 		//
 		// Find the time of last modification in Salesforce.
 		//
@@ -528,7 +528,7 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 		
 		return sfdcDate.getTime() > lastModDate.getTime();
 	}
-	private void updateData(DescribeSObjectResult sfdcTable, Field[] fields,
+	protected void updateData(DescribeSObjectResult sfdcTable, Field[] fields,
 			String[] row) throws Exception {
 
 		IValueMaker valueMakers[] = getValueMakers(fields);
@@ -558,7 +558,7 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 
 	}
 	
-	private java.util.Date getLastModifiedDate(DescribeSObjectResult sfdcTable, Field lastModifiedDateField, String id ) throws Exception {
+	protected java.util.Date getLastModifiedDate(DescribeSObjectResult sfdcTable, Field lastModifiedDateField, String id ) throws Exception {
 		
 		if( null == lastModifiedDateField) { return null; }
 		
