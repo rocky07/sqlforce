@@ -106,9 +106,38 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 		}
 	}
 	
+
 	protected boolean isMultiValueInsertSupported() {
 		return true;
 	}
+	
+	/**
+	 * Return the native form for a date string given an salesforce dateTime string.
+	 * @param sfdcDateTime
+	 * @return string valid for a WHERE clause or INSERT statement.
+	 */
+	protected String getNativeDateTime( String sfdcDateTime ) {
+		return "'" + sfdcDateTime + "'";
+	}
+	
+	/**
+	 * Return the native form for a date string given an salesforce date string.
+	 * @param sfdcDate
+	 * @return string valid for a WHERE clause or INSERT statement.
+	 */
+	protected String getNativeDate( String sfdcDate ) {
+		return "'" + sfdcDate + "'";
+	}
+	
+	/**
+	 * Return the native form for a time string given an salesforce time string.
+	 * @param sfdcDate
+	 * @return string valid for a WHERE clause or INSERT statement.
+	 */
+	protected String getNativeTime( String sfdcTime ) {
+		return "'" + sfdcTime + "'";
+	}
+	
 	protected String getBooleanType() {
 		return "BOOLEAN";
 	}
@@ -250,7 +279,7 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 
 		@Override
 		public String makeValue(String value) {
-			return "'" + value + "'";
+			return getNativeDate(value);
 		}
 	}
 	
@@ -258,7 +287,7 @@ public abstract class AnsiDatabaseBuilder implements IDatabaseBuilder {
 
 		@Override
 		public String makeValue(String value) {
-			return "'" + value + "'";
+			return getNativeDateTime(value);
 		}
 	}
 	private class SkipValueMaker implements IValueMaker {
