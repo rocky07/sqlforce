@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: CopyForce for Oracle
+Bundle-SymbolicName: com.aslan.sfdc.copyforce.oracle
+Bundle-Version: 1.0.0
+Bundle-Vendor: Aslan Technolgies
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: com.aslan.sfdc.copyforce;bundle-version="1.0.0",
+ com.aslan.sfdc.extract.oracle;bundle-version="1.0.0"
