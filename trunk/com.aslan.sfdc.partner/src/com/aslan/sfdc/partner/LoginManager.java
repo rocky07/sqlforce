@@ -30,6 +30,7 @@ import com.sforce.soap.partner.DescribeSObjectResult;
 import com.sforce.soap.partner.Field;
 import com.sforce.soap.partner.GetUserInfoResult;
 import com.sforce.soap.partner.LoginResult;
+import com.sforce.soap.partner.QueryOptions;
 import com.sforce.soap.partner.SessionHeader;
 import com.sforce.soap.partner.SforceServiceLocator;
 import com.sforce.soap.partner.Soap;
@@ -53,7 +54,8 @@ public class LoginManager {
 	 *
 	 */
 	public class Session {
-		private Soap binding;
+		private SoapBindingStub binding;
+		private org.apache.axis.client.Service service;
 		private LoginResult loginResult;
 		private String sandboxName;
 		private UserRecord userRecord;
@@ -87,10 +89,11 @@ public class LoginManager {
 		//
 		private Map<String, Field> fieldMap = new HashMap<String,Field>();
 		
-		private Session(LoginResult loginResult, SoapBindingStub binding, String sandboxName ) throws Exception {
+		private Session(LoginResult loginResult, SoapBindingStub binding, org.apache.axis.client.Service service, String sandboxName ) throws Exception {
 			this.loginResult = loginResult;
 			this.binding = binding;
 			this.sandboxName = sandboxName;
+			this.service = service;
 			
 			GetUserInfoResult uiResult = binding.getUserInfo();
 			SObjectQueryHelper query = new SObjectQueryHelper();
@@ -248,6 +251,14 @@ public class LoginManager {
 		 */
 		public Soap getBinding() { return binding; }
 		
+		public void setQueryBatchSize( int nRecords ) {
+			QueryOptions queryOpts = new QueryOptions();
+			queryOpts.setBatchSize(nRecords);
+			
+			binding.setHeader(
+					service.getServiceName().getNamespaceURI(), "QueryOptions", queryOpts);
+		
+		}
 		/**
 		 * Set header data that contains SalesForce credential data.
 		 * 
@@ -259,9 +270,12 @@ public class LoginManager {
 		public void initBindingHeader(org.apache.axis.client.Service service, org.apache.axis.client.Stub stub ) {
 			 SessionHeader sh = new SessionHeader();
 			 sh.setSessionId(loginResult.getSessionId());
-			 
+
 			 stub.setHeader(
 					 service.getServiceName().getNamespaceURI(), "SessionHeader", sh);
+			 
+
+			 
 		}
 		/**
 		 * Get the credentials used to connect to SFDC.
@@ -436,11 +450,12 @@ public class LoginManager {
 		// returned by the login
 		SessionHeader sh = new SessionHeader();
 		sh.setSessionId(loginResult.getSessionId());
-		binding.setHeader(new SforceServiceLocator().getServiceName()
+		org.apache.axis.client.Service service = new SforceServiceLocator();
+		binding.setHeader(service.getServiceName()
 				.getNamespaceURI(), "SessionHeader", sh);
 
-	
-		return new Session(loginResult,  binding, sandboxName );
+		
+		return new Session(loginResult,   binding, service,  sandboxName );
 	}
 	
 	/**

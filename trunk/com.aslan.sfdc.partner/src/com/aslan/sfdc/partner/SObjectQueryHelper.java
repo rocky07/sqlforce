@@ -444,7 +444,10 @@ public final class SObjectQueryHelper {
 				}
 				finished = queryResult.isDone();
 				if( !finished ) {
+
 					queryResult = session.getBinding().queryMore( queryResult.getQueryLocator());
+	
+					System.gc();
 				}
 			}
 		}

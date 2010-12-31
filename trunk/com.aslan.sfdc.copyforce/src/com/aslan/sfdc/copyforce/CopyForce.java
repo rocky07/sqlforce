@@ -110,6 +110,17 @@ import com.aslan.sfdc.partner.LoginManager;
    <td>Set the number of megabytes CopyForce will buffer from Salesforce before writing them to the destination database.
    </td>
    </tr>
+   
+   <tr align="left" valign="top"><td>-querybatch nRows</td>
+   <td>Set the number rows Salesforce will return per batch (1-1000). Larger numbers cause the application to use considerably more memory.
+   </td>
+   </tr>
+   
+   <tr align="left" valign="top"><td>-destbatch nRows</td>
+   <td>Set the number rows the application will write to the destination in a single batch.
+   </td>
+   </tr>
+   
   </table>
   <p>
   The list of objects copied from Salesforce can optionally be controlled by a configuration file (see the <i>-config</i> command line switch). A configuration file
@@ -177,6 +188,8 @@ public abstract class CopyForce {
 			traceMode = parser.isSet( SW_TRACE);
 			salesforceTimeout = parser.getInt(SW_TIMEOUT);
 			salesforceRowBufferMB = parser.getInt(SW_BUFFER );
+			saleforceQueryBatch = parser.getInt( SW_QUERYBATCH );
+			destRowBatchSize = parser.getInt( SW_DESTBATCH );
 			
 			//
 			// Login into Salesforce.
@@ -189,6 +202,7 @@ public abstract class CopyForce {
 			trace("Connect to Salesforce - " + connectString );
 			monitor.reportMessage("Connecting to Salesforce");
 			LoginManager.Session session = connectToSalesforce( connectString );
+			session.setQueryBatchSize(saleforceQueryBatch);
 			
 			//
 			// Determine what should be transferred to the output database.
@@ -225,6 +239,8 @@ public abstract class CopyForce {
 			//
 			ExtractionManager mgr = new ExtractionManager(session, builder);
 			mgr.setMaxBytesToBuffer( salesforceRowBufferMB*(1024*1024));
+			mgr.setMaxRowsToBuffer(destRowBatchSize);
+			
 			if( parser.isSet( SW_SCHEMA) ) {
 				trace("Start creation of Schema in target database");
 				mgr.extractSchema( rules, monitor);
@@ -261,6 +277,8 @@ public abstract class CopyForce {
 	private static final String SW_GUI = "gui";
 	private static final String SW_INCLUDE = "include";
 	private static final String SW_EXCLUDE = "exclude";
+	private static final String SW_QUERYBATCH = "querybatch";
+	private static final String SW_DESTBATCH = "destbatch";
 
 	private static final SwitchDef[]  baseCmdSwitches = {
 		new SwitchDef( "string", SW_SALESFORCE, "profileName OR ConnectionType,Username,Password[,SecurityToken]")
@@ -273,8 +291,10 @@ public abstract class CopyForce {
 		,new SwitchDef( "none", SW_SCHEMA, "If set schema the system will create the schema before transferring data" )
 		,new SwitchDef( "none", SW_TRACE, "If set then be verbose about program flow" )
 		,new SwitchDef( "int", SW_TIMEOUT, "1000000", "Maximum time (milliseconds) for Salesforce" )
-		,new SwitchDef( "int", SW_BUFFER, "2", "Number of megabytes to use when buffering Salesforce data" )
+		,new SwitchDef( "int", SW_BUFFER, "2", "Number of megabytes of Salesforce data to buffer before writing to the destination." )
 		,new SwitchDef( "none", SW_GUI, "If set then show progress in a GUI" )
+		,new SwitchDef( "int", SW_QUERYBATCH, "100", "Number of rows to read in each batch from Salesforce (1 - 1000)." )
+		,new SwitchDef( "int", SW_DESTBATCH, "100", "Number of rows write to the destination in a single batch.." )
 	};
 	
 	
@@ -282,6 +302,8 @@ public abstract class CopyForce {
 	private boolean traceMode = false;
 	private int salesforceTimeout = 1000000;
 	private int salesforceRowBufferMB = 20;
+	private int saleforceQueryBatch = 100;
+	private int destRowBatchSize = 100;
 	
 	private class ConfigSaxHandler extends DefaultHandler {
 		private ExtractionRuleset ruleSet;
