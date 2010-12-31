@@ -36,6 +36,7 @@ public class SfdcTestEnvironment {
 	private static final String defaultKey;
 	private static final String secondaryKey;
 	private static final String testKey;
+	private static final String readOnlyKey; // A database safe for reading that has a lot of records.
 	
 	static {
 		InputStream inStream = null;
@@ -51,6 +52,9 @@ public class SfdcTestEnvironment {
 			
 			tmpStr = testEnvironment.getProperty("sfdc.test");
 			testKey = (null==tmpStr||tmpStr.trim().length()==0)?null:tmpStr;
+			
+			tmpStr = testEnvironment.getProperty("sfdc.readonly");
+			readOnlyKey = (null==tmpStr||tmpStr.trim().length()==0)?null:tmpStr;
 			
 		} catch (IOException e) {
 			 throw new java.lang.Error("Error creating SFDC Test Environment, ", e);
@@ -178,10 +182,11 @@ public class SfdcTestEnvironment {
 	public static LoginCredentials getSecondaryLoginCredentials() {
 		return getLoginCredentials( secondaryKey );
 	}
+	
 	/**
 	 * Return an open session to the test SFDC (logging in if necessary).
 	 * 
-	 * This instance is used by tests that are comparing records between SFDC database.
+	 * This instance is used by most tests. Tests may both read and write.
 	 * It may be the same as the value returned by getSession();
 	 * 
 	 * @return active SFDC session using the default credentials for testing.
@@ -192,6 +197,21 @@ public class SfdcTestEnvironment {
 			throw new Error("No TEST database has been defined in the configuration file");
 		}
 		return getSession( testKey );
+	}
+	
+	/**
+	 * Return an open session to an SFDC database that has a lot of data.
+	 * 
+	 * This instance is used by tests that need a lot of records.
+	 * 
+	 * @return active SFDC session using the default credentials for testing.
+	 */
+	public static LoginManager.Session getReadOnlySession() {
+		
+		if(  null == readOnlyKey ) {
+			throw new Error("No ReadOnly database has been defined in the configuration file");
+		}
+		return getSession( readOnlyKey );
 	}
 	
 	public static LoginCredentials getTestLoginCredentials() {
