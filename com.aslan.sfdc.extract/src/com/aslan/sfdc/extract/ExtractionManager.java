@@ -114,6 +114,7 @@ public class ExtractionManager {
 	private List<String> allTableNames = new ArrayList<String>();
 	private SchemaAnalyzer schemaAnalyzer;
 	private int maxBytesToBuffer = 1*(1024*1024);
+	private int maxRowsToBuffer = 100;
 	
 	
 	private Map<String,TableDescriptor> tableNameMap = new HashMap<String,TableDescriptor>();
@@ -157,6 +158,14 @@ public class ExtractionManager {
 		maxBytesToBuffer = nBytes;
 	}
 
+	/**
+	 * Set the maximum of rows to buffer before writing out rows to the destination.
+	 * 
+	 * @param nRows number of rows to buffer.
+	 */
+	public void setMaxRowsToBuffer( int nRows ) {
+		maxRowsToBuffer = nRows;
+	}
 	/**
 	 * Return a list of all defined tables in the Salesforce.
 	 * 
@@ -331,6 +340,7 @@ public class ExtractionManager {
 					nSkipped += skippedThisTime;
 					monitor.skipData( sObjectName, nSkipped );
 				}
+				System.gc();
 			}
 			@Override
 			public void addRow(int rowNumber, String[] data) {
@@ -344,7 +354,7 @@ public class ExtractionManager {
 				
 				monitor.readData( sObjectName, nRead );
 
-				if( (nBytesPending >= maxBytesToBuffer) || monitor.isCancel()) {
+				if( (nBytesPending >= maxBytesToBuffer) || monitor.isCancel() || rowBuffer.size() >= maxRowsToBuffer) {
 					flush();
 				}
 				
@@ -366,6 +376,7 @@ public class ExtractionManager {
 		(new SObjectQueryHelper()).findRows( session, sql.toString(), callback );
 		
 		monitor.endCopyData( sObjectName, callback.nRead, callback.nSkipped, callback.nWritten);
+		System.gc();
 	}
 	
 	/**
@@ -404,6 +415,7 @@ public class ExtractionManager {
 			monitor.skipTable(sObjectName);
 			Thread.yield();
 		}
+		System.gc();
 	}
 	
 	/**
@@ -425,6 +437,6 @@ public class ExtractionManager {
 			if( monitor.isCancel()) { break; }
 		}
 		monitor.reportMessage("Finished copying schema" + (monitor.isCancel()?": CANCELLED":"")); 
-		
+		System.gc();
 	}
 }
