@@ -1,0 +1,10 @@
+<JDBCDatabaseBuilder>
+<!-- Configuration information AnsiDatabaseBuilder that is fairly constant -->
+
+
+<!-- Table/Column names that should given another name in the external database.
+     Salesforce uses ANSI SQL keywords in a few places.
+-->
+	<MapName sfdcName="Group" exportName="Group2" />
+		
+</JDBCDatabaseBuilder>

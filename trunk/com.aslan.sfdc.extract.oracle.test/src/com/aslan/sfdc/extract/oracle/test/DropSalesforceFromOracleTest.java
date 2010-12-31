@@ -17,13 +17,7 @@ import java.util.Properties;
 
 import junit.framework.TestCase;
 
-import com.aslan.sfdc.extract.ExtractionManager;
-import com.aslan.sfdc.extract.ExtractionRuleset;
-import com.aslan.sfdc.extract.IDatabaseBuilder;
 import com.aslan.sfdc.extract.IExtractionMonitor;
-import com.aslan.sfdc.extract.OutputStreamExtractionMonitor;
-import com.aslan.sfdc.extract.SwingExtractionMonitor;
-import com.aslan.sfdc.extract.ExtractionRuleset.TableRule;
 import com.aslan.sfdc.extract.oracle.OracleDatabaseBuilder;
 import com.aslan.sfdc.partner.LoginManager;
 import com.aslan.sfdc.partner.test.JDBCTestEnvironment;
@@ -79,7 +73,7 @@ public class DropSalesforceFromOracleTest extends TestCase {
 			
 			connection = JDBCTestEnvironment.getInstance().getConnection("copyforce.oracle");
 
-			LoginManager.Session session = SfdcTestEnvironment.getTestSession();
+			LoginManager.Session session = SfdcTestEnvironment.getReadOnlySession();
 			OracleDatabaseBuilder builder = new OracleDatabaseBuilder( connection );
 			
 			for( String sfdcTable : getAllTableNames(session)) {
