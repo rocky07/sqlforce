@@ -85,6 +85,19 @@ import com.aslan.sfdc.partner.LoginManager;
    </td>
    </tr>
    
+    <tr align="left" valign="top"><td>-since datetimeExpression</td>
+   <td>Only read records from Salesforce that have been modified on or after a specified datetime.
+   The datetime expression  MUST be recognized as a datetime by SOQL. Examples:
+   <ul>
+   <li>yesterday</li>
+	<li>last_quarter</li>
+	<li>last_week</li>
+	<li>this_quarter</li>
+	<li>2010-12-31T00:00:15.000Z</li>
+   </ul>
+   </td>
+   </tr>
+   
    <tr align="left" valign="top"><td>-config file</td>
    <td>XML file that specifies what to copy/exclude from Salesforce. This file should be used when the simple <i>-include</i> and <i>-exclude</i> are insufficient 
    to represent the parameters for the copy. See later in this documentation for the format of a configuration file.
@@ -190,6 +203,7 @@ public abstract class CopyForce {
 			salesforceRowBufferMB = parser.getInt(SW_BUFFER );
 			saleforceQueryBatch = parser.getInt( SW_QUERYBATCH );
 			destRowBatchSize = parser.getInt( SW_DESTBATCH );
+			String copyRecordsSince = parser.getString( SW_SINCE );
 			
 			//
 			// Login into Salesforce.
@@ -240,6 +254,7 @@ public abstract class CopyForce {
 			ExtractionManager mgr = new ExtractionManager(session, builder);
 			mgr.setMaxBytesToBuffer( salesforceRowBufferMB*(1024*1024));
 			mgr.setMaxRowsToBuffer(destRowBatchSize);
+			mgr.setCopyRecordsSince(copyRecordsSince);
 			
 			if( parser.isSet( SW_SCHEMA) ) {
 				trace("Start creation of Schema in target database");
@@ -279,9 +294,11 @@ public abstract class CopyForce {
 	private static final String SW_EXCLUDE = "exclude";
 	private static final String SW_QUERYBATCH = "querybatch";
 	private static final String SW_DESTBATCH = "destbatch";
+	private static final String SW_SINCE = "since";
 
 	private static final SwitchDef[]  baseCmdSwitches = {
 		new SwitchDef( "string", SW_SALESFORCE, "profileName OR ConnectionType,Username,Password[,SecurityToken]")
+		,new SwitchDef( "string", SW_SINCE, null, "Copy Salesforce records that have been modified after a specific datetime." )
 		,new SwitchDef( "string", SW_INCLUDE, null, "comma separated list of tables (or regexp) to export from salesforce" )
 		,new SwitchDef( "string", SW_EXCLUDE,  null, "comma separated list of tables (or regexp) to exclude from the export from salesforce" )
 		,new SwitchDef( "string", SW_LOG, "error", "info,warning,error:Set the default message level written to stderr" )

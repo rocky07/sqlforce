@@ -115,6 +115,7 @@ public class ExtractionManager {
 	private SchemaAnalyzer schemaAnalyzer;
 	private int maxBytesToBuffer = 1*(1024*1024);
 	private int maxRowsToBuffer = 100;
+	private String copyRecordsSince = null;
 	
 	
 	private Map<String,TableDescriptor> tableNameMap = new HashMap<String,TableDescriptor>();
@@ -165,6 +166,27 @@ public class ExtractionManager {
 	 */
 	public void setMaxRowsToBuffer( int nRows ) {
 		maxRowsToBuffer = nRows;
+	}
+	
+	/**
+	 * Set an SFDC expression that will limit the records retrieved from salesforce based on a datetime comparison.
+	 * 
+	 * The value MUST be recognized as a datetime by SOQL. Examples:
+	 * <ul>
+	 * <li>yesterday
+	 * <li>last_quarter
+	 * <li>last_week
+	 * <li>this_quarter
+	 * <li>2010-12-31T00:00:15.000Z
+	 * </ul>
+	 * 
+	 * @param copySince grab records modified after this datetime.
+	 */
+	public void setCopyRecordsSince( String copySince ) {
+		copyRecordsSince = copySince;
+		if(null!=copyRecordsSince && 0==copyRecordsSince.trim().length()) {
+			copyRecordsSince = null;
+		}
 	}
 	/**
 	 * Return a list of all defined tables in the Salesforce.
@@ -304,8 +326,19 @@ public class ExtractionManager {
 		}
 		sql.append( " FROM " + tableDesc.describeResult.getName());
 		
+		StringBuffer sqlWHERE = new StringBuffer();
+		Field dateField = rule.getLastModifiedDateField();
+		if( null!=dateField && null != copyRecordsSince ) {
+			sqlWHERE.append(dateField.getName()+ " >= " + copyRecordsSince);
+			
+		}
 		if( null != rule.getTableRule().getPredicate()) {
-			sql.append( " WHERE " + rule.getTableRule().getPredicate());
+			if( 0 != sqlWHERE.length()) { sqlWHERE.append(" AND "); }
+			sqlWHERE.append("(" + rule.getTableRule().getPredicate() + ")");
+		}
+		
+		if( 0 != sqlWHERE.length() ) {
+			sql.append( " WHERE " + sqlWHERE.toString());
 		}
 		
 		class MyCallback extends DefaultSObjectQuery2Callback {
