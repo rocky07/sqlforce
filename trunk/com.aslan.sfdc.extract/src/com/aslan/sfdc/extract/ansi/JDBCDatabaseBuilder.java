@@ -217,6 +217,7 @@ public abstract class JDBCDatabaseBuilder implements IDatabaseBuilder {
 			FieldType fieldType = field.getType();
 
 			String fieldName = field.getName();
+			
 			String fieldTypeName = fieldType.getValue();
 			int fieldLength = field.getByteLength();
 			String nullOption = field.isNillable()?" NULL ":" NOT NULL ";
@@ -232,7 +233,7 @@ public abstract class JDBCDatabaseBuilder implements IDatabaseBuilder {
 				columnDefs.add( getExportedName(fieldName) + " " + getStringType(fieldLength) + " " + nullOption + uniqueOption );
 				
 			} else if( FIELDTYPE_INT.equals( fieldTypeName)) {
-				
+
 				columnDefs.add( getExportedName(fieldName) + " " + getIntType( field.getDigits()) + " " + nullOption + uniqueOption);
 				
 			} else if( FIELDTYPE_DOUBLE.equals(fieldTypeName)
@@ -285,6 +286,7 @@ public abstract class JDBCDatabaseBuilder implements IDatabaseBuilder {
 		}
 		sql.append(");");
 		executeSQL( sql.toString());
+
 	}
 	
 	
@@ -317,7 +319,7 @@ public abstract class JDBCDatabaseBuilder implements IDatabaseBuilder {
 		} 
 		
 		if( FIELDTYPE_BOOLEAN.equals(fieldTypeName)) {
-			return java.sql.Types.INTEGER;
+			return java.sql.Types.BOOLEAN;
 		}
 		
 		if( FIELDTYPE_REFERENCE.equals(fieldTypeName)) {
@@ -428,6 +430,10 @@ public abstract class JDBCDatabaseBuilder implements IDatabaseBuilder {
 			pstmt.setTime(index, sfdcDateToTime(value));
 		} break;
 		
+		case java.sql.Types.BOOLEAN: {
+			pstmt.setBoolean(index, "true".equalsIgnoreCase(value)?true:false);
+		} break;
+		
 		default: {
 			throw new Exception("Internal logic error. Unrecognized java.sql.Types of " + sqlType + " for field type " + field.getType().getValue());
 		}
@@ -503,6 +509,8 @@ public abstract class JDBCDatabaseBuilder implements IDatabaseBuilder {
 					String[] row = dataRows.get(n);
 					for( int k = 0; k < row.length; k++ ) {
 						Field field = fields[k];
+						//if( field.getName().equalsIgnoreCase("BodyCrc")) { row[k] = "1"; }
+						
 						setPreparedStatementValue( pstmt, field, row[k], k+1);
 					}
 					pstmt.addBatch();
