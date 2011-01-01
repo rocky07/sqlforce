@@ -410,7 +410,11 @@ public abstract class JDBCDatabaseBuilder implements IDatabaseBuilder {
 			if( FIELDTYPE_BOOLEAN.equals(fieldTypeName)) {
 				pstmt.setInt(index, "true".equalsIgnoreCase(value)?1:0);
 			} else {
-				pstmt.setInt(index, Integer.parseInt(value));
+				//
+				// Use parseDouble because a SFDC double with zero digits afterwards may come back
+				// from SFDC as 1.0.
+				//
+				pstmt.setInt(index, new Double(Double.parseDouble(value)).intValue());
 			}
 		} break;
 		
