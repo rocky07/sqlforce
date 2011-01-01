@@ -509,8 +509,8 @@ public abstract class JDBCDatabaseBuilder implements IDatabaseBuilder {
 			pstmt = conn.prepareStatement("INSERT INTO " + getExportedName(sfdcTable.getName()) + "(" + colNames.toString() + ") VALUES (" + paramMarkers.toString() + ")" );
 			
 			try {
-				for( int n = 0; n < dataRows.size(); n ++ ) {
-					String[] row = dataRows.get(n);
+				for( int n = 0; n < insertRows.size(); n ++ ) {
+					String[] row = dataRows.get(insertRows.get(n));
 					for( int k = 0; k < row.length; k++ ) {
 						Field field = fields[k];
 						//if( field.getName().equalsIgnoreCase("BodyCrc")) { row[k] = "1"; }
@@ -540,8 +540,8 @@ public abstract class JDBCDatabaseBuilder implements IDatabaseBuilder {
 					+ " WHERE id=?" );
 
 			try {
-				for( int n = 0; n < dataRows.size(); n ++ ) {
-					String[] row = dataRows.get(n);
+				for( int n = 0; n < updateRows.size(); n ++ ) {
+					String[] row = dataRows.get(updateRows.get(n));
 					//
 					// Set the ID on the WHERE Clause.
 					//
