@@ -24,7 +24,7 @@ public class H2DatabaseBuilder extends JDBCDatabaseBuilder {
 
 	private Connection connection;
 	private final int MAX_VARCHAR = 4000;
-	private final int MAX_INTEGER_WIDTH = 8;
+	private final int MAX_INTEGER_WIDTH = 9;
 	
 	public H2DatabaseBuilder(  Connection connection ) throws Exception {
 		this.connection = connection;
