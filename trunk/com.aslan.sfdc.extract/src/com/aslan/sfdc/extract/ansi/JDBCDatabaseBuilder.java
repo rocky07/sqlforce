@@ -223,6 +223,7 @@ public abstract class JDBCDatabaseBuilder implements IDatabaseBuilder {
 			String nullOption = field.isNillable()?" NULL ":" NOT NULL ";
 			nullOption = " NULL "; // See the Salesforce table GROUP -- the parameter is advisory only.
 			String uniqueOption = field.isUnique()?" UNIQUE ":"";
+			uniqueOption = ""; // Salesforce allows multiple null values on unique columns (for historical data);
 			
 			if( FIELDTYPE_ID.equals(fieldTypeName)) {
 				
@@ -386,6 +387,18 @@ public abstract class JDBCDatabaseBuilder implements IDatabaseBuilder {
 		
 	}
 	
+	/**
+	 * Salesforce uses timestamp ranges that are out of range for some databases (let the implementation decide what to do.
+	 * 
+	 * @param pstmt	set a parameter for this statement.
+	 * @param index parameter index.
+	 * @param timestamp the timestamp from salesforce.
+	 * @throws Exception if anything goes wrong.
+	 */
+	protected void setTimestampField( PreparedStatement pstmt, int index, Timestamp timestamp ) throws Exception  {
+		pstmt.setTimestamp( index, timestamp );
+	}
+	
 	private void setPreparedStatementValue( PreparedStatement pstmt, Field field, String value, int index ) throws Exception{
 		
 		int sqlType = findSqlType(field);
@@ -423,7 +436,8 @@ public abstract class JDBCDatabaseBuilder implements IDatabaseBuilder {
 		} break;
 		
 		case java.sql.Types.TIMESTAMP: {
-			pstmt.setTimestamp( index, sfdcDateTimeToTimestamp(value));
+			setTimestampField( pstmt, index, sfdcDateTimeToTimestamp(value) );
+
 		} break;
 		
 		case java.sql.Types.DATE: {

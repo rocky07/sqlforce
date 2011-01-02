@@ -5,8 +5,12 @@ package com.aslan.sfdc.extract.sqlserver;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.TimeZone;
 
-import com.aslan.sfdc.extract.ansi.AnsiDatabaseBuilder;
+import com.aslan.sfdc.extract.ansi.JDBCDatabaseBuilder;
+import com.sforce.soap.partner.Field;
 
 /**
  * Extract a Salesforce Database into a Microsoft SQL/Server Database.
@@ -14,13 +18,23 @@ import com.aslan.sfdc.extract.ansi.AnsiDatabaseBuilder;
  * @author snort
  *
  */
-public class SqlServerDatabaseBuilder extends AnsiDatabaseBuilder {
+public class SqlServerDatabaseBuilder extends JDBCDatabaseBuilder {
+	
+	private final int MAX_VARCHAR = 8000;
+	private final int MAX_INTEGER_WIDTH = 9;
+	
 	private Connection connection;
 	
 	public SqlServerDatabaseBuilder(  Connection connection ) throws Exception {
 		this.connection = connection;
 	}
 	
+	@Override
+	protected int getMaxVarcharLength() {
+
+		return MAX_VARCHAR;
+	}
+
 	@Override
 	protected String getExportedName(String columnOrTableName) {
 
@@ -37,16 +51,11 @@ public class SqlServerDatabaseBuilder extends AnsiDatabaseBuilder {
 		return super.getExportedName(columnOrTableName);
 	}
 	
-
-	@Override
-	protected boolean isMultiValueInsertSupported() {
-		return false;
-	}
-	
 	@Override
 	public String getDecimalType(int width, int scale) {
+		
 		if( 0 == scale ) {
-			return "INT";
+			return getIntType( width );
 		} else {
 			return "DECIMAL(" + width + "," + scale + ")";
 		}
@@ -56,13 +65,16 @@ public class SqlServerDatabaseBuilder extends AnsiDatabaseBuilder {
 
 	@Override
 	public String getIntType(int width) {
+		if( width > MAX_INTEGER_WIDTH) {
+			return "DECIMAL(" + width + ",0)";
+		}
 		return "INT";
 	}
 
 
 	@Override
 	public String getStringType(int width) {
-		if( width > 8000 ) {
+		if( width > getMaxVarcharLength() ) {
 			return "TEXT";
 		}
 		return "VARCHAR(" + width + ")";
@@ -93,31 +105,47 @@ public class SqlServerDatabaseBuilder extends AnsiDatabaseBuilder {
 		return "DATETIME";
 	}
 
-	@Override
-	protected String getTruthValue(boolean isTrue) {
-		return isTrue?"1":"0";
-	}
-
-	/* (non-Javadoc)
-	 * @see com.aslan.sfdc.extract.ansi.AnsiDatabaseBuilder#executeSQL(java.lang.String)
-	 */
-	@Override
-	public void executeSQL(String sql) throws Exception {
-		PreparedStatement stmt = null;
-		
-		try {
-			stmt = connection.prepareStatement(sql);
-			stmt.execute();
-		} finally {
-			if( null != stmt ) {
-				stmt.close();
-			}
-		}
-
-	}
 
 	@Override
 	public Connection getConnection() {
 		return connection;
 	}
+	
+	@Override
+	protected int findSqlType( Field field ) throws Exception {
+
+		String fieldTypeName = field.getType().getValue();
+		
+		if( FIELDTYPE_DATE.equals(fieldTypeName)) {
+			return java.sql.Types.TIMESTAMP;
+		} 
+		
+		if( FIELDTYPE_TIME.equals(fieldTypeName)) {
+			return java.sql.Types.TIMESTAMP;
+		}
+		
+		return super.findSqlType(field);
+
+	}
+
+
+	@Override
+	protected void setTimestampField(PreparedStatement pstmt, int index,
+			Timestamp timestamp) throws Exception {
+
+		Calendar beginDate = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+
+		beginDate.set(1800, 0, 0, 0, 0, 0);
+		
+		Timestamp beginTimestamp = new Timestamp( beginDate.getTime().getTime());
+		
+		if( beginTimestamp.after(timestamp)) {
+			timestamp = beginTimestamp;
+		}
+	
+		super.setTimestampField(pstmt, index, timestamp);
+	}
+
+
+	
 }
