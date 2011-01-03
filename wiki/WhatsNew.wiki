@@ -1,5 +1,10 @@
 #labels Featured
 = What's New =
+3-Jan-11
+  * CopyForceOracle added.
+  * All CopyForce variations use a lot less memory. A new flag, -querybatch, was add to control the number of rows returned by Salesforce in a batch. The default, 1000, caused very large memory usage.
+  * All CopyForce variations have a new switch, -since SalesForceDateTime, that limits the copy/update to records modified since a specified date.
+  * All CopyForce variations use common PreparedStatement logic for inserts and updates. This will make adding a new database very simple.
 
 4-Dec-10
   * Discovered that non-admins could not extract two tables (example NewsFeed). Changed extraction code to ignore these tables if the user is not an administrator.
