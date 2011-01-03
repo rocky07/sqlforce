@@ -3,7 +3,7 @@
 
 	<import file="config.xml" />
 	
-	<property name="my.version" value="1.0.4" />
+	<property name="my.version" value="1.1.0" />
 	<property name="my.tmp" value="${config.tmp.home}/CopyForceH2" />
 	<property name="my.jar" value="${my.tmp}/CopyForceH2.jar" />
 	
