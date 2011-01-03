@@ -14,8 +14,11 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DateFormat;
+import java.text.FieldPosition;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -189,6 +192,7 @@ public class SwingExtractionMonitor implements IExtractionMonitor {
 	private JScrollPane tableScroller;
 	private CopyTimerThread copyTimerThread = null;
 	private boolean isCancelled = false;
+	private JLabel reportMessage;
 	
 	public SwingExtractionMonitor() {
 		initMonitor( frame.getContentPane());
@@ -198,7 +202,7 @@ public class SwingExtractionMonitor implements IExtractionMonitor {
 	
 	private void initMonitor(Container root ) {
 
-		String copyright = "Copyright (c) 2010 Gregory Smith (gsmithfarmer@gmail.com)";
+		String copyright = "<html><i>Copyright (c) 2011 Gregory Smith (gsmithfarmer@gmail.com)</i></html>";
 		
 		tableUI = new JTable();
 		tableUI.setModel( tableModel );
@@ -209,10 +213,18 @@ public class SwingExtractionMonitor implements IExtractionMonitor {
 		tableScroller = new JScrollPane( tableUI );
 		tableUI.setPreferredScrollableViewportSize(new java.awt.Dimension(500, 300));
 		
-		JLabel label = new JLabel(copyright);
+		JPanel southPanel = new JPanel();
+		southPanel.setLayout( new BorderLayout());
+		JLabel copyrightLabel = new JLabel(copyright);
+		
+		southPanel.add( copyrightLabel, BorderLayout.SOUTH);
+		
+		reportMessage = new JLabel("Progress messages appear here");
+		southPanel.add( reportMessage, BorderLayout.CENTER);
+		
 		JPanel controlPanel = new JPanel();
 		controlPanel.setLayout( new BorderLayout());
-		controlPanel.add( label, BorderLayout.SOUTH);
+		controlPanel.add( southPanel, BorderLayout.SOUTH);
 		JButton cancelButton = new JButton("Cancel");
 		controlPanel.add( cancelButton, BorderLayout.CENTER);
 		cancelButton.addActionListener(new ActionListener() {
@@ -303,6 +315,7 @@ public class SwingExtractionMonitor implements IExtractionMonitor {
 		SalesforceTable table = getTable(name);
 		table.action = "Schema Created";
 		refreshTable( table );
+		log( "Create Table - " + name );
 
 	}
 
@@ -323,16 +336,34 @@ public class SwingExtractionMonitor implements IExtractionMonitor {
 		}
 		refreshTable( table );
 
+		log( "End Copy From " + tableName + " (" + nRowsRead + " read, "  + nRowsSkipped + " skipped, "+ nRowsCopied + " copied)" );
 		
 	}
 
+	private SimpleDateFormat dateFormat = new SimpleDateFormat( "kk:mm:ss");
+	private void log( String msg ) {
+		final StringBuffer timeBuffer = new StringBuffer();
+		FieldPosition fieldPos = new FieldPosition(0);
+		
+		dateFormat.format( new Date(), timeBuffer, fieldPos );
+		timeBuffer.append(" : " + msg );
+	
+		SwingUtilities.invokeLater(new Runnable() {
+
+		@Override
+		public void run() {
+			reportMessage.setText(timeBuffer.toString());
+		}
+	});
+
+	}
 	/* (non-Javadoc)
 	 * @see com.aslan.sfdc.extract.IExtractionMonitor#reportMessage(java.lang.String)
 	 */
+	
 	@Override
 	public void reportMessage(String msg) {
-		// Ignore on purpose.
-
+		log(msg);
 	}
 
 	/* (non-Javadoc)
@@ -348,6 +379,7 @@ public class SwingExtractionMonitor implements IExtractionMonitor {
 		copyTimerThread = new CopyTimerThread(table);
 		copyTimerThread.start();
 
+		log( "Start Copy From " + tableName );
 
 	}
 
@@ -377,6 +409,8 @@ public class SwingExtractionMonitor implements IExtractionMonitor {
 		SalesforceTable table = getTable(name);
 		table.action = "Schema OK";
 		refreshTable( table );
+		
+		log( "Table Exists - " + name );
 		
 	}
 
