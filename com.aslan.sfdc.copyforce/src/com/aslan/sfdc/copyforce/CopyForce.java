@@ -89,11 +89,11 @@ import com.aslan.sfdc.partner.LoginManager;
    <td>Only read records from Salesforce that have been modified on or after a specified datetime.
    The datetime expression  MUST be recognized as a datetime by SOQL. Examples:
    <ul>
-   <li>yesterday</li>
-	<li>last_quarter</li>
-	<li>last_week</li>
-	<li>this_quarter</li>
-	<li>2010-12-31T00:00:15.000Z</li>
+   <li>-since yesterday</li>
+	<li>-since last_quarter</li>
+	<li>-since last_week</li>
+	<li>-since this_quarter</li>
+	<li>-since 2010-12-31T00:00:15.000Z</li>
    </ul>
    </td>
    </tr>

@@ -40,7 +40,17 @@ import com.aslan.sfdc.extract.oracle.OracleDatabaseBuilder;
  <li>-oracle  "localhost:1521:xe"</li>
 
  </ul>
- Internally, the connection string will be passed to the Oracle <i>DriverManager.getConnection()</i> method (prefixed by <i>jdbc:oracle:thin</i>).
+ Internally, the connection string will be passed to the Oracle <i>DriverManager.getConnection()</i> method (prefixed by <i>jdbc:oracle:thin@</i>).
+ </td>
+ </tr>
+ 
+ <tr align="left" valign="top"><td>-orauser string</td>
+ <td>User name to use when connecting to oracle.
+ </td>
+ </tr>
+ 
+ <tr align="left" valign="top"><td>-orapassword string</td>
+ <td>Password to use when connecting to oracle.
  </td>
  </tr>
  
@@ -53,9 +63,9 @@ import com.aslan.sfdc.extract.oracle.OracleDatabaseBuilder;
  *  </blockquote>
  *  
  *  <p>
- *  Example 2: Update existing Account and Contact tables in SQL Server database..
+ *  Example 2: Update existing Account and Contact tables in an Oracle database.
  *  <blockquote>
- *  java -jar CopyForceSqlServer.jar -include "Account,Contact" -salesforce Production,myname@gmail.com,myPassword,SecurityToken  -gui 
+ *  java -jar CopyForceSqlServer.jar -include "Account,Contact" -salesforce Production,myname@gmail.com,myPassword  -gui 
  *  -oracle "localhost:1521:xe" -orauser fred -orapassword joker
  *  </blockquote>
  * @author gsmithfarmer@gmail.com
