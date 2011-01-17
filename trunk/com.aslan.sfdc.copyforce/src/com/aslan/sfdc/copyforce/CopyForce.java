@@ -423,10 +423,12 @@ public abstract class CopyForce {
 	 * Start a copy from Salesforce.
 	 * 
 	 * @param args command line switches controlling the copy.
+	 * @param monitor class used to monitor the progress of the copy. If this parameter is null, it will be set based
+	 * on the command line switches.
 	 * 
 	 * @throws Exception if anything goes wrong.
 	 */
-	public void execute( String args[]) throws Exception {
+	public void execute( String args[], IExtractionMonitor monitor ) throws Exception {
 		CommandLineParser parser = new CommandLineParser(cmdSwitches.toArray( new SwitchDef[0]));
 
 		args = (null==args?new String[0]:args);
@@ -435,16 +437,16 @@ public abstract class CopyForce {
 		boolean isGUI = parser.isSet( SW_GUI );
 		boolean isSilent = parser.isSet(SW_SILENT);
 		
-		IExtractionMonitor monitor;
-		if( isSilent ) {
-			monitor = new DefaultExtractionMonitor();
-		} else if( isGUI ) {
-			monitor = new SwingExtractionMonitor();
-			
-		} else {
-			monitor = new OutputStreamExtractionMonitor();
+		if( null == monitor ) {
+			if( isSilent ) {
+				monitor = new DefaultExtractionMonitor();
+			} else if( isGUI ) {
+				monitor = new SwingExtractionMonitor();
+
+			} else {
+				monitor = new OutputStreamExtractionMonitor();
+			}
 		}
-		
 		
 		CopyThread thread = new CopyThread( parser, monitor );
 		thread.start();
@@ -453,6 +455,16 @@ public abstract class CopyForce {
 		if( null != thread.exception ) {
 			throw thread.exception;
 		}
+	}
+	/**
+	 * Start a copy from Salesforce.
+	 * 
+	 * @param args command line switches controlling the copy.
+	 * 
+	 * @throws Exception if anything goes wrong.
+	 */
+	public void execute( String args[]) throws Exception {
+		execute( args, (IExtractionMonitor)null);
 	}
 
 }
