@@ -43,12 +43,11 @@ public class BoundedDateField extends JPanel {
 	
 	private List<SimpleDateFormat> allDateFormats = new ArrayList<SimpleDateFormat>();
 	{
-		allDateFormats.add(new SimpleDateFormat( "d-MMM-yyyy"));
+		allDateFormats.add(new SimpleDateFormat( "d-MMM-yy"));
 		allDateFormats.add(new SimpleDateFormat( "M/d/yy"));
-		allDateFormats.add(new SimpleDateFormat( "d.M.yy"));
-		allDateFormats.add(new SimpleDateFormat( "d-M-yy"));
-		allDateFormats.add(new SimpleDateFormat( "yy-mm-dd"));
-		allDateFormats.add(new SimpleDateFormat( "yyyymmdd"));
+		allDateFormats.add(new SimpleDateFormat( "dd.MM.yy"));
+		allDateFormats.add(new SimpleDateFormat( "dd-MM-yy"));
+		allDateFormats.add(new SimpleDateFormat( "yyyyMMdd"));
 		
 	}
 	
@@ -57,10 +56,10 @@ public class BoundedDateField extends JPanel {
 		Calendar yesterday = Calendar.getInstance();
 		yesterday.add(Calendar.DATE, -1 );
 		
-		namedDates.put("today", new Date());
-		namedDates.put("now", new Date());
-		
-		namedDates.put("yesterday", yesterday.getTime());
+//		namedDates.put("today", new Date());
+//		namedDates.put("now", new Date());
+//		
+//		namedDates.put("yesterday", yesterday.getTime());
 	}
 	private Date lowerBound, upperBound;
 
@@ -78,11 +77,14 @@ public class BoundedDateField extends JPanel {
 	public BoundedDateField(Date lower, Date upper, String startingValue) {
 		
 		this.setLayout( new GridBagLayout());
+		this.setOpaque(false);
 		dateEditor = new JComboBox(namedDates.keySet().toArray(new String[0]));
 		dateEditor.setEditable(true);
 		
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = 0; gbc.gridy = 0;
+		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+		gbc.weightx = 1.0;
 		
 		this.add( dateEditor, gbc );
 		
@@ -186,6 +188,7 @@ public class BoundedDateField extends JPanel {
 		for( SimpleDateFormat df : allDateFormats) {
 			try {
 				Date d = df.parse(s);
+				// System.err.println("Match " + df.toPattern() + " is " + d );
 				return d;
 			} catch (ParseException e) {
 				; // Not the right format.
@@ -206,11 +209,26 @@ public class BoundedDateField extends JPanel {
 		return parseDate(s);
 	}
 	
+	/**
+	 * Return the current data selected as a string.
+	 * 
+	 * If the date is one of the registered "named" dates, then this string will be returned.
+	 * 
+	 * @return selected data or null if the date is not valid.
+	 */
+	public String getNamedDate() {
+		String s = (String)dateEditor.getSelectedItem();
+		
+		if( isDataValid(s)) {
+			return s;
+		}
+		return  null;
+	}
 	public void setRequired( boolean newState ) {
 		isRequired = newState;
 	}
 	/**
-	 * Returns true if the text field contains an integer within the bounds.
+	 * Returns true if the text field contains a date within the bounds.
 	 * 
 	 * @param s the input being tested
 	 */
@@ -321,5 +339,14 @@ public class BoundedDateField extends JPanel {
 		
 		namedDates.put(name, date);
 		dateEditor.addItem(name);
+	}
+	
+	/**
+	 * Determine if the currently selected date is a registered named date.
+	 * 
+	 */
+	public boolean isNamedDate() {
+		String value = (String)dateEditor.getSelectedItem();
+		return namedDates.containsKey(value);
 	}
 }
