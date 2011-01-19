@@ -450,7 +450,7 @@ public abstract class CopyForce {
 		
 		CopyThread thread = new CopyThread( parser, monitor );
 		thread.start();
-		thread.join();
+//		thread.join();
 		
 		if( null != thread.exception ) {
 			throw thread.exception;
