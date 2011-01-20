@@ -209,6 +209,13 @@ public class BoundedDateField extends JPanel {
 		return parseDate(s);
 	}
 	
+	public void setDate( String dateString ) {
+		if( null == dateString ) {
+			if( isDataValid( dateString )) {
+				dateEditor.setSelectedItem(dateString);
+			}
+		}
+	}
 	/**
 	 * Return the current data selected as a string.
 	 * 
