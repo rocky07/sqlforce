@@ -421,6 +421,7 @@ public class ExtractionManager {
 	 * @throws Exception if anything goes wrong.
 	 */
 	public void extractData(ExtractionRuleset ruleSet,  IExtractionMonitor monitor ) throws Exception {
+		monitor.startTables();
 		monitor.reportMessage("Calculating the order in which data will be extracted");
 		List<TableRuleInstance> tables = calculateExtractionList(ruleSet, monitor );
 		
@@ -428,6 +429,7 @@ public class ExtractionManager {
 			extractData( table, monitor );
 			if( monitor.isCancel()) { break; }
 		}
+		monitor.endTables();
 		monitor.reportMessage("Finished copying data" + (monitor.isCancel()?": CANCELLED":""));
 	}
 	/**
@@ -461,6 +463,7 @@ public class ExtractionManager {
 	 */
 	public void extractSchema(ExtractionRuleset ruleSet, IExtractionMonitor monitor) throws Exception {
 		
+		monitor.startSchema();
 		monitor.reportMessage("Calculating the order in which schema will be extracted"); 
 		List<TableRuleInstance> tables = calculateExtractionList(ruleSet, monitor );
 		
@@ -469,6 +472,7 @@ public class ExtractionManager {
 			extractSchema( rule.getTableName(), monitor );
 			if( monitor.isCancel()) { break; }
 		}
+		monitor.endSchema();
 		monitor.reportMessage("Finished copying schema" + (monitor.isCancel()?": CANCELLED":"")); 
 		System.gc();
 	}

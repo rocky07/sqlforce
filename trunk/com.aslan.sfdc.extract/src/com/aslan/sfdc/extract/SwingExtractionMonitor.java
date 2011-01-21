@@ -8,9 +8,17 @@
  *******************************************************************************/
 package com.aslan.sfdc.extract;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 import javax.swing.JFrame;
 
 /**
+ * Report the progress of an extraction in a top level frame.
+ * 
+ * Warning: When the frame is closed, the application will exit.
+ * 
+ * To embed the same monitoring in a JPanel see {@link SwingExtractionMonitorJPanel}.
  * @author snort
  *
  */
@@ -21,6 +29,12 @@ public class SwingExtractionMonitor implements IExtractionMonitor {
 	private SwingExtractionMonitorJPanel subMonitor;
 
 	public SwingExtractionMonitor() {
+		
+		frame.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent ev) {
+				System.exit(0);
+			}
+		});
 		
 		subMonitor = new SwingExtractionMonitorJPanel();
 		frame.getContentPane().add(subMonitor);
@@ -80,6 +94,34 @@ public class SwingExtractionMonitor implements IExtractionMonitor {
 		return subMonitor.isCancel();
 	}
 	
+	@Override
+	public void start() {
+		subMonitor.start();
+	}
 
+	@Override
+	public void end(Exception e) {
+		subMonitor.end(e);
+	}
+
+	@Override
+	public void startSchema() {
+		subMonitor.startSchema();
+	}
+
+	@Override
+	public void endSchema() {
+		subMonitor.endSchema();
+	}
+
+	@Override
+	public void startTables() {
+		subMonitor.startTables();
+	}
+
+	@Override
+	public void endTables() {
+		subMonitor.endTables();
+	}
 
 }

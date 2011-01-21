@@ -19,6 +19,40 @@ public interface IExtractionMonitor {
 
 
 	/**
+	 * Called at the very beginning of the extaction process.
+	 * 
+	 * This happens before any database connections are attempted.
+	 */
+	void start();
+	
+	/**
+	 * Called when the extraction process is complete.
+	 * 
+	 * @param e if an error occurred e will be non-null; on success this value will be null.
+	 */
+	void end(Exception e);
+	
+	/**
+	 * Called just before the system starts creating target database schema.
+	 */
+	void startSchema();
+	
+	/**
+	 * Called just after the system finishes creating target database schema.
+	 */
+	void endSchema();
+	
+	/**
+	 * Called just before the system starts copying data from SFDC tables to the destination.
+	 */
+	void startTables();
+	
+	/**
+	 * Called just after the system finishes copying data from SFDC tables to the destination.
+	 */
+	void endTables();
+	
+	/**
 	 * Report just after a table is created.
 	 * @param name a table
 	 */

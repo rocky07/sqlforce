@@ -9,6 +9,9 @@
 package com.aslan.sfdc.extract;
 
 import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -193,6 +196,7 @@ public class SwingExtractionMonitorJPanel extends JPanel implements IExtractionM
 	private CopyTimerThread copyTimerThread = null;
 	private boolean isCancelled = false;
 	private JLabel reportMessage;
+	private JButton cancelButton;
 	
 	public SwingExtractionMonitorJPanel() {
 		
@@ -201,7 +205,7 @@ public class SwingExtractionMonitorJPanel extends JPanel implements IExtractionM
 	
 	private void initMonitor() {
 
-		String copyright = "<html><i>Copyright (c) 2011 Gregory Smith (gsmithfarmer@gmail.com)</i></html>";
+		String copyright = "<html><font size=-4><i>Copyright (c) 2011 Gregory Smith (gsmithfarmer@gmail.com)</i></font></html>";
 		
 		tableUI = new JTable();
 		tableUI.setModel( tableModel );
@@ -213,19 +217,34 @@ public class SwingExtractionMonitorJPanel extends JPanel implements IExtractionM
 		tableUI.setPreferredScrollableViewportSize(new java.awt.Dimension(500, 300));
 		
 		JPanel southPanel = new JPanel();
-		southPanel.setLayout( new BorderLayout());
-		JLabel copyrightLabel = new JLabel(copyright);
-		
-		southPanel.add( copyrightLabel, BorderLayout.SOUTH);
+		southPanel.setLayout(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
 		
 		reportMessage = new JLabel("Progress messages appear here");
-		southPanel.add( reportMessage, BorderLayout.CENTER);
+		gbc.gridx=0; gbc.gridy=0; gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 1.0; gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+		southPanel.add(reportMessage, gbc );
 		
+		gbc = new GridBagConstraints();
+		
+		JLabel copyrightLabel = new JLabel(copyright);
+		gbc.gridx=0; gbc.gridy=1;
+		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+		gbc.insets = new Insets(10,0,0,0);	
+		southPanel.add( copyrightLabel, gbc);
+		
+
 		JPanel controlPanel = new JPanel();
-		controlPanel.setLayout( new BorderLayout());
-		controlPanel.add( southPanel, BorderLayout.SOUTH);
-		JButton cancelButton = new JButton("Cancel");
-		controlPanel.add( cancelButton, BorderLayout.CENTER);
+		controlPanel.setLayout( new GridBagLayout());
+		
+		cancelButton = new JButton("Cancel Copy From Salesforce");
+		cancelButton.setVisible(false);
+		gbc = new GridBagConstraints();
+		gbc.gridx=0; gbc.gridy=0;
+		gbc.anchor = GridBagConstraints.CENTER;
+		gbc.insets = new Insets(4,0,0,0);	
+		
+		controlPanel.add( cancelButton, gbc);
 		cancelButton.addActionListener(new ActionListener() {
 
 			@Override
@@ -235,6 +254,13 @@ public class SwingExtractionMonitorJPanel extends JPanel implements IExtractionM
 			}
 			
 		});
+		
+		gbc = new GridBagConstraints();
+		gbc.gridx=0; gbc.gridy=1; gbc.fill = GridBagConstraints.BOTH;
+		gbc.weightx = 1.0; gbc.weighty  = 1.0; gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+		gbc.insets = new Insets(4,0,0,0);
+		controlPanel.add( southPanel, gbc);
+		
 		myRoot.add( controlPanel, BorderLayout.SOUTH);
 		myRoot.add(tableScroller, BorderLayout.CENTER );
 		
@@ -412,4 +438,40 @@ public class SwingExtractionMonitorJPanel extends JPanel implements IExtractionM
 		
 	}
 
+	@Override
+	public void start() {
+		cancelButton.setVisible(true);
+		log("Connecting to Salesforce");
+	}
+
+	@Override
+	public void end(Exception e) {
+		cancelButton.setVisible(false);
+		if( null != e ) {
+			log("Finished: Failed with: " + e.getMessage());
+		} else {
+			log("Finished");
+		}
+	}
+
+	@Override
+	public void startSchema() {
+		log("Start creating schema.");
+	}
+
+	@Override
+	public void endSchema() {
+		log("Finished creating schema.");
+	}
+
+	@Override
+	public void startTables() {
+		log("Start table data copy");
+	}
+
+	@Override
+	public void endTables() {
+		log("Finished table data copy");
+		
+	}
 }

@@ -60,4 +60,28 @@ public class DefaultExtractionMonitor implements IExtractionMonitor {
 	public void skipTable(String name) {
 	}
 
+	@Override
+	public void start() {
+	}
+
+	@Override
+	public void end(Exception e) {
+	}
+
+	@Override
+	public void startSchema() {
+	}
+
+	@Override
+	public void endSchema() {
+	}
+
+	@Override
+	public void startTables() {
+	}
+
+	@Override
+	public void endTables() {
+	}
+
 }

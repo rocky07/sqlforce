@@ -88,4 +88,39 @@ public class OutputStreamExtractionMonitor implements IExtractionMonitor {
 		log( "Table Exists - " + name );
 	}
 
+	@Override
+	public void start() {
+
+	}
+
+	@Override
+	public void end(Exception e) {
+		if( null != e ) {
+			log("Finished: Failed with: " + e.getMessage());
+		} else {
+			log("Finished");
+		}
+	}
+
+	@Override
+	public void startSchema() {
+		log("Start creating schema.");
+	}
+
+	@Override
+	public void endSchema() {
+		log("Finished creating schema.");
+	}
+
+	@Override
+	public void startTables() {
+		log("Start table data copy");
+	}
+
+	@Override
+	public void endTables() {
+		log("Finished table data copy");
+		
+	}
+
 }
