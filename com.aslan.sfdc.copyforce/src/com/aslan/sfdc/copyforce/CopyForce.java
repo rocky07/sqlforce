@@ -271,10 +271,13 @@ public abstract class CopyForce {
 		
 		public void run() {
 			exception = null;
+			monitor.start();
 			try {
 				copy();
+				monitor.end((Exception)null);
 			} catch( Exception e ) {
 				exception = e;
+				monitor.end(e);
 			}
 		}
 	}
