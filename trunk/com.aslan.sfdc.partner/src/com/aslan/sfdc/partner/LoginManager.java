@@ -35,6 +35,8 @@ import com.sforce.soap.partner.SessionHeader;
 import com.sforce.soap.partner.SforceServiceLocator;
 import com.sforce.soap.partner.Soap;
 import com.sforce.soap.partner.SoapBindingStub;
+import com.sforce.soap.partner.fault.InvalidIdFault;
+import com.sforce.soap.partner.fault.LoginFault;
 import com.sforce.soap.partner.sobject.SObject;
 
 /**
@@ -438,9 +440,19 @@ public class LoginManager {
 
 		String securityKey = credentials.getSecurityToken();
 		
-		LoginResult loginResult = binding.login( 
+		LoginResult loginResult;
+		
+		try {
+			loginResult = binding.login( 
 					credentials.getUsername(), 
 					credentials.getPassword() + (null==securityKey?"":securityKey));
+		} catch(LoginFault eLogin  ) {
+			throw new Exception("Salesforce: Invalid username, password, security token; or user locked out.", eLogin );
+		} catch(InvalidIdFault eInvalidId) {
+			throw new Exception("Saleforce: Invalid Id. Login Failed.", eInvalidId );
+		} catch( Exception e ) {
+			throw new Exception("Salesforce: Unexpected login failure.", e );
+		}
 
 		binding._setProperty(SoapBindingStub.ENDPOINT_ADDRESS_PROPERTY,
 				loginResult.getServerUrl());
