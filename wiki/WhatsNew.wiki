@@ -1,5 +1,11 @@
 #labels Featured
 = What's New =
+
+11-Feb-11
+  * Change the version name convention. The second digit is now the Force protocol version used by the libraries. Currently, all at "20" (the current version).
+  * Encrypted fields now work.
+  * Fixed problem with Date/Time/DateTime fields being copies incorrectly. GMT vs Local time handling was not correct.
+
 3-Jan-11
   * CopyForceOracle added.
   * All CopyForce variations use a lot less memory. A new flag, -querybatch, was add to control the number of rows returned by Salesforce in a batch. The default, 1000, caused very large memory usage.
