@@ -1,5 +1,7 @@
 #labels Featured
 = What's New =
+18-Feb-11
+  * Reposted all CopyForce jars. None of the 20.2 jars worked -- my bad.
 
 11-Feb-11
   * Change the version name convention. The second digit is now the Force protocol version used by the libraries. Currently, all at "20" (the current version).
