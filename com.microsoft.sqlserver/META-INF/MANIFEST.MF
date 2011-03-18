@@ -7,3 +7,5 @@ Bundle-Vendor: MICROSOFT
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: com.microsoft.sqlserver.jdbc,
  microsoft.sql
+Bundle-ClassPath: sqljdbc4.jar,
+ .
