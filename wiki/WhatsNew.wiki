@@ -1,5 +1,10 @@
 #labels Featured
 = What's New =
+
+25-Mar-11
+  * UTF-8 Support for all target database. This is automatic based on your Salesforce setup.
+  * Fixed problem with some VARCHAR columns being too long in target.
+
 18-Feb-11
   * Reposted all CopyForce jars. None of the 20.2 jars worked -- my bad.
 
