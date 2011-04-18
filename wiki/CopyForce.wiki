@@ -8,6 +8,8 @@ CopyForce is an application for copying full or partial Salesforce instances to 
 
 Both incremental and complete copies are supported.
 
+Are you looking for the commercial version? See the [http://www.capstorm.com CAPSTORM] home page.
+
 To get started:
   * Download the CopyForce zip file that matches the RDBMS into which you want to copy Salesforce.
     * CopyForceSqlServer.zip will copy Salesforce into Microsoft [http://www.microsoft.com/sqlserver SQL Server].
