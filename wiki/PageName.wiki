@@ -1,18 +1,18 @@
 #labels Featured
-#Connect Thru a proxy
 
 = Connecting thru a proxy=
 
 By default none of the SQL force tools can connect thru a proxy.
 Good news! With a view command line options connecting thru a proxy is a simple task.
 
-The key is to set the following variables on the command line:
-* http.proxyHost
-* http.proxyPort
-* javax.net.ssl.trustStoreProvider
-* javax.net.ssl.trustStoreType
+The key is to set the following java variables on the command line:
+||*Java Variable*||*Notes*||
+||http.proxyHost||See what your browser uses||
+||http.proxyPort||Ditto||
+||javax.net.ssl.trustStoreProvider||SunMSCAPI on Windows||
+||javax.net.ssl.trustStoreType||Windows-ROOT on Windows||
 
-See [http://download.oracle.com/javase/6/docs/technotes/guides/net/proxies.html Oracle] for details.
+See [http://download.oracle.com/javase/6/docs/technotes/guides/net/proxies.html Oracle] for details on all proxy related system variables.
 
 = Windows =
 To use the proxy and certificate store used by your browser, you will need a command line like:
