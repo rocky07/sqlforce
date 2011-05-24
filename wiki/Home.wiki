@@ -8,6 +8,7 @@ What are you interest in doing?
 || [SQLForce] || Salesforce Admin|| Command line interpreter with ANSI SELECT/DELETE/MODIFY//INSERT commands that work with Salesforce. The [SQLForceForJython] is a superset of this project||
 || [SQLForceForJython] || Salesforce Admin || Jython module with ANSI SELECT/DELETE/MODIFY/INSERT commands that work Salesforce ||
 || CopyForce || Salesforce Admin || Copy a Salesforce instance to a local RDBMS ||
+|| ConnectThruProxy||All||Additional instructions if you have to connect thru a proxy server||
 
 
 All of these tools are part of the *SQLForce* project. 
