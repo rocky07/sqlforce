@@ -1,6 +1,12 @@
 #labels Featured
 = What's New =
 
+06-Aug-11
+  * Upgrade to Summer'11 protocol (version 22.0).
+  * Add support for column type DataCategoryGroupReference
+  * Add command line specification of proxy info
+  * Building MySQL version (email me if you are interested).
+
 25-Mar-11
   * UTF-8 Support for all target databases. This is automatic based on your Salesforce setup.
   * Fixed problem with some VARCHAR columns being too long in target.
