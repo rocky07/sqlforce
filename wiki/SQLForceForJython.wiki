@@ -1,6 +1,8 @@
 #labels Featured
 = SQLForce for Jython -- a Jython module for SQLForce =
 
+NOTE: The latest release (always free) can be found at [http://www.capstorm.com/main/index.php?option=com_content&view=section&layout=blog&id=7&Itemid=62 CAPSTORM]
+
 SQLForce for Jython  brings ANSI INSERT, UPDATE, DELETE, SELECT, SELECT UNION, and SELECT DISTINCT for Salesforce into Jython. The Jython module, SQLForce.py, is built on the core SQLForce project. We use it everyday.
 
 Getting started is easy.:
