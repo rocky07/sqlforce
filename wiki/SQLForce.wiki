@@ -1,4 +1,5 @@
 = SQLForce Classic - ANSI SQL for Salesforce=
+NOTE: The latest release (always free) can be found at [http://www.capstorm.com/main/index.php?option=com_content&view=section&layout=blog&id=7&Itemid=62 CAPSTORM]
 
 <i>SQLForce Classic</i> is a command line interpreter that provides ANSI like extensions to SOQL and hides much of the governor limitations imposed by Salesforce.
 
